@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>使用Gridea + Vline搭建属于自己的博客 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640370355344">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="之前搭建博客都是通过 vuepress + Github Pages 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）
+
+通过Gridea快速搭建博客
+Gridea 是一个静..." />
+    <meta name="keywords" content="学习" />
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640370355344" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">使用Gridea + Vline搭建属于自己的博客</h2>
+            <div class="post-date">2021-12-25</div>
+            
+              <div class="feature-container" style="background-image: url('https://gridea.dev/media/images/theme-images/theme-simple.jpg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>之前搭建博客都是通过 <code>vuepress</code> + <code>Github Pages</code> 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）</p>
+<!-- more -->
+<h1 id="通过gridea快速搭建博客">通过Gridea快速搭建博客</h1>
+<pre><code>Gridea 是一个静态博客写作客户端，帮助你更容易地构建并管理博客或任何静态站点。
+</code></pre>
+<p>以上是 <a href="https://gridea.dev/">Gridea</a> 官方对这款博客客户端的描述。它到底有多容易呢？那我们就自己动手来试下吧~</p>
+<h2 id="简单两步完成博客搭建">简单两步，完成博客搭建</h2>
+<h3 id="第一步下载gridea客户端">第一步：下载Gridea客户端</h3>
+<p><code>Gridea</code> 客户端是使用 <code>Electron</code> 开发的，使用它之前，需要先去 <a href="https://gridea.dev/#started">官网下载</a>。官方提供了 <code>MacOS</code>, <code>Windows</code> 以及 <code>Linux</code> 三端的安装包，小伙伴们可以根据自己的需求自行下载~<br>
+<img src="https://luhaifeng666.github.io/post-images/1640367698849.jpg" alt="" loading="lazy"></p>
+<h3 id="第二步发布">第二步：发布</h3>
+<p>是的！你没有听错！下载完成后直接就可以进入发布流程了，是不是很快！<br>
+<code>Gridea</code> 提供了将博客部署到 <code>GitHub Pages</code>、<code>Coding Pages</code> 和通过 <code>SFTP</code> 的方式上传到自己的服务器的功能。官方提供了非常详细的Github Pages发布流程，这里不做赘述，<a href="https://gridea.dev/gridea-start/">请戳进来看吧~</a></p>
+<h2 id="一些可能需要注意的点">一些可能需要注意的点</h2>
+<p>经过上面两步的操作，相信各个小伙伴已经拥有了属于自己的博客~可喜可贺！在这里，我列举几个我遇到的问题，希望可以提供给遇到相同问题的小伙伴一些帮助：</p>
+<h4 id="问题1关于同步">问题1：关于同步</h4>
+<ul>
+<li>由于同步是将你的改动同步到 <code>GitHub Pages</code> 上的，由于现阶段国内访问Github会有长时间打不开页面，需要翻墙的情况，建议小伙伴们在长时间无法同步的情况下，尝试下翻墙同步，可能会稍好一些；</li>
+<li>我当前试用的 <code>Gridea</code> 的版本是 <code>0.9.2</code>，存在这样一个问题，在检测远程连接时，提示我连接成功，但是同步却一直都失败，无论是否开启翻墙，均是如此。官方在 <a href="https://github.com/getgridea/gridea/issues/890">#890</a> 这个issue中提供了一个解决方案，并给出了修复后的包的下载地址，我下载后试用并不理想（不排除是我本地网络环境的原因），但依旧可以作为一个解决方案提供给小伙伴们尝试下~</li>
+</ul>
+<h4 id="问题2关于主题">问题2：关于主题</h4>
+<p>目前我使用的是 <code>Simple</code> 主题，各方面使用情况都还不错，推荐大家使用这款。<br>
+当然，官方也提供了其他的 <a href="https://gridea.dev/themes">多款主题</a> 供小伙伴们食用，大家可以根据自己的喜好自行选择。<br>
+当然，如果有精力有兴趣的小伙伴儿们也可以尝试自己 <a href="https://gridea.dev/theme/">开发一个主题</a> ，毕竟自己动手，丰衣足食嘛~<br>
+至于我遇到的问题，是在我使用 <code>Notes</code> 这个主题的时候，发现在编辑完文章后，markdown中的代码区块内容在预览时表现正常，但是在同步到 <code>GitHub Pages</code> 之后，打开页面发现markdown中的代码区块没有正常渲染出来，大家在食用的时候需要留意下~</p>
+<h1 id="添加vline评论">添加Vline评论</h1>
+<p>现在已经有了自己的博客了，也有个地方可以记录自己的工作，学习，生活了，自然也不能少了让 <code>看官们</code> 留下自己足迹的地方~<br>
+我使用的 <code>Simple</code> 主题默认提供了两种发布评论的平台：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640368636573.jpg" alt="" loading="lazy"><br>
+这里我推荐使用 <a href="https://valine.js.org/">Vline</a>，想对于上述的两个而言，它更加友好。至于接入方式，官方也给出了相应的 <a href="https://kveln.cn/post/qE678A4ce/">参考文档</a>。这里我针对官方的文档做一些补充说明以及踩坑的经验分享。</p>
+<h2 id="关于文档中的说明">关于文档中的说明</h2>
+<p>在官方提供的文档中有这么一处说明：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369031378.png" alt="" loading="lazy"><br>
+其中，<code>Valine.min.js</code> 的引入需要放在对应主题的 <code>post.ejs</code> 模板下。</p>
+<h2 id="关于leancloud的配置">关于LeanCloud的配置</h2>
+<h3 id="创建class">创建Class</h3>
+<p>评论会调用 <code>LeanCloud</code> 提供的数据接口，其中有个接口是获取评论总数的：<code>https://xxxx/1.1/classes/Comment</code>。调用这个接口的前提，是需要在 <code>数据存储 &gt; 结构化数据</code> 下手动创建一个名为 <code>Comment</code> 的class的，否则接口会报404，这个需要注意下：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369813288.png" alt="" loading="lazy"></p>
+<h3 id="创建应用">创建应用</h3>
+<p>创建应用时，可以选择创建区域:<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369444506.png" alt="" loading="lazy"><br>
+我这里选择的是 <code>华东</code>。之所以选择华东，是因为在华北创建完应用后，在调用接口时调不通，这可能跟我所处的区域有关。所以小伙伴们在创建完成之后，可以去 <code>设置 &gt; 应用凭证</code> 中，访问下提供的 <code>REST API 服务器地址</code> ，看看是不是可以调通，可以的话就没有问题。如果不行的话，建议切换下区域重新创建一个应用：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369984692.png" alt="" loading="lazy"></p>
+<h1 id="写在最后">写在最后</h1>
+<p>以上是我在使用 <code>Gridea + Vline</code> 搭建自己博客的时候所遇到的问题，希望对看到这篇文章的小伙伴有所帮助。<br>
+当前博客已部署，以后会陆续分享自己的学习笔记以及心得琐碎等等。感兴趣的小伙伴欢迎<a href="https://luhaifeng666.github.io/">戳~</a>。<br>
+现在快动起手来，快速搭建一个属于自己的天地吧~</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            <span id="comment-count"></span>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/">
+                  <h3 class="post-title">
+                    Webpack学习笔记一：一些基础知识
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+  <script type="text/javascript">
+    // 设置valine
+    new Valine({
+      av: AV,
+      el: '#vcomments',
+      count_el: '#comment-count',
+      appId: 'HlwrEhBsDstpVpKVMUMqyfBV-9Nh9j0Va',
+      appKey: 'Cs2jEIpcC6nXJFH8LsEak9Kh',
+      placeholder: '你说，我在听',
+      visitor: true,
+      // 设置Bilibili表情包地址
+      emojiCDN: '//i0.hdslb.com/bfs/emote/',
+      // 表情title和图片映射
+      emojiMaps: {
+        "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+        "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+        "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+        "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+        "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+        "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+        "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+        "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+        "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+        "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+        "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+        "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+        "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+        "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+        "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+        "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+        "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+        "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+        "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+        "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+        "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png"
+      }
+    })
+  </script>
+</html>

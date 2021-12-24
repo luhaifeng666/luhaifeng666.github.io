@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T17:11:21.436Z</updated>
+    <updated>2021-12-24T18:25:57.542Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,63 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[使用Gridea + Vline搭建属于自己的博客]]></title>
+        <id>https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/</id>
+        <link href="https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/">
+        </link>
+        <updated>2021-12-24T17:15:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>之前搭建博客都是通过 <code>vuepress</code> + <code>Github Pages</code> 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>之前搭建博客都是通过 <code>vuepress</code> + <code>Github Pages</code> 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）</p>
+<!-- more -->
+<h1 id="通过gridea快速搭建博客">通过Gridea快速搭建博客</h1>
+<pre><code>Gridea 是一个静态博客写作客户端，帮助你更容易地构建并管理博客或任何静态站点。
+</code></pre>
+<p>以上是 <a href="https://gridea.dev/">Gridea</a> 官方对这款博客客户端的描述。它到底有多容易呢？那我们就自己动手来试下吧~</p>
+<h2 id="简单两步完成博客搭建">简单两步，完成博客搭建</h2>
+<h3 id="第一步下载gridea客户端">第一步：下载Gridea客户端</h3>
+<p><code>Gridea</code> 客户端是使用 <code>Electron</code> 开发的，使用它之前，需要先去 <a href="https://gridea.dev/#started">官网下载</a>。官方提供了 <code>MacOS</code>, <code>Windows</code> 以及 <code>Linux</code> 三端的安装包，小伙伴们可以根据自己的需求自行下载~<br>
+<img src="https://luhaifeng666.github.io/post-images/1640367698849.jpg" alt="" loading="lazy"></p>
+<h3 id="第二步发布">第二步：发布</h3>
+<p>是的！你没有听错！下载完成后直接就可以进入发布流程了，是不是很快！<br>
+<code>Gridea</code> 提供了将博客部署到 <code>GitHub Pages</code>、<code>Coding Pages</code> 和通过 <code>SFTP</code> 的方式上传到自己的服务器的功能。官方提供了非常详细的Github Pages发布流程，这里不做赘述，<a href="https://gridea.dev/gridea-start/">请戳进来看吧~</a></p>
+<h2 id="一些可能需要注意的点">一些可能需要注意的点</h2>
+<p>经过上面两步的操作，相信各个小伙伴已经拥有了属于自己的博客~可喜可贺！在这里，我列举几个我遇到的问题，希望可以提供给遇到相同问题的小伙伴一些帮助：</p>
+<h4 id="问题1关于同步">问题1：关于同步</h4>
+<ul>
+<li>由于同步是将你的改动同步到 <code>GitHub Pages</code> 上的，由于现阶段国内访问Github会有长时间打不开页面，需要翻墙的情况，建议小伙伴们在长时间无法同步的情况下，尝试下翻墙同步，可能会稍好一些；</li>
+<li>我当前试用的 <code>Gridea</code> 的版本是 <code>0.9.2</code>，存在这样一个问题，在检测远程连接时，提示我连接成功，但是同步却一直都失败，无论是否开启翻墙，均是如此。官方在 <a href="https://github.com/getgridea/gridea/issues/890">#890</a> 这个issue中提供了一个解决方案，并给出了修复后的包的下载地址，我下载后试用并不理想（不排除是我本地网络环境的原因），但依旧可以作为一个解决方案提供给小伙伴们尝试下~</li>
+</ul>
+<h4 id="问题2关于主题">问题2：关于主题</h4>
+<p>目前我使用的是 <code>Simple</code> 主题，各方面使用情况都还不错，推荐大家使用这款。<br>
+当然，官方也提供了其他的 <a href="https://gridea.dev/themes">多款主题</a> 供小伙伴们食用，大家可以根据自己的喜好自行选择。<br>
+当然，如果有精力有兴趣的小伙伴儿们也可以尝试自己 <a href="https://gridea.dev/theme/">开发一个主题</a> ，毕竟自己动手，丰衣足食嘛~<br>
+至于我遇到的问题，是在我使用 <code>Notes</code> 这个主题的时候，发现在编辑完文章后，markdown中的代码区块内容在预览时表现正常，但是在同步到 <code>GitHub Pages</code> 之后，打开页面发现markdown中的代码区块没有正常渲染出来，大家在食用的时候需要留意下~</p>
+<h1 id="添加vline评论">添加Vline评论</h1>
+<p>现在已经有了自己的博客了，也有个地方可以记录自己的工作，学习，生活了，自然也不能少了让 <code>看官们</code> 留下自己足迹的地方~<br>
+我使用的 <code>Simple</code> 主题默认提供了两种发布评论的平台：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640368636573.jpg" alt="" loading="lazy"><br>
+这里我推荐使用 <a href="https://valine.js.org/">Vline</a>，想对于上述的两个而言，它更加友好。至于接入方式，官方也给出了相应的 <a href="https://kveln.cn/post/qE678A4ce/">参考文档</a>。这里我针对官方的文档做一些补充说明以及踩坑的经验分享。</p>
+<h2 id="关于文档中的说明">关于文档中的说明</h2>
+<p>在官方提供的文档中有这么一处说明：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369031378.png" alt="" loading="lazy"><br>
+其中，<code>Valine.min.js</code> 的引入需要放在对应主题的 <code>post.ejs</code> 模板下。</p>
+<h2 id="关于leancloud的配置">关于LeanCloud的配置</h2>
+<h3 id="创建class">创建Class</h3>
+<p>评论会调用 <code>LeanCloud</code> 提供的数据接口，其中有个接口是获取评论总数的：<code>https://xxxx/1.1/classes/Comment</code>。调用这个接口的前提，是需要在 <code>数据存储 &gt; 结构化数据</code> 下手动创建一个名为 <code>Comment</code> 的class的，否则接口会报404，这个需要注意下：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369813288.png" alt="" loading="lazy"></p>
+<h3 id="创建应用">创建应用</h3>
+<p>创建应用时，可以选择创建区域:<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369444506.png" alt="" loading="lazy"><br>
+我这里选择的是 <code>华东</code>。之所以选择华东，是因为在华北创建完应用后，在调用接口时调不通，这可能跟我所处的区域有关。所以小伙伴们在创建完成之后，可以去 <code>设置 &gt; 应用凭证</code> 中，访问下提供的 <code>REST API 服务器地址</code> ，看看是不是可以调通，可以的话就没有问题。如果不行的话，建议切换下区域重新创建一个应用：<br>
+<img src="https://luhaifeng666.github.io/post-images/1640369984692.png" alt="" loading="lazy"></p>
+<h1 id="写在最后">写在最后</h1>
+<p>以上是我在使用 <code>Gridea + Vline</code> 搭建自己博客的时候所遇到的问题，希望对看到这篇文章的小伙伴有所帮助。<br>
+当前博客已部署，以后会陆续分享自己的学习笔记以及心得琐碎等等。感兴趣的小伙伴欢迎<a href="https://luhaifeng666.github.io/">戳~</a>。<br>
+现在快动起手来，快速搭建一个属于自己的天地吧~</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Webpack学习笔记一：一些基础知识]]></title>
         <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/</id>
@@ -1434,294 +1491,6 @@ jobs:
 <p>本文是关于git actions的一次简单尝试，有兴趣的同学可以去参考<a href="https://docs.github.com/en/actions/learn-github-actions">git aciton官方文档</a>去做进一步研究~</p>
 <p>文中所述文档已部署，<a href="https://luhaifeng666.github.io/vue3-study/">欢迎戳</a>~</p>
 <p><a href="https://github.com/luhaifeng666/vue3-study">Git地址</a>, 欢迎⭐️交流~</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[通过Git Actions自动创建issues]]></title>
-        <id>https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/</id>
-        <link href="https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/">
-        </link>
-        <updated>2021-12-24T08:34:12.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
-<p>最近在刷LeetCode上的题，想着怎么着得搞个文档记录下题目、思路跟解法吧，刚好前阵子使用GitHub的<code>Actions</code>，结合 <code>vuepress</code> ，将文章自动部署到了GitHub的pages上。那不如也在GitHub上建个算法的文档呗。</p>
-<p>但是算法的解题方法跟思路不一定只有几个，不同语言的实现方式也是不尽相同的，既如此，那就针对不同的算法题创建对应的issue作为评论区，以供大佬们展示各自的骚操作，这样一来，岂不是美滋儿滋儿~</p>
-<figure data-type="image" tabindex="1"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d2092390eb6344468ebfd67edf032dac~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>但是手动创建这些个issues显然不够优雅，既然已经尝过 <code>Actions</code> 的甜头了，那这个活儿就交给它去做吧！</p>
-<p>（Actions过来下！来活儿了！）</p>
-<pre><code>注：本文主要分享如何利用Actions自动创建issues，关于如果自动部署文档的方法，具体可以参考我的上一篇文章：
-https://juejin.cn/post/7029247758582153252
-</code></pre>
-<h1 id="开始">开始</h1>
-<p>想要完成如题所述的功能，主要有两个步骤：</p>
-<pre><code>1. 创建issue
-2. 通过Actions，将创建issue的过程自动化
-</code></pre>
-<h2 id="创建issue">创建issue</h2>
-<p>这里创建issue的方式肯定不是手动去GitHub的项目下创建。</p>
-<div align="center">
-<figure data-type="image" tabindex="2"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ac99a913c4c9433db885416e5fe880f6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-</div>
-<p>这里推荐一个库：<code>octokit</code>。这个库提供了操作GitHub的能力，在这里，我们使用它来帮助我们创建issue。</p>
-<p>当然，它所提供的能力不只是可以操作GitHub，官方所给的描述如下：</p>
-<pre><code>The `octokit` package integrates the three main Octokit libraries
-1.  **API client** (REST API requests, GraphQL API queries, Authentication)
-2.  **App client** (GitHub App &amp; installations, Webhooks, OAuth)
-3.  **Action client** (Pre-authenticated API client for single repository)
-</code></pre>
-<p>有兴趣的小伙伴可以<a href="https://www.npmjs.com/package/octokit">戳链接</a>自行探究，这里不做过多赘述~</p>
-<h4 id="第一步老规矩既然要用到它那就先安装一把">第一步：老规矩，既然要用到它，那就先安装一把：</h4>
-<pre><code>yarn add -D octokit
-</code></pre>
-<h4 id="第二步新建创建issue的执行文件">第二步：新建创建issue的执行文件</h4>
-<p>将刚才安装的 <code>octokit</code> 引入进来，开始编写创建issue的逻辑。</p>
-<pre><code class="language-js">// utils/createIssues.js
-
-const { Octokit } = require(&quot;octokit&quot;)
-// 初始化，这里需要传入GitHub账号的token
-const octokit = new Octokit({ auth: 'your token' })
-
-octokit.rest.issues.create({
-  owner: &quot;your name&quot;, // GitHub账户名
-  repo: &quot;your project name&quot; // 项目名称
-  title: '删除排序数组中的重复项', // issue标题
-  body: '关于删除排序数组中的重复项的更多解法，欢迎在issue中讨论~' // issue描述
-})
-</code></pre>
-<p>初始化 <code>octokit</code> 的时候，需要GitHub账户的token，可以去账户设置中新建一个</p>
-<figure data-type="image" tabindex="3"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f211f33ab11a42e9a9c33e9d04266ace~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>文件创建完成后，在控制台中尝试运行下，看看是否已经可以创建issue了。<br>
-首先在 <code>package.json</code> 的 <code>scripts</code> 中添加 <code>create:issue</code> 命令</p>
-<pre><code>scripts: {
-  &quot;create:issue&quot;: &quot;node utils/createIssues.js&quot;
-}
-</code></pre>
-<p>然后执行</p>
-<pre><code>yarn create:issue
-</code></pre>
-<p>执行完脚本后，到GitHub相应的项目目录下，点开 <code>Issues</code> 选项：</p>
-<figure data-type="image" tabindex="4"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d0905d145ccf49febddc5c439380f401~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>当当~ 此时我们已经可以看到issue被成功创建！至此，我们第一个功能点就已经完成了！（撒花~）</p>
-<h2 id="通过actions将创建issue的过程自动化">通过Actions，将创建issue的过程自动化</h2>
-<p>现在，我们需要把创建issue的过程自动化。在这里，我们通过官方提供的<a href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action">创建Javascript的actions</a>的方式来完成这个功能。</p>
-<h4 id="第一步创建操作元数据文件">第一步：创建操作元数据文件</h4>
-<p>在项目根目录下，创建 <code>action.yml</code>文件：</p>
-<pre><code class="language-yml">name: 'GET TOKEN' # 名称
-description: 'Get secrets token' # 描述
-runs:
-  using: 'node12' # 指定在node12的环境中执行
-  main: 'utils/createIssues.js' # 指定需要执行的文件
-</code></pre>
-<h4 id="第二步新建action">第二步：新建Action</h4>
-<p>在GitHub项目中，选择 <code>Actions</code>， 新建一个workflow。在Actions界面，Git会提供一些模板供我们使用，这里我们选择默认的即可：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aef627edb4f24dd98ae35a18359c7994~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
-新建完成后，会默认在我们的项目下生成一个 <code>.github/workflows/blank.yml</code> 文件，用于配置脚本, 我们将其稍作修改：</p>
-<pre><code># action名称
-name: CREATE ISSUES
-
-# action执行时机
-on:
-  # 在push时执行
-  push:
-    # 分支指定为master
-    branches: [ master ]
-  # 在PR阶段执行
-  pull_request:
-    # 分支指定为master
-    branches: [ master ]
-# 执行的任务列表
-jobs:
-  build:
-    # 在ubuntu-latest平台执行
-    runs-on: ubuntu-latest
-
-    # 执行步骤
-    steps:
-      # 执行名称
-      - name: Checkout
-        # checkout代码
-        uses: actions/checkout@v2
-      - name: Install packages
-        # 安装包
-        run: npm install
-      - name: Create an issue
-        uses: ./ # 使用根目录下的action.yml
-</code></pre>
-<h4 id="第三步验证-发现问题">第三步：验证 &amp;&amp; 发现问题</h4>
-<p>action创建完成并提交后，我们切到GitHub的 <code>Actions</code> 选项，等待脚本执行结束，此时再切换到 <code>Issues</code> 选项，此时发现，issue并没有被成功创建！此时不禁张飞问号：</p>
-<div align="center">
-<figure data-type="image" tabindex="5"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89d447f78706427985cfeef6b2316ec8~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-</div>
-<p>原因是什么呢？我们点开控制台看下问题所在：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e58c1ae1d8a045168b124df5ed907fd6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
-简而言之，就是token已经失效了！</p>
-<p>那token为什么会失效呢？问题出在我们创建issue的 <code>utils/createIssues.js</code> 上。在这个文件里，我们初始化 <code>octokit</code> 时所传入的token是明文传入的，在上传执行action的时候，token会立即失效。</p>
-<h4 id="第四步解决问题">第四步：解决问题</h4>
-<p>不懂就问：那要怎么第三步中的问题呢？<br><br>
-答：既然问题出在明文传入token上，那咱们就不明文传入token呗！<br><br>
-不懂再问：那如何在 <code>utils/createIssue.js</code> 中以不明文的方式获取到token呢？<br><br>
-答：官方提供了一个工具包：<a href="https://github.com/actions/toolkit/tree/main/packages/core">@actions/core</a>。<br>
-通过这个包，我们可以获取到action中传过来的内容。</p>
-<h5 id="解决问题第一式老规矩既然要用它那我们就安装它">解决问题第一式：老规矩，既然要用它，那我们就安装它！</h5>
-<pre><code>yarn add -D @actions/core
-</code></pre>
-<h5 id="解决问题第二式修改action执行脚本">解决问题第二式：修改action执行脚本</h5>
-<p>既然说要通过action来获取token，那我们首先要让它抛出来才行。</p>
-<p>回到用户设置界面，我们重新生成一个token，并将这个token设置到 <strong>项目设置中的 <code>Secrets</code> 选项中</strong>:</p>
-<figure data-type="image" tabindex="6"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/796408d0d7db417a90d9b197b4fee579~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>之后对脚本文件稍作修改，加入 <code>with</code> 配置</p>
-<pre><code> # 省略前方好多代码...
-      - name: Create an issue
-        uses: ./ # 使用根目录下的action.yml
-        with:
-          token: ${{ secrets.TOKEN }} # 将TOKEN抛出
-</code></pre>
-<h5 id="解决问题第三式修改actionyml文件定义输入项用于接受token">解决问题第三式：修改action.yml文件，定义输入项，用于接受token</h5>
-<pre><code class="language-yml">name: 'GET TOKEN' # 名称
-description: 'Get secrets token' # 描述
-# 定义输入项
-inputs:
-  token:  # 输入项的名称
-    description: 'Get secrets token' # 输入项的描述
-    required: true # 输入项是否必须
-runs:
-  using: 'node12' # 指定在node12的环境中执行
-  main: 'utils/createIssues.js' # 指定需要执行的文件
-</code></pre>
-<h5 id="解决问题第四式设置token">解决问题第四式：设置token</h5>
-<p>在 <code>utils/createIssues.js</code> 文件中添加 <code>@actions/core</code> 的引用，并获取token：</p>
-<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;)
-const core = require('@actions/core')
-
-const auth = core.getInput('token')
-const octokit = new Octokit({ auth })
-
-octokit.rest.issues.create({
-  owner: &quot;your name&quot;, // GitHub账户名
-  repo: &quot;your project name&quot; // 项目名称
-  title: '删除排序数组中的重复项', // issue标题
-  body: '关于删除排序数组中的重复项的更多解法，欢迎在issue中讨论~' // issue描述
-})
-</code></pre>
-<p>而后提交修改项，再次查看GitHub中的 <code>Actions</code> 选项，发现脚本运行无误，且 <code>Issues</code> 中也已经出现了新建的issue。</p>
-<p>行文至此，功能完成已告一段落~</p>
-<h2 id="思考">思考</h2>
-<p>通过上面的操作，我们现在已经实现了自动创建issue的功能，但是功能还不够完美，主要还存在以下两个问题：</p>
-<pre><code>1. 每次更新完文档，我必须手动修改issue的title与body，来保证我创建issue的正确性，这显然是不行的；
-2. 每次重新执行，我如何保证issue没有被重复创建呢？
-</code></pre>
-<p>那该如何解决呢？</p>
-<h4 id="针对问题1">针对问题1:</h4>
-<p>既然不想手动，那就自动嘛~在 <code>docs/.vuepress/config.js</code> 中，我们可以获取到sidebar的配置，通过这个配置，我必然有方法可以获取到标题信息。</p>
-<p>在这里，我借助了一个库：<a href="https://npmmirror.com/package/markdown-to-ast">markdown-to-ast</a>。这个库可以将markdown文件内容转换成 <code>AST</code>,我可以借此获取到标题内容：</p>
-<pre><code class="language-js">const vuepressConfig = require(&quot;../docs/.vuepress/config&quot;)
-const fs = require(&quot;fs&quot;)
-const path = require(&quot;path&quot;)
-const { parse } = require(&quot;markdown-to-ast&quot;)
-
-const baseDir = '/notes/exercises/'
-// 获取习题文件
-const { themeConfig: { sidebar } } = vuepressConfig
-const exercisesSidebar = sidebar[`${baseDir}`]
-const exercisesFiles = exercisesSidebar.reduce((files, item) =&gt; {
- if ( item &amp;&amp; item.children ) {
-  files.push(...item.children)
- }
- return files
-}, [])
-// 获取标题与文件路径对应关系
-const docs = exercisesFiles.map(fileDir =&gt; {
- const content = fs.readFileSync(path.resolve(__dirname, '../', `docs${baseDir}${fileDir}`), {
-  encoding: 'utf-8'
- })
- const { children } = parse(content)
- const titleConfig = children.filter(ch =&gt; ch.type === 'Header' &amp;&amp; ch.depth === 1)
- let title = ''
- if (titleConfig &amp;&amp; titleConfig.length) title = titleConfig[0].raw.replace('# ', '')
- return {
-  title,
-  fileDir
- }
-})
-
-module.exports = { exercisesSidebar, exercisesFiles, docs }
-</code></pre>
-<p>之后我只需要在 <code>utils/createIssues.js</code> 中引入 <code>docs</code>，遍历获取 <code>title</code> 即可：</p>
-<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;);
-const core = require('@actions/core');
-const { docs } = require('./getAllDocs')
-
-const auth = core.getInput('token')
-const octokit = new Octokit({ auth })
-
-const titles = docs.filter(doc =&gt; doc.title)
-
-titles.forEach(title =&gt; {
- octokit.rest.issues.create({
-  owner: &quot;your name&quot;,
-  repo: &quot;your project name&quot;,
-  title,
-  body: `关于${title}的更多解法，欢迎在issue中讨论~`
- });
-})
-</code></pre>
-<h3 id="针对问题2">针对问题2：</h3>
-<p>那又该如何避免同名issue重复创建的问题呢？<br><br>
-如果我可以获取到当前已经被创建的活跃issues列表，然后做下筛选剔除，不就可以解决这个问题了么？<br><br>
-那我该如何获取到当前已创建的活跃issues呢？<br><br>
-答案是使用上文中我们提到的 <code>octokit</code> 库。它提供了获取活跃issues列表的方式：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/690a5da59beb4de8a799bf031bddca2a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
-我们再次对 <code>utils/createIssues.js</code> 文件做些修改：</p>
-<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;);
-const core = require('@actions/core');
-const { docs } = require('./getAllDocs')
-
-const auth = core.getInput('token')
-const octokit = new Octokit({ auth })
-
-// 定义项目通用参数
-const REPO_INFO = {
- owner: &quot;your name&quot;,
- repo: &quot;your project name&quot;
-}
-// 获取所有issues
-async function getAllIssues () {
- return await octokit.paginate(octokit.rest.issues.listForRepo, {
-  ...REPO_INFO,
-  per_page: 100,
- })
-}
-getAllIssues().then(data =&gt; {
- if (data &amp;&amp; data.length) {
-  let issuesList = data.map(issue =&gt; issue.title)
-  // 获取没有创建issue的标题
-  const titles = docs.filter(doc =&gt; !issuesList.includes(doc.title))
-  // 将没有创建issue的算法都创建对应的issue
-  titles.forEach(item =&gt; {
-   const { title } = item
-   octokit.rest.issues.create({
-    ...REPO_INFO,
-    title,
-    body: `关于${title}的更多解法，欢迎在issue中讨论~`
-   });
-  })
- }
-}).catch(err =&gt; { console.log(err) })
-</code></pre>
-<p>这样一来，我们就可以过滤到已经创建过的issues，完美解决这个问题~~</p>
-<div align="center">
-<figure data-type="image" tabindex="7"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/14fb25ef883248ffac27d7f59e1853a2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-</div>
-<h1 id="结语">结语</h1>
-<p>行文至此，我们已经完成了通过GitHub Actions自动创建issues的功能。</p>
-<p>有关于此文的项目跟源码，感兴趣的小伙伴可以<a href="https://github.com/luhaifeng666/arithmetic-practice">戳这里~</a>。欢迎小伙伴儿们star，并在issues中留下自己的骚操作~</p>
-<p>此文中所提到的文档地址也已部署，可以<a href="https://luhaifeng666.github.io/arithmetic-practice/">戳这里~</a></p>
-<h1 id="参考文档-视频">参考文档 &amp;&amp; 视频</h1>
-<p><a href="https://www.bilibili.com/video/BV1F34y1U7JT">崔大的教学视频~</a></p>
-<p><a href="https://juejin.cn/post/7029247758582153252">利用Git Actions部署vuepress</a></p>
-<p><a href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action">创建Javascript的actions</a></p>
-<p><a href="https://www.npmjs.com/package/octokit">octokit</a></p>
-<p><a href="https://github.com/actions/toolkit/tree/main/packages/core">@actions/core</a></p>
-<p><a href="https://npmmirror.com/package/markdown-to-ast">markdown-to-ast</a></p>
 ]]></content>
     </entry>
 </feed>
