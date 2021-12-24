@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Webpack学习笔记四：eslint语法检查 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="在上一节文章末尾，我们提出了一个问题，我们要如何控制代码风格的统一，避免一些低级错误。这一节我们就来介绍下解决这两个问题的方法：eslint语法检查。
+背景
+在日常开发过程中，项目一般都是多人合作。为了保证代码的统一和规范，我们需要借助es..." />
+    <meta name="keywords" content="学习" />
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Webpack学习笔记四：eslint语法检查</h2>
+            <div class="post-date">2021-12-24</div>
+            
+              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha.jpeg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>在<a href="https://juejin.cn/post/6903910160184868878">上一节</a>文章末尾，我们提出了一个问题，<strong>我们要如何控制代码风格的统一，避免一些低级错误</strong>。这一节我们就来介绍下解决这两个问题的方法：<strong>eslint语法检查</strong>。</p>
+<h1 id="背景">背景</h1>
+<p>在日常开发过程中，项目一般都是多人合作。为了保证代码的统一和规范，我们需要借助eslint去完成。在此过程中，我们需要使用到<code>eslint-loader</code> 以及 <code>eslint</code>。</p>
+<h3 id="安装">安装</h3>
+<pre><code class="language-js">yarn add -D eslint eslint-loader
+</code></pre>
+<h3 id="基本配置">基本配置</h3>
+<p>安装完成后，在webpack.config.js中添加如下配置：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+        test: /\.js$/,
+        exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
+        loader: 'eslint-loader',
+        options: {}
+    }
+  ]
+}
+/* ... */
+</code></pre>
+<p>配置完成后，eslint还需要知道具体的规则是什么。此时，我们需要在 <code>package.json</code> 文件中配置 <code>eslintConfig</code> 属性，或者在根目录下添加 <code>.eslintrc</code> 文件来配置eslint的规则。<br><br>
+但是手动配置规则显然比较麻烦，此时我们可以借助第三方的工具来完成这件事情。这里我们使用 <code>airbnb</code> 的配置。<br><br>
+想要使用airbnb的eslint规则，我们需要安装几个插件：<code>eslint-config-arbnb-base</code> 与 <code>eslint-plugin-import</code>。</p>
+<pre><code class="language-js">yarn add -D eslint-config-airbnb-base  eslint-plugin-import
+</code></pre>
+<p>之后在 <code>package.json</code> 中添加如下配置：</p>
+<pre><code class="language-js">&quot;eslintConfig&quot;: {
+  &quot;extends&quot;: &quot;airbnb-base&quot;
+}
+</code></pre>
+<p>或者在 <code>.eslintrc</code> 文件中添加：</p>
+<pre><code class="language-js"> &quot;extends&quot;: &quot;airbnb-base&quot;
+</code></pre>
+<p>这样就会继承airbnb的eslint配置。再次打包或者运行时，控制台就会给出相应的报错提示：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d666da14a1b644da8d910166ffd750a3~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<blockquote>
+<p>我们也可以通过添加 <code>VScode</code>, 或者小伙伴们所用的其他IDE的 <code>ESlint插件</code> 去辅助我们日常的开发。在这里，笔者使用的是 <code>VScode</code>，如果有跟笔者一样使用这个IDE的小伙伴，推荐安装这个插件：</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9eae5c1e455844d3b3ab03fdefe8bd0f~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>安装并启用这个插件之后，我们就可以在编辑器中看到eslint给出的相应提示：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c7187fa4a4f9473d801b9d3d439709bb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>当我们将光标移动至波浪线上时，在弹出的窗口中点击 <code>Quick Fix</code>选项后，插件也会提供一些快速修复的方法, 使得修复更加便捷：</p>
+<figure data-type="image" tabindex="3"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/438ed3f9940c41abad755558f8411fbb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+</blockquote>
+<h3 id="自动修复配置">自动修复配置</h3>
+<p>如果我们需要自动修复这些问题，我们可以添加一项配置：</p>
+<pre><code class="language-js">module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
+      loader: 'eslint-loader',
+      options: {
+          fix: true // 自动修复一些eslint问题
+      }
+    }
+  ]
+}
+</code></pre>
+<p>这样则会自动修复一些问题。但是不是所有的问题都会被自动修复，有一些仍需要手动修复：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/96d4612c60024378a027b819b8124953~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+此时我们只要根据给出的提示逐一修复即可。</p>
+<h3 id="配合babel-loader一起使用">配合babel-loader一起使用</h3>
+<p>行文至此，我们已经知道了 <code>ESlint</code> 怎么去使用。那么在日常开发中，如果先对所写的代码做过检查，然后再使用 <code>babel-loader</code> 转换一下，岂不是美滋滋？（手动滑稽）<br><br>
+那如何才能与上一节中提到的 <code>babel-loader</code> 一起去使用呢？当然是一起写到loader配置里就好啦~这里我们需要注意一点：<strong>loader的执行顺序是自左向右，自下向上的，简而言之就是按照从后往前的顺序执行</strong>。所以如果我们需要先检查代码，之后再对代码打包的话，那么 <code>eslint-loader</code> 需要配置在 <code>babel-loader</code> 之后：</p>
+<pre><code class="language-js">// 这里由于都是匹配的js文件，所以我们将两个loader写在一起
+// 注意写法的改变，原先直接是写的loader，现在改为use数组的形式
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/,
+      use: [
+      	// 使用 babel-loader
+        {
+          loader: 'babel-loader',
+          // loader的相关配置
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        }, 
+        // 使用 eslint-loader, 配置写在 babel-loader之后，优先执行
+        {
+          loader: 'eslint-loader',
+          options: {
+            fix: true,
+          },
+        },
+      ],
+    },
+  ],
+},
+</code></pre>
+<p>配置完成后，我们就可以实现先做代码检查，后进行语法转换啦~ <br></p>
+<h1 id="预告">预告</h1>
+<p>结合上一节的内容，我们介绍了webpack在对js文件做处理时的一些基本操作，包括 <code>语法转换</code> 以及 <code>语法检查</code>。介绍完了js，在下一章节中，我们一起来看下webpack在处理css文件的时候又会做哪些基本操作呢？拭目以待吧~</p>
+<figure data-type="image" tabindex="4"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd370ca53e2c47eeb502d251080d7f90~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-wu-da-bao-css-wen-jian/">
+                  <h3 class="post-title">
+                    Webpack学习笔记五：打包css文件
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

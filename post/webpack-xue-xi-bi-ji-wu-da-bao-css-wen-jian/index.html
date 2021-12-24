@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Webpack学习笔记五：打包css文件 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="上两节我们了解了webpack是如何打包js文件的，以及在打包js文件过程中还做了兼容性处理和语法检查的操作。这一节我们来看下webpack是如何处理css文件的。
+我们知道，webpack只能识别js的内容，显然直接让webpack识别c..." />
+    <meta name="keywords" content="学习" />
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Webpack学习笔记五：打包css文件</h2>
+            <div class="post-date">2021-12-24</div>
+            
+              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/webpack-xue-xi-bi-ji-wu-da-bao-css-wen-jian.jpeg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>上两节我们了解了webpack是如何打包js文件的，以及在打包js文件过程中还做了兼容性处理和语法检查的操作。这一节我们来看下webpack是如何处理css文件的。<br><br>
+我们知道，webpack只能识别js的内容，显然直接让webpack识别css文件是不可行的。那要如何将css文件中的内容转换成webpack可以识别的js内容呢？这里我们又需要借助“翻译官” <code>loader</code> 的帮助了。<br><br>
+要想将css转换成js，我们需要用到两个loader：<code>style-loader</code> 以及 <code>css-loader</code>。我们先来简单看下这两个loader的作用：</p>
+<blockquote>
+<p>style-loader：生成style标签 ，将js中的css内容写入style标签中，并将其插入head标签中。<br><br>
+css-loader：将css内容变成 <code>commonjs</code> 模块加载到js中，里面的内容是样式字符串。</p>
+</blockquote>
+<h1 id="安装">安装</h1>
+<pre><code class="language-js">yarn add -D style-loader css-loader
+</code></pre>
+<h1 id="使用">使用</h1>
+<p>在上一节中，我们了解到loader的执行是有顺序的，即<strong>按照从后往前的配置顺序执行</strong>。根据上面对两个loader的描述，我们需要先通过 <code>css-loader</code> 将css内容转换成js，然后通过 <code>style-loader</code> 将js中的css内容写入到style标签中。所以loader的顺序应该是 <code>css-loader</code> 先于 <code>style-loader</code> 执行。因此，我们需要在 <code>webpack.config.js</code> 中添加的配置如下：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+
+module.exports = {
+  // 入口文件
+  entry: './src/index.js',
+  // 输出
+  output: {
+    filename: '[name].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  // loader配置
+  module: {
+    rules: [
+      {
+        test: /\.css$/, // 匹配以css结尾的文件
+        // 使用哪些loader包处理，执行顺序是从后往前
+        use: [
+          // 生成style标签，将js中的样式资源写入其中，并添加到head标签中
+          'style-loader',
+          // 将css的内容变成commonjs模块加载到js中，里面的内容是样式字符串
+          'css-loader'
+        ]
+      }
+    ]
+  },
+  // 插件
+  plugins: [],
+  // 模式 development / production
+  mode: 'development'
+}
+</code></pre>
+<p>配置完成后，我们先准备一个简单的css文件，保存在 <code>src/css/index.css</code>中：</p>
+<pre><code class="language-css">html, body {
+  padding: 0;
+  margin: 0;
+  background: #ff5512;
+}
+</code></pre>
+<p>然后在入口 <code>index.js</code> 文件中引入 <code>index.css</code> 文件，之后执行打包操作。在打包生成的js文件中，我们就可以看到 <code>index.css</code> 中的内容：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/db759eb2c3bf4db4b38563e9a3f2680b~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+之后，我们新建一个 <code>index.html</code> 文件，将打包之后的js文件引入页面，即可以看到样式生效。</p>
+<h1 id="sass-loader">sass-loader</h1>
+<p>在现阶段项目的开发过程中，我们经常会用到诸如 <code>sass</code>、<code>less</code>、<code>stylus</code>等等的 <code>css预处理器</code>。那应该如何让webpack可以识别出我们使用这些 <code>css预处理器</code> 写出的css代码呢？<br><br>
+其实也并不复杂，基本的思路就是<strong>使用对应 <code>css预处理器</code> 的 <code>loader</code>，将代码转换为普通的css代码，然后再通过 <code>css-loader</code> 与 <code>style-loader</code> 将css转换成js代码，并插入到页面的style标签中去。</strong><br><br>
+本文中以 <code>sass</code> 为例。想要将 <code>sass</code> 代码转换为普通的css代码，我们需要安装两个工具：</p>
+<pre><code class="language-js">yarn add -D sass sass-loader
+</code></pre>
+<p>之后只需要在 <code>webpack.config.js</code> 文件中加入相应的loader配置，并将文件匹配的正则调整下即可：</p>
+<pre><code class="language-js">/* ... */
+// loader配置
+module: {
+  rules: [
+    {
+      test: /\.s[ac]ss$/, // 匹配以.scss或者.sass结尾的文件
+      // 使用哪些loader包处理，执行顺序是从后往前
+      use: [
+        // 生成style标签，将js中的样式资源写入其中，并添加到head标签中
+        'style-loader',
+        // 将css的内容变成commonjs模块加载到js中，里面的内容是样式字符串
+        'css-loader',
+        // 将使用sass编写的代码转换为普通的css代码 
+        'sass-loader'
+      ]
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>修改完配置后，我们将 <code>index.css</code> 文件修改为 <code>index.scss</code>，并在其中加入sass的语法：</p>
+<pre><code class="language-css">html, body {
+  padding: 0;
+  margin: 0;
+  background: #ff5512;
+  div {
+    background: blue
+  }
+}
+</code></pre>
+<p>然后运行打包命令，打开打包后的js文件，我们可以看到sass的内容会被转换为普通的css内容：<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/af9c3a2e6a724c1094fa9048b93a37b2~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h1 id="预告">预告</h1>
+<p>这一节我们知道了在webpack中如何对css文件做处理，以及在使用 <code>css预处理器</code> 时如何对其内容做相应的转换。<br><br>
+但是css的内容在转换过后，依旧存在于js文件中。随着我们项目开发的推进，打包出来的js文件会愈发庞大。除此之外，针对于不同平台以及不同设备，我们所写的css代码也需要做相应的兼容性处理。<br><br>
+针对以上的问题，我们下节一起来看下如何将js中的css代码提取成单独的文件，并对其做相应的兼容性与代码压缩处理。敬请期待~</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/">
+                  <h3 class="post-title">
+                    Webpack学习笔记六：css兼容性处理以及文件提取
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T07:13:19.742Z</updated>
+    <updated>2021-12-24T09:00:18.106Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -11,394 +11,1714 @@
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
     <entry>
-        <title type="html"><![CDATA[从零开始创建属于自己的脚手架工具]]></title>
-        <id>https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/</id>
-        <link href="https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/">
+        <title type="html"><![CDATA[Webpack学习笔记一：一些基础知识]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/">
         </link>
-        <updated>2021-12-24T05:28:18.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
-<p>前段时间接到个需求，需要开发一个业务组件的包提供给业务组的小伙伴们去用。在此之前也开发过类似的包，除却包的作用不同之外，有些内容基本是大差不差的。比如git commit的规范，一些必备的诸如 <code>src/index.js</code> 的文件等等。</p>
-<p>如果要新建一个包的工程，诸如上述所说的文件大多会去既有的工程中拷贝一份过来修修改改，继而再次基础上完成接下来的开发。等到下一次有新的类似需求来的时候，周而复始。。。Orz</p>
-<p>那既然如此，我为啥不去搞一个脚手架工具去把这些人工操作的事情自动化掉呢~</p>
-<pre><code>常言道：临渊羡鱼，不如...退回去自己织个网，干！
+        <updated>2021-12-24T08:44:20.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
+<p>在日常开发过程中，相信大家都会使用到脚手架，比如 <code>vue-cli</code> 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 <code>webpack</code> 。尤其在公司的技术栈日趋稳定之后，我们手动配置 <code>webpack</code> 的机会就越来越少，我就是如此...Orz。所以借此机会，我决定再重头学习一遍这个熟悉而又有点陌生的工具，并将笔记做一个梳理，希望对同样有此感触，或者想学习 <code>webpack</code> 的小伙伴们有所帮助~</p>
+<p>此处主子镇楼~</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/456b7108fbd64ed8b270b7287cb4b364~tplv-k3u1fbpfcp-watermark.awebp" alt="主子" loading="lazy"></figure>
+<blockquote>
+<p>本章节及后面的章节使用的webpack及webpack-cli的版本如下：<br><br>
+<code>&quot;webpack&quot;: &quot;4.41.6&quot;</code> <br><br>
+<code>&quot;webpack-cli&quot;: &quot;3.3.11&quot;</code></p>
+</blockquote>
+<p>在开始学习<code>webpack</code>之前，我们先来了解一下与之相关的一些基础知识。</p>
+<h1 id="构建工具的概念">构建工具的概念</h1>
+<p>通俗点来说，构建工具就是包含一系列小工具的大工具。<br><br>
+我们来举个🌰：比如我们需要将less、sass等css预处理器写的代码编译成正常的css代码，则需要相应的编译工具；而需要将ES6+的代码转换为兼容性更高的ES5的代码，也需要相应的编译工具。而将诸如此类的小工具包含起来的大工具，就叫 <code>构建工具</code> (比如我们接下来要学习的 <code>webpack</code> 就是构建工具)。在构建工具中,我们可以处理所有的这些操作。</p>
+<h1 id="静态模块打包器的概念">静态模块打包器的概念</h1>
+<p>这个概念里主要分为两个小的概念，即 <code>静态模块</code> 与 <code>打包</code>。<br><br>
+我们来看下如下代码：</p>
+<pre><code class="language-js">// main.js
+import $ from 'Jquery'
+import './less/common.less'
 </code></pre>
-<h1 id="准备工作">准备工作</h1>
-<p>简单三步做好准备工作~</p>
-<pre><code>第一步：注册一个npm的账号，用于后面发包
-
-第二步：mkdir cli-tool &amp;&amp; cd cli-tool &amp;&amp; npm init -y
-
-第三步：之后在 `package.json` 文件中填入一些基本的信息即可
-</code></pre>
-<pre><code class="language-json">{
-  &quot;name&quot;: &quot;cli-tool&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;A tool for cli creation&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;scripts&quot;: {
-    &quot;pub:beta&quot;: &quot;npm publish --tag=beta&quot;,
-    &quot;pub&quot;: &quot;npm publish&quot;
-  },
-  &quot;publishConfig&quot;: {
-    &quot;registry&quot;: &quot;https://registry.npmjs.org/&quot;
-  },
-  &quot;keywords&quot;: [
-    &quot;create&quot;,
-    &quot;cli&quot;
-  ],
-  &quot;author&quot;: &quot;your name&quot;,
-  &quot;license&quot;: &quot;ISC&quot;
-}
-</code></pre>
-<h1 id="开始造轮子">开始造轮子</h1>
-<h2 id="第一步定义命令">第一步：定义命令</h2>
-<p>相信大家都用过脚手架，脚手架工具一般都会提供相应的脚本命令以完成一些操作。比如查看版本号的 <code>--version</code>, 查看帮助信息的 <code>--help</code> 等等。在这一步骤中，我们也先来定义下属于我们自己脚手架的命令。</p>
-<h3 id="创建脚本文件">创建脚本文件</h3>
-<p>首先，我们在项目的根目录下创建 <code>bin</code> 目录，然后在该文件夹下创建定义脚本的文件 <code>ct.js</code>。创建完成后，在 <code>package.json</code> 文件中定义命令对应的文件：</p>
-<pre><code class="language-json">{
-  // ...
-  &quot;bin&quot;: {
-    &quot;ct&quot;: &quot;bin/ct.js&quot;
-  }
-}
-</code></pre>
-<p>其中，<code>ct</code> 指定了我们日后在使用脚手架时所需要输入的命令，<code>bin/ct.js</code> 指定输入命令后所执行的脚本文件路径。</p>
-<h3 id="编写脚本">编写脚本</h3>
-<p>我们在脚本中定义以下两个基本的命令：</p>
-<pre><code>1. 用于查看版本信息的命令：--version/-v
-2. 用于创建项目的命令：--create/-c
-</code></pre>
-<pre><code class="language-js">#! /usr/bin/env node
-
-const process = require('process')
-const packageJson = require('../package.json')
-
-/*
-* 接收命令行传过来的指令参数
-* 由于第一第二个为path信息，我们用不到，所以从第三个开始取
-*/
-const argvs = process.argv.slice(2)
-
-switch (argvs[0] || '-c') {
-    /** 查看当前插件版本 */
-    case '-v':
-    case '--version':
-      console.log(`v${packageJson.version}`)
-      break
-    /** 创建项目 */
-    case '-c':
-    case '--create':
-      console.log('Create project')
-      break
-}
-</code></pre>
-<p>编写完成后，如果想要在命令行中进行验证，此时我们可以在命令行中输入以下命令：</p>
-<pre><code>npm link
-</code></pre>
-<p>然后在命令行中输入</p>
-<pre><code>ct -v
-</code></pre>
-<p>之后我们便可以在命令行工具中看到打印出的版本信息了：</p>
-<figure data-type="image" tabindex="1"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/64ceba3fbadc4f4abe059babe25415a2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>到这里，我们基本的命令定义环节就完成了。</p>
-<h2 id="第二步实现项目创建逻辑">第二步：实现项目创建逻辑</h2>
-<p>接下来我们就要开始创建项目了。在开始实现具体逻辑之前，我们可以先捋一下可能会经历哪些步骤：</p>
-<pre><code>第一步：创建项目
-第二步：创建项目所需基本文件以及文件夹。比如 package.json 文件，src 目录等
-第三步：创建完成后，跳转到对应的目录下执行安装步骤
-</code></pre>
-<p>基于以上的几个步骤，我们来实现具体的逻辑。</p>
-<h3 id="创建项目">创建项目</h3>
-<p>首先，我们在 <code>src/create</code> 路径下，创建 <code>index.js</code> 文件，用于编写具体的创建逻辑。</p>
-<pre><code class="language-js">module.exports.run = () =&gt; {}
-</code></pre>
-<p>之后，我们在 <code>bin/ct.js</code> 文件中引入，并在执行 <code>-c/--create</code> 时调用这个方法：</p>
-<pre><code class="language-js">const { run } = require('../src/create/index')
-
-// ....省略好多好多代码
-
-/** 创建包项目 */
-case '-c':
-case '--create':
-  run()
-  break
-
-// ....省略好多好多代码
-</code></pre>
-<p>参照 <code>vue-cli</code> 的模式，在创建项目的时候，我们可以通过 <code>交互式命令</code> 的方式让创建的过程更加友好。这里我们会使用到一个包：<a href="https://www.npmjs.com/package/inquirer">inquirer</a>。通过它我们可以定义交互式命令。</p>
-<p>首先，我们在本地对其进行安装</p>
-<pre><code>yarn add -D inquirer
-</code></pre>
-<p>之后，我们在 <code>src/constants</code> 目录下，创建 <code>questions.js</code>，用于定义具体的步骤：</p>
-<pre><code class="language-js">/**
- * 定义交互式命令行的问题
- */
-const DEFAULT_QUESTIONS = [{
-  type: 'input',
-  name: 'PROJECT_NAME',
-  message: 'Project name:',
-  validate: function (name) {
-    const done = this.async()
-    // 如果目录已经存在，提示修改目录名称
-    if (['', null, undefined].includes(name)) {
-      done('Please enter the project name!', true)
-      return
-    }
-    if (fs.existsSync(name)) {
-      done(`The directory &quot;${name}&quot; is exist!!Please reset the dirname.`, true)
-      return
-    }
-    done(null, true)
-  }
-}, {
-  type: 'input',
-  name: 'PROJECT_DESCRIPTION',
-  message: 'Project description:'
-}, {
-  type: 'input',
-  name: 'PROJECT_AUTHOR',
-  message: 'Project author:'
-}]
-
-module.exports = { DEFAULT_QUESTIONS }
-</code></pre>
-<p>这里对用到的配置项做下简单的解释，关于更多其他的配置项，有兴趣的小伙伴可以<a href="https://www.npmjs.com/package/inquirer#examples">戳</a>：</p>
-<pre><code> type ${string} 交互类型
- name ${string} 用来接收用户输入内容的key
- message ${string} 交互信息
- validate ${function} 校验方法
-</code></pre>
-<p>创建完成后，在 <code>src/create/index.js</code> 中引入 <code>inquirer</code> 以及上述定义的交互步骤：</p>
-<pre><code class="language-js">const inquirer = require('inquirer')
-const { DEFAULT_QUESTIONS } = require('../constants/questions')
-
-module.exports.run = async () =&gt; {
-  try {
-    // 获取输入的信息
-    const answers = await inquirer.prompt(DEFAULT_QUESTIONS)
-  } catch (error) {
-    console.log(chalk.red(`Create objet defeat! The error message is: ${error}`))
-  }
-}
-</code></pre>
-<p>此时，我们在控制台中执行 <code>ct -c</code> 命令时，便可以看到交互式的输入界面：</p>
-<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/be16805e94dd4db7a1460e67f9a709cb~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>输入完成后，我们将 <code>answers</code> 输出到控制台：</p>
-<figure data-type="image" tabindex="3"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f876a4cdd8454452b748190157a7fb17~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>结果是我们输入的内容，对应的key是我们在自定义问题时设置的name属性。我们可以针对输入的 <code>PROJECT_NAME</code> 属性，创建对应的项目文件夹。</p>
-<p>我们可以通过nodejs中提供的 <code>fs.mkdir</code> 的方式来创建文件夹，这里我推荐给大家一个谷歌开源的库：<a href="https://www.npmjs.com/package/zx">zx</a>。这个库封装了一系列的shell命令，以便让我们可以像在控制台中一样使用命令：</p>
-<pre><code>yarn add -D zx
-</code></pre>
-<p>回到 <code>src/create/index.js</code> 文件，我们在其中引入 <code>zx</code>，并通过它创建我们的项目文件夹。<strong>注意：在使用zx时，需要在文件顶部指明 <code>#!/usr/bin/env zx</code></strong>：</p>
-<pre><code class="language-js">#!/usr/bin/env zx
-// ....省略好多好多代码
-
-const answers = await inquirer.prompt(questions)
-// 创建新的目录
-await $`mkdir ${answers.PROJECT_NAME}`
-
-// ....省略好多好多代码
-</code></pre>
-<h3 id="创建常用的文件">创建常用的文件</h3>
-<p>在开始这个步骤前，我们可以先思考下，在新建一个项目的时候，比较常用的文件可能会有哪些？相信小伙伴们的心里都有自己的答案。</p>
-<p>在这里，我将创建包括 <code>package.json</code>、<code>.gitignore</code>、<code>src/index.js</code> 等文件，并事先将文件内容模板定义在 <code>src/create/constants/defaultInit.js</code>中：</p>
-<pre><code class="language-js">// 定义index.js内容
-const INDEX_CONTENT = {
-    filename: 'src/index.js',
-    content: ''
-}
-// 定义package.json内容
-const PACKAGE_CONTENT = {
-    filename: 'package.json',
-    content: JSON.stringify({
-        &quot;version&quot;: &quot;1.0.0&quot;,
-        &quot;main&quot;: &quot;index.js&quot;,
-        &quot;scripts&quot;: {
-            &quot;ca&quot;: &quot;git add -A &amp;&amp; git-cz -av&quot;,
-            &quot;commit&quot;: &quot;git-cz&quot;
-        },
-        &quot;keywords&quot;: [],
-        &quot;license&quot;: &quot;ISC&quot;,
-        &quot;devDependencies&quot;: {
-            &quot;husky&quot;: &quot;^5.0.9&quot;,
-            &quot;commitizen&quot;: &quot;^4.2.3&quot;,
-            &quot;cz-conventional-changelog&quot;: &quot;^3.3.0&quot;,
-            &quot;lint-staged&quot;: &quot;^10.5.4&quot;
-        }
-    })
-}
-
-// 定义.czrc内容
-const CZRC_CONTENT = {
-    filename: '.czrc',
-    content: '{ &quot;path&quot;: &quot;cz-conventional-changelog&quot; }'
-}
-// 定义.huskyrc内容
-const HUSKYRC_CONTENT = {
-    filename: '.huskyrc.yml',
-    content: `hooks:
-      pre-commit: lint-staged
-      commit-msg: 'commitlint -E HUSKY_GIT_PARAMS'
-    `
-}
-// 定义.commitlintrc内容
-const COMMITLINTRC_CONTENT = {
-    filename: '.commitlintrc.yml',
-    content: `extends:
-      - '@commitlint/config-conventional'
-    `
-}
-// 定义.lintstagedrc内容
-const LINTSTAGEDRC_CONTENT = {
-    filename: '.lintstagedrc.yml',
-    content: `'**/*.{js, jsx, vue}':
-      - 'eslint --fix'
-      - 'git add'
-    '**/*.{less, md}':
-      - 'prettier --write'
-      - 'git add'
-    `
-}
-
-// 定义.gitignore
-const GIT_IGNORE_CONTENT = {
-    filename: '.gitignore',
-    content: '/node_modules'
-}
-
-module.exports = {
-    INDEX_CONTENT,
-    PACKAGE_CONTENT,
-    CZRC_CONTENT,
-    HUSKYRC_CONTENT,
-    COMMITLINTRC_CONTENT,
-    LINTSTAGEDRC_CONTENT,
-    GIT_IGNORE_CONTENT
-}
-</code></pre>
-<p>而后，在 <code>src/create</code> 目录下创建 <code>default.js</code>，并将文件模板引入，编写创建文件的逻辑。该文件抛出一个方法，接受上一步骤中的问题答案，并依此将文件填入对应的路径中。话不多说，上代码：</p>
-<pre><code class="language-js">#!/usr/bin/env zx
-
-require('zx/globals')
-const {
-  INDEX_CONTENT,
-  PACKAGE_CONTENT,
-  CZRC_CONTENT,
-  HUSKYRC_CONTENT,
-  COMMITLINTRC_CONTENT,
-  LINTSTAGEDRC_CONTENT,
-  GIT_IGNORE_CONTENT
-} = require('../../constants/defaultInit')
-
-/**
- * 复制template目录下的所有文件到指定目录
- * @param {Object} answers 输入的信息
- */
-module.exports = (answers) =&gt; {
-    const { PROJECT_NAME } = answers
-    const baseDir = `${process.cwd()}/${PROJECT_NAME}`
-    // 创建src目录，并创建index.js文件
-    fs.mkdir(`${baseDir}/src`, { recursive: true }, err =&gt; {
-      if (err) {
-        console.log({err})
-        return
-      }
-      // 创建文件
-      const files = [
-        INDEX_CONTENT,
-        PACKAGE_CONTENT,
-        CZRC_CONTENT,
-        HUSKYRC_CONTENT,
-        COMMITLINTRC_CONTENT,
-        LINTSTAGEDRC_CONTENT,
-        GIT_IGNORE_CONTENT
-      ]
-      files.forEach(file =&gt; {
-        const { filename, content } = file
-        let fileContent = content
-        // 如果是package.json，则填入相应的信息
-        if (filename === 'package.json') {
-          const { PROJECT_NAME, PROJECT_DESCRIPTION, PROJECT_AUTHOR } = answers
-          const packageContent = {
-            name: PROJECT_NAME,
-            author: PROJECT_AUTHOR,
-            description: PROJECT_DESCRIPTION,
-            ...JSON.parse(content)
-          }
-          fileContent = JSON.stringify(packageContent, null, '\t')
-        }
-        fs.writeFile(`${baseDir}/${file.filename}`, fileContent, {
-          encoding: 'utf-8'
-        }, err =&gt; {
-          err &amp;&amp; console.log({ type: 'Create index.js failed: ', err })
-        })
-      })
-    })
-}
-</code></pre>
-<p>再次回到 <code>scr/create/index.js</code> 文件中，将该方法引入并执行：</p>
-<pre><code class="language-js">const initObject = require('../utils/default')
-
-// ....省略好多好多代码
-
-// 获取输入的信息
-const answers = await inquirer.prompt(questions)
-// 创建新的目录
-await $`mkdir ${answers.PROJECT_NAME}`
-// 创建文件
-await initObject(answers)
-
-// ....省略好多好多代码
-</code></pre>
-<h3 id="跳转到对应的目录执行安装操作">跳转到对应的目录，执行安装操作</h3>
-<p>这一步就很简单了，只需要跳转到我们创建好的目录下，并安装所需的包即可：</p>
-<pre><code class="language-js">// src/create/index.js
-
-// ....省略好多好多代码
-
-// 获取输入的信息
-const answers = await inquirer.prompt(questions)
-// 创建新的目录
-await $`mkdir ${answers.PROJECT_NAME}`
-// 创建文件
-await initObject(answers)
-// 跳转至目录
-cd(dirName)
-// 执行安装命令
-await $`yarn`
-
-// ....省略好多好多代码
-</code></pre>
-<p>至此，所有的基本逻辑就都完成啦~</p>
-<h2 id="第三步发布这个工具到npm">第三步：发布这个工具到npm</h2>
-<p>完成编写后，我们直接执行事先设置好的 <code>pub</code> 命令发布即可。</p>
-<h1 id="扩展阅读">扩展阅读</h1>
-<h2 id="关于命令解析">关于命令解析</h2>
-<p>本文中我们通过 <code>process.argv</code> 来解析输入的命令，如果是简单的项目还好，要是后续脚手架功能日益复杂，诸多命令若仍需要通过这种方式去解析未免有些繁琐了，这里推荐大家一个第三方包：<a href="https://www.npmjs.com/package/commander">commander</a>，它可以让这个过程更加简便一些，并且可以通过它配置 help 信息，有兴趣的小伙伴快去试试看吧~</p>
-<h2 id="关于打印信息的颜色">关于打印信息的颜色</h2>
-<p>针对不同类别的控制台打印信息，其实可以设置相应的颜色，这样看起来更加直观，也更加美观。在上文中提到的 <code>zx</code>中，也封装了 <code>chalk</code>，只要引入了 <code>zx</code> 便可直接使用。通过它可以为控制台输出信息“上色”。举个🌰：</p>
-<pre><code class="language-js">console.log(chalk.red(`Create objet defeat! The error message is: ${error}`))
-</code></pre>
-<p>更多的颜色跟使用方式，小伙伴们也可以去研究一下，让控制台输出也多姿多彩起来~</p>
-<h1 id="结束语">结束语</h1>
-<p>行文至此，我们已经完成了一个属于自己的简单脚手架工具。大家后期可以根据自己的需求对其持续优化，也可以思考下别的小伙伴在使用你的脚手架的时候会需要些什么，怎么做才可以帮助更多的小伙伴提升人效。</p>
-<p>关于cli工具，崔大在B站也有一期详细的讲解视频，大家也可以去参考：<a href="https://www.bilibili.com/video/BV1jK4y197Ne?spm_id_from=333.999.0.0">传送门</a></p>
-<p>本文中的脚手架工具已经上传到<a href="https://github.com/luhaifeng666/cli-create-tool">git</a>, 欢迎⭐️交流~</p>
-<p>同时也已上传至 <a href="https://www.npmjs.com/package/cli-create-tool">npm</a>, 有兴趣的小伙伴们可以全局安装尝试下~</p>
-<p>看到这里，快动手织个网吧~</p>
+<p>我们在入口文件中引入了两个模块，webpack在打包的时候，会先生成对应的依赖关系，即在 <code>main.js</code> 中引入了 <code>Jquery</code> 以及<code>common.less</code> 两个模块：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/463c25df4e2e4c06a694a61c0b4cb717~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+其中 <code>main.js</code> , <code>Jquery</code> , <code>common.less</code> 称为 <code>（静态）模块</code>，也叫做 <code>chunk</code> ，含义就是代码块; 之后webpack会对chunk代码块进行处理，将less以及ES6语法做转换，转换成浏览器可识别的内容，这个过程叫做<code>打包</code>。打包完成后，输出的文件称之为 <code>bundle</code>。</p>
+<h1 id="webpack的五个核心概念"><a href="https://www.webpackjs.com/concepts/">Webpack的五个核心概念</a></h1>
+<ol>
+<li>entry：指示webpack从哪个入口开始打包，分析并构建内部依赖图。</li>
+<li>output：指示webpack打包之后的bundle文件生成到哪里去。</li>
+<li>loader：webpack只能处理js内容，loader的作用就是将非js的内容（比如css/image）转换成webpack可以识别的内容。</li>
+<li>plugins：相较于loader只能用作代码翻译，plugins可以做更多复杂强大的事情。</li>
+<li>mode：主要分为development以及production模式。相较于生产模式，开发模式的配置会比较简单，具体的区别可以参照下表：<br>
+| 环境 | 描述 | 特点 |<br>
+| ------ | ------ | ------ |<br>
+| development | 会将 <code>process.env.NODE_ENV</code> 的值设为 <code>development</code>。<br>启用 <code>NamedChunksPlugin</code> 和 <code>NamedModulesPlugin</code>。  | 能本地调试 |<br>
+| production | 会将 <code>process.env.NODE_ENV</code> 的值设为 <code>production</code>。<br>启用 <code>FlagDependencyUsagePlugin</code>, <code>FlagIncludedChunksPlugin</code>, <code>ModuleConcatenationPlugin</code>, <code>NoEmitOnErrorsPlugin</code>, <code>OccurrenceOrderPlugin</code>, <code>SideEffectsFlagPlugin</code> 和 <code>UglifyJsPlugin</code>。 | 能优化生产环境的代码 |</li>
+</ol>
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[浏览器中+号的处理]]></title>
-        <id>https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/</id>
-        <link href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/">
+        <title type="html"><![CDATA[Webpack学习笔记二：Webpack初体验]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-er-webpack-chu-ti-yan/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-er-webpack-chu-ti-yan/">
         </link>
-        <updated>2021-12-24T05:16:44.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="问题原因">问题原因</h1>
-<p>跳转地址中带有 <code>+</code> 号，违背浏览器的安全策略，在跳转时浏览器将+号转为空格。<br>
-期间尝试使用 <code>encodeURIComponent</code> 对+号进行转换，但是转换后的接口在浏览器中依旧会被替换成空格。</p>
-<h1 id="解决办法">解决办法</h1>
-<p>将地址中的+号全部替换为 <code>%2B</code> , 之后再 <code>encodeURI</code> 进行转码，变成 <code>%252B</code>，即可解决此问题。</p>
+        <updated>2021-12-24T08:43:24.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>webpack的使用依托于nodejs，本文及之后的篇幅里，使用的node版本为：<code>10.17.0</code>。</p>
+</blockquote>
+<h1 id="初始化node项目">初始化node项目</h1>
+<p>开始之前，切换到存放项目的路径，在本地目录下初始化一个node项目，本文是在 <code>webpack-study</code> 目录下。初始化的命令如下：</p>
+<pre><code class="language-js">cd webpack-study
+npm init
+</code></pre>
+<p>根据步骤设置下项目名称等一些基础信息，其他的步骤按照默认配置一路回车到底即可。创建完成后，在 <code>webpack-study</code> 目录下会生成最基本的package.json文件。</p>
+<h1 id="创建代码目录">创建代码目录</h1>
+<p>在 <code>webpack-study</code> 目录下创建 <code>src</code> 目录，用于存放源代码。并在src下创建index.js作为入口文件，这里先写一段简单的代码用作示例：</p>
+<pre><code class="language-js">const add = (x, y) =&gt; x + y
+console.log(add(1, 2))
+</code></pre>
+<h1 id="安装webpack">安装Webpack</h1>
+<pre><code class="language-js">npm i webpack webpack-cli
+</code></pre>
+<p>这里除了用到 <code>webpack</code> ，我们也会用到 <code>webpack-cli</code>, 它是webpack的脚手架。</p>
+<h1 id="创建webpack配置文件">创建Webpack配置文件</h1>
+<p>想要使用webpack对资源进行打包，首先我们需要配置下webpack的配置文件。我们在项目根目录下创建 <code>webpack.config.js</code> 文件。上一篇中，我们提到webpack的5个基本概念，(如果印象不是很深的小伙伴可以回看：<a href="https://juejin.cn/post/6902441939560300558#heading-3">Webpack学习笔记一：一些基础知识</a>。)现在我们根据上一节中提到的5个基础概念来创建一个简单的webpack配置文件：</p>
+<pre><code class="language-js">// 引入node的path模块
+const { resolve } = require('path')
+
+module.exports = {
+    // 入口文件
+    entry: './src/index.js',
+    // 文件输出配置
+    output: {
+    	// 输出的文件名称
+        // 配置[name]则取的是入口文件的名称
+    	filename: 'js/[name].js',
+        // 输出的文件路径
+        // 这里是指输出到根目录下的build目录下，如果对__dirname不是很了解的小伙伴可以去nodejs官网了解一下
+        path: resolve(__dirname, 'build')
+    },
+    // 用于配置loader
+    module: {},
+    // 用于配置插件信息
+    plugins: [],
+    // 启用开发模式
+    mode: 'development'
+}
+</code></pre>
+<h1 id="添加打包命令">添加打包命令</h1>
+<p>webpack的打包命令就是 <code>webpack</code>，我们可以在指令脚本中添加一些设置参数：</p>
+<pre><code class="language-js">// 开发环境
+webpack ./src/index.js -o ./build/index.js --mode=development
+// 生产环境
+webpack ./src/index.js -o ./build/index.js --mode=production
+</code></pre>
+<p>稍微解释下上面的脚本，上述脚本的含义是：webpack使用 <code>开发/生产</code> 模式( <code>mode</code> )，将 <code>./src/index.js</code> 打包输出( <code>-o</code> )到 <code>./build/index.js</code> 中。<br><br>
+细心的小伙伴儿应该已经发现，上述两种指令的唯一区别在于 <code>mode</code> 的参数不同，一个是 <code>development</code>,代表开发环境; 另一个是 <code>production</code> ，代表生产环境。那两者有什么区别呢？<br><br>
+我们先将两种指令配置到 <code>package.json</code> 的 <code>scripts</code> 中，方便我们后期可以直接使用 <code>npm</code> 或者 <code>yarn</code> 命令来执行它们。当然也可以直接将这两种指令复制到控制台中运行，但是显然这样就不是很方便了。</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;webpack_study&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;build:dev&quot;: &quot;webpack ./src/index -o ./build/index.js --mode=development&quot;,
+    &quot;build:prd&quot;: &quot;webpack ./src/index -o ./build/index.js --mode=production&quot;
+  },
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;dependencies&quot;: {
+    &quot;webpack&quot;: &quot;4.41.6&quot;,
+    &quot;webpack-cli&quot;: &quot;3.3.11&quot;
+  }
+}
+</code></pre>
+<p>然后我们分别通过执行 <code>build:dev</code> 以及 <code>build:prd</code> 来看下打包后的区别。</p>
+<blockquote>
+<p>Tips: <br><br>
+可能有小伙伴注意到了，在 <code>webpack.config.js</code> 文件中配置了 <code>mode: 'development'</code>，而在我们 <code>package.json</code> 的指令中也指定了 <code>--mode='development'</code>，那么两者究竟以谁为准呢？<br><br>
+答案是以 <code>package.json</code> 中配置的为准。有兴趣的小伙伴可以去试试看~</p>
+</blockquote>
+<h2 id="builddev">build:dev</h2>
+<pre><code class="language-js">npm run build:dev
+</code></pre>
+<p>运行这个指令后，我们在根目录的 <code>build/js</code> 路径下可以看到打包后生成的 <code>index.js</code> 文件。打开这个文件:</p>
+<pre><code class="language-js">/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' &amp;&amp; Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode &amp; 1: value is a module id, require it
+/******/ 	// mode &amp; 2: merge all properties of value into the ns
+/******/ 	// mode &amp; 4: return value when already ns object
+/******/ 	// mode &amp; 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode &amp; 1) value = __webpack_require__(value);
+/******/ 		if(mode &amp; 8) return value;
+/******/ 		if((mode &amp; 4) &amp;&amp; typeof value === 'object' &amp;&amp; value &amp;&amp; value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode &amp; 2 &amp;&amp; typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module &amp;&amp; module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = &quot;&quot;;
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = &quot;./src/js/index.js&quot;);
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ &quot;./src/js/index.js&quot;:
+/*!*************************!*\
+  !*** ./src/js/index.js ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval(&quot;const add = (x, y) =&gt; x + y;\n\nconsole.log(add(1, 2));\n\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
+
+/***/ })
+
+/******/ });
+</code></pre>
+<p>滑动到最底部，我们可以看到之前写的代码被转换成了字符串形式写入到了 <code>eavl</code> 方法中，并且以 <code>源码路径</code> 为key，同时将之作为value，以对象的形式作为入参，传入打包生成的方法中。</p>
+<h2 id="buildprd">build:prd</h2>
+<p>我们再来看下通过运行 <code>build:prd</code> 打包生成的文件是什么样的呢：</p>
+<pre><code class="language-js">npm run build:prd
+</code></pre>
+<p>运行完成后生成如下代码：</p>
+<pre><code class="language-js">!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){&quot;undefined&quot;!=typeof Symbol&amp;&amp;Symbol.toStringTag&amp;&amp;Object.defineProperty(e,Symbol.toStringTag,{value:&quot;Module&quot;}),Object.defineProperty(e,&quot;__esModule&quot;,{value:!0})},n.t=function(e,t){if(1&amp;t&amp;&amp;(e=n(e)),8&amp;t)return e;if(4&amp;t&amp;&amp;&quot;object&quot;==typeof e&amp;&amp;e&amp;&amp;e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,&quot;default&quot;,{enumerable:!0,value:e}),2&amp;t&amp;&amp;&quot;string&quot;!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&amp;&amp;e.__esModule?function(){return e.default}:function(){return e};return n.d(t,&quot;a&quot;,t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p=&quot;&quot;,n(n.s=0)}([function(e,t){console.log(1+2)}]);
+</code></pre>
+<p>我们发现代码精简了许多，没有了注释，没有了空格折行，显然代码被压缩过了。由此可以得出结论：</p>
+<blockquote>
+<p>相较于development模式，production模式会对打包后的代码进行压缩。主要是因为production模式下启用了webpack的 <code>UglifyJsPlugin</code> 插件，这个插件的作用就是对代码进行压缩。</p>
+</blockquote>
+<h1 id="控制台输出信息">控制台输出信息</h1>
+<p>打包完成后，让我们回过头来，再来一起看下控制台中显示的信息，并对这些信息做一个简单的了解。我们先来看下刚才打包完成后的控制台输出:</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8f2ba8e9346040388a50d65a6c7b9d46~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>我们依次看下这些参数的含义：</p>
+<blockquote>
+<p>Hash: 打包之后生成的唯一ID，后续可用作文件名中的唯一表示，防止访问缓存；<br><br>
+Version: webpack的版本；<br><br>
+Time:  打包所耗的时间；<br><br>
+Built at: 打包开始的时间; <br><br>
+Asset：打包的资源；<br><br>
+Size：文件大小；<br><br>
+Chunks: 所属的chunk名称；<br><br>
+Chunk Names：chunk名称；<br><br>
+EntryPoint main: 入口文件名称；<br><br>
+[....]:  参与打包的模块，也就是上一节中提到的静态模块。</p>
+</blockquote>
+<p>行文至此，我们已经实现了简单的webpack打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解。与此同时，我们对控制台中输出信息的含义也了然于胸。<br><br>
+在后面的章节中，我会依次介绍webpack的其他功能，借此可以帮助大家逐步熟悉webpack的配置，让小伙伴们在之后的开发过程中不会再对webpack的配置感到晦涩陌生。篇幅也许不会太长，但是希望对小伙伴们有所助益~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webpack学习笔记三：js的兼容性处理]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li/">
+        </link>
+        <updated>2021-12-24T08:42:42.000Z</updated>
+        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6903529588271136782">上一节</a>中我们简单实现了webpack的打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解，也了解了下控制台输出信息的含义。接下来的几节我们一起来了解下，针对于不同类型的资源，webpack是如何进行编译打包的，在打包期间又需要做一些什么处理。</p>
+<h1 id="js兼容性处理">js兼容性处理</h1>
+<p>在上一节中，我们写了一段简单的js代码，用来做打包示例，并对js的打包有了初步的了解：</p>
+<pre><code class="language-js">const add = (x, y) =&gt; x + y
+console.log(add(1, 2))
+</code></pre>
+<p>我们截取打包后的代码：</p>
+<pre><code class="language-js">eval(&quot;const add = (x, y) =&gt; x + y;\n\nconsole.log(add(1, 2));\n\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
+</code></pre>
+<p>我们可以看到，在打包出来的代码中，<code>add</code> 的定义依旧是使用的 <code>const</code>，而不是兼容性最好的 <code>var</code>。现阶段，在我们的日常开发过程中基本上使用的都是ES6语法，但是一些版本较低的浏览器并不能完全兼容ES6语法，此时我们就要对js代码做兼容性处理。<br><br>
+要对js做兼容性处理，这里我们需要用到两个工具：<code>babel-loader</code> 以及 <code>@babel/core</code>。我们先来安装下这两个工具：</p>
+<pre><code class="language-js">yarn add babel-loader @babel/core
+</code></pre>
+<p>安装完成后要怎么使用呢？这里我们需要使用到webpack五个基本概念中的 <code>loader</code>。在上一篇配置的基础上，我们加入 <code>loader</code> 的配置。<code>loader</code> 的相关配置写到配置文件的 <code>module</code> 中：</p>
+<pre><code class="language-js">// 引入node的path模块
+const { resolve } = require('path')
+
+module.exports = {
+    // 入口文件
+    entry: './src/index.js',
+    // 文件输出配置
+    output: {
+    	// 输出的文件名称
+        // 配置[name]则取的是入口文件的名称
+    	filename: 'js/[name].js',
+        // 输出的文件路径
+        // 这里是指输出到根目录下的build目录下，如果对__dirname不是很了解的小伙伴可以去nodejs官网了解一下
+        path: resolve(__dirname, 'build')
+    },
+    // 用于配置loader
+    module: {
+      rules: [
+      	{
+          // 匹配.js文件
+          test: /\.js$/,
+          // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+          exclude: /node_modules/, 
+          // 使用babel-loader
+          loader: 'babel-loader',
+          // loader的相关配置
+          options: {}
+        }
+      ]
+    },
+    // 用于配置插件信息
+    plugins: [],
+    // 启用开发模式
+    mode: 'development'
+}
+</code></pre>
+<p>配置完成后，我们运行 <code>yarn build:dev</code> 命令，我们会发现结果跟之前是一样的，ES6的代码并没有被转换。这是因为我们还没有“告诉” <code>babel-loader</code> 要怎么去做兼容性处理。那具体该怎么去处理js的兼容性问题呢？我们接着往下看。</p>
+<h1 id="处理js兼容的三种方式">处理js兼容的三种方式</h1>
+<p>针对js的兼容性处理主要有三种方式，我们依次来了解一下。</p>
+<h2 id="方法一基本兼容性处理">方法一：基本兼容性处理</h2>
+<p>基本兼容性处理是指可以处理一些基本的js兼容性问题，比如js中的const/let定义的转换，箭头函数的转换等等。此时我们需要用到一个工具：<code>@babel/preset-env</code>。这个工具可以帮助我们处理一些基本的js兼容性问题。</p>
+<pre><code class="language-js">yarn add -D @babel/preset-env
+</code></pre>
+<p>安装完成后，我们在 <code>babel-loader</code> 的 <code>options</code> 中加入以下配置：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/, 
+      // 使用babel-loader
+      loader: 'babel-loader',
+      // loader的相关配置
+      options: {
+        presets: ['@babel/preset-env']
+      }
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>配置完成后 ，我面再去执行刚才的打包命令, 然后截取出我们所写的代码：</p>
+<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
+</code></pre>
+<p>此时我们可以发现，代码中的 <code>const</code> 声明已经被转换成了 <code>var</code>, 而原先的 <code>箭头函数</code> 也被转换成了普通的函数形式。说明loader已经生效了。<br><br>
+在介绍这种兼容性处理方式的时候有提到过此种方式只能处理一些基本的js问题。如果我们在文件中加入一些稍微复杂的东西，比如 <code>Promise</code>， 然后执行打包会发生什么呢？</p>
+<pre><code class="language-js">const add = (x, y) =&gt; x + y;
+console.log(add(1, 2));
+
+const promiseHandle = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; {
+    resolve('完成');
+  }, 1000)
+})
+console.log(promiseHandle);
+</code></pre>
+<p>执行打包命令后，我们再来看下我们所写的代码：</p>
+<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\nvar promiseHandle = new Promise(function (resolv
+</code></pre>
+<p>我们可以看到，类似于 <code>const</code> 以及 <code>箭头函数</code> 的定义都被转换成了ES5的语法，但是 <code>Promise</code> 的内容并没有被转换，而且代码中也没有其他对 <code>Promise</code> 进行处理的方法。此时要怎么处理呢？莫慌，我们来看第二种js的兼容性处理方式。</p>
+<h2 id="方法二babelpolyfill">方法二：@babel/polyfill</h2>
+<p>如题，我们需要引入另外一种工具：<code>@babel/polyfill</code>。这种兼容方法比较全面，它可以对 <strong>全部js</strong> 做兼容性处理。</p>
+<pre><code class="language-js">yarn add -D @babel/polyfill
+</code></pre>
+<p>这个工具使用比较简单，安装完成后，只需在需要使用的js文件中引入即可。我们在刚才的js文件基础上，引入这个包。</p>
+<pre><code class="language-js">import '@babel/polyfill'
+
+const add = (x, y) =&gt; x + y;
+console.log(add(1, 2));
+
+const promiseHandle = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; {
+    resolve('完成');
+  }, 1000)
+})
+console.log(promiseHandle);
+</code></pre>
+<p>再次执行打包命令，此时我们打开打包之后的js文件，会发现js文件中引入了大量的polyfill来对js兼容性的处理，其中就有对Promise的兼容处理(由于内容太长，此处就不贴代码了，建议小伙伴们动手试一下~)。此种方式可以解决我们第一种兼容性处理中的问题。<br><br>
+但是，使用这种方式又会引发另外一个问题。我们来看下打包后的文件输出：</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/816a05df0ea642a38d0367050c9552ed~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>不难发现，由于引入了大量的polyfill，导致我们原先仅仅只有几k的文件，膨胀到了511k, 因为引入的polyfill囊括了所有的兼容性处理，这显然不是我们愿意看到的。而且事实上我们也用不到这么多的兼容性处理。那我们又该如何处理这个问题呢？我们来看下第三种兼容性处理方案。</p>
+<h2 id="方法三core-js">方法三：core-js</h2>
+<p>说白了，要解决方法二中的弊端，核心思路就是 <code>按需引入</code>。这个时候，我们需要使用到 <code>code-js</code>。其实在方法二中用到的 <code>@babel/polyfill</code>中也有它的影子, 有兴趣的小伙伴们可以去打包生成的文件中找找看~这里我们单独安装一份 <code>core-js</code>:</p>
+<pre><code class="language-js">yarn add -D core-js
+</code></pre>
+<p>想要使用它，我们需要对刚才的 <code>babel-loader</code> 配置再进行一些改造：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/, 
+      // 使用babel-loader
+      loader: 'babel-loader',
+      // loader的相关配置
+      options: {
+        &quot;presets&quot;: [
+          [
+            &quot;@babel/preset-env&quot;,
+            {
+              // 指定按需加载
+              &quot;useBuiltIns&quot;: &quot;usage&quot;,
+              // 指定core-js的版本
+              &quot;corejs&quot;: {
+                &quot;version&quot;: 3
+              },
+              // 指定兼容的浏览器版本
+              &quot;targets&quot;: {
+                &quot;chrome&quot;: &quot;60&quot;,
+                &quot;firefox&quot;: &quot;60&quot;,
+                &quot;ie&quot;: &quot;9&quot;,
+                &quot;safari&quot;: &quot;10&quot;,
+                &quot;edge&quot;: &quot;17&quot;
+              }
+            }
+          ]
+        ]
+      }
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>此时，我们指定了按需加载，指定了coreJs的版本是3，指定了需要兼容的具体的浏览器的版本。</p>
+<blockquote>
+<p>注意：使用这种方式的时候，需要把第二种方式中引入的@babel/polyfill注释掉，两者不可共用！！</p>
+</blockquote>
+<p>然后我们再次进行打包：</p>
+<figure data-type="image" tabindex="2"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4c69c325e1b14ecb9a607f7e39156d07~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>再次打包后我们可以发现，Promise的兼容性处理会被引入进来，并且文件大小也缩小至105k, 相较于第二种方式，显然此种方式更佳~如果有小伙伴觉得这样配置显得代码有些冗余，不够优雅，我们也可将 <code>presets</code> 中配置的内容移动到根目录的 <code>.babelrc</code> 文件中：</p>
+<pre><code class="language-json">{
+  &quot;presets&quot;: [
+    [
+      &quot;@babel/preset-env&quot;,
+      {
+        // 指定按需加载
+        &quot;useBuiltIns&quot;: &quot;usage&quot;,
+        // 指定core-js的版本
+        &quot;corejs&quot;: {
+          &quot;version&quot;: 3
+        },
+        // 指定兼容的浏览器版本
+        &quot;targets&quot;: {
+          &quot;chrome&quot;: &quot;60&quot;,
+          &quot;firefox&quot;: &quot;60&quot;,
+          &quot;ie&quot;: &quot;9&quot;,
+          &quot;safari&quot;: &quot;10&quot;,
+          &quot;edge&quot;: &quot;17&quot;
+        }
+      }
+    ]
+  ]
+}
+</code></pre>
+<p>行文至此，js的打包方式以及处理兼容的几种方式都已经介绍完毕。当然loader的配置不止这些，在日后的开发过程中，小伙伴们可以根据项目需要去查询对应loader的文档，来定制化适合自己项目的配置。<br><br>
+处理完js的兼容性问题，那么开发团队在日常开发中的js风格统一化又该怎么去处理？一些容易犯的低级错误又该怎么去避免呢？下一章节我们就来介绍处理这些问题的方法~<br><br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/90b2c8f2bb0447828ffbea8e6eab02a6~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webpack学习笔记四：eslint语法检查]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/">
+        </link>
+        <updated>2021-12-24T08:42:08.000Z</updated>
+        <content type="html"><![CDATA[<p>在<a href="https://juejin.cn/post/6903910160184868878">上一节</a>文章末尾，我们提出了一个问题，<strong>我们要如何控制代码风格的统一，避免一些低级错误</strong>。这一节我们就来介绍下解决这两个问题的方法：<strong>eslint语法检查</strong>。</p>
+<h1 id="背景">背景</h1>
+<p>在日常开发过程中，项目一般都是多人合作。为了保证代码的统一和规范，我们需要借助eslint去完成。在此过程中，我们需要使用到<code>eslint-loader</code> 以及 <code>eslint</code>。</p>
+<h3 id="安装">安装</h3>
+<pre><code class="language-js">yarn add -D eslint eslint-loader
+</code></pre>
+<h3 id="基本配置">基本配置</h3>
+<p>安装完成后，在webpack.config.js中添加如下配置：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+        test: /\.js$/,
+        exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
+        loader: 'eslint-loader',
+        options: {}
+    }
+  ]
+}
+/* ... */
+</code></pre>
+<p>配置完成后，eslint还需要知道具体的规则是什么。此时，我们需要在 <code>package.json</code> 文件中配置 <code>eslintConfig</code> 属性，或者在根目录下添加 <code>.eslintrc</code> 文件来配置eslint的规则。<br><br>
+但是手动配置规则显然比较麻烦，此时我们可以借助第三方的工具来完成这件事情。这里我们使用 <code>airbnb</code> 的配置。<br><br>
+想要使用airbnb的eslint规则，我们需要安装几个插件：<code>eslint-config-arbnb-base</code> 与 <code>eslint-plugin-import</code>。</p>
+<pre><code class="language-js">yarn add -D eslint-config-airbnb-base  eslint-plugin-import
+</code></pre>
+<p>之后在 <code>package.json</code> 中添加如下配置：</p>
+<pre><code class="language-js">&quot;eslintConfig&quot;: {
+  &quot;extends&quot;: &quot;airbnb-base&quot;
+}
+</code></pre>
+<p>或者在 <code>.eslintrc</code> 文件中添加：</p>
+<pre><code class="language-js"> &quot;extends&quot;: &quot;airbnb-base&quot;
+</code></pre>
+<p>这样就会继承airbnb的eslint配置。再次打包或者运行时，控制台就会给出相应的报错提示：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d666da14a1b644da8d910166ffd750a3~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<blockquote>
+<p>我们也可以通过添加 <code>VScode</code>, 或者小伙伴们所用的其他IDE的 <code>ESlint插件</code> 去辅助我们日常的开发。在这里，笔者使用的是 <code>VScode</code>，如果有跟笔者一样使用这个IDE的小伙伴，推荐安装这个插件：</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9eae5c1e455844d3b3ab03fdefe8bd0f~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>安装并启用这个插件之后，我们就可以在编辑器中看到eslint给出的相应提示：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c7187fa4a4f9473d801b9d3d439709bb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>当我们将光标移动至波浪线上时，在弹出的窗口中点击 <code>Quick Fix</code>选项后，插件也会提供一些快速修复的方法, 使得修复更加便捷：</p>
+<figure data-type="image" tabindex="3"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/438ed3f9940c41abad755558f8411fbb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+</blockquote>
+<h3 id="自动修复配置">自动修复配置</h3>
+<p>如果我们需要自动修复这些问题，我们可以添加一项配置：</p>
+<pre><code class="language-js">module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
+      loader: 'eslint-loader',
+      options: {
+          fix: true // 自动修复一些eslint问题
+      }
+    }
+  ]
+}
+</code></pre>
+<p>这样则会自动修复一些问题。但是不是所有的问题都会被自动修复，有一些仍需要手动修复：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/96d4612c60024378a027b819b8124953~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+此时我们只要根据给出的提示逐一修复即可。</p>
+<h3 id="配合babel-loader一起使用">配合babel-loader一起使用</h3>
+<p>行文至此，我们已经知道了 <code>ESlint</code> 怎么去使用。那么在日常开发中，如果先对所写的代码做过检查，然后再使用 <code>babel-loader</code> 转换一下，岂不是美滋滋？（手动滑稽）<br><br>
+那如何才能与上一节中提到的 <code>babel-loader</code> 一起去使用呢？当然是一起写到loader配置里就好啦~这里我们需要注意一点：<strong>loader的执行顺序是自左向右，自下向上的，简而言之就是按照从后往前的顺序执行</strong>。所以如果我们需要先检查代码，之后再对代码打包的话，那么 <code>eslint-loader</code> 需要配置在 <code>babel-loader</code> 之后：</p>
+<pre><code class="language-js">// 这里由于都是匹配的js文件，所以我们将两个loader写在一起
+// 注意写法的改变，原先直接是写的loader，现在改为use数组的形式
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/,
+      use: [
+      	// 使用 babel-loader
+        {
+          loader: 'babel-loader',
+          // loader的相关配置
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        }, 
+        // 使用 eslint-loader, 配置写在 babel-loader之后，优先执行
+        {
+          loader: 'eslint-loader',
+          options: {
+            fix: true,
+          },
+        },
+      ],
+    },
+  ],
+},
+</code></pre>
+<p>配置完成后，我们就可以实现先做代码检查，后进行语法转换啦~ <br></p>
+<h1 id="预告">预告</h1>
+<p>结合上一节的内容，我们介绍了webpack在对js文件做处理时的一些基本操作，包括 <code>语法转换</code> 以及 <code>语法检查</code>。介绍完了js，在下一章节中，我们一起来看下webpack在处理css文件的时候又会做哪些基本操作呢？拭目以待吧~</p>
+<figure data-type="image" tabindex="4"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd370ca53e2c47eeb502d251080d7f90~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webpack学习笔记五：打包css文件]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-wu-da-bao-css-wen-jian/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-wu-da-bao-css-wen-jian/">
+        </link>
+        <updated>2021-12-24T08:41:39.000Z</updated>
+        <content type="html"><![CDATA[<p>上两节我们了解了webpack是如何打包js文件的，以及在打包js文件过程中还做了兼容性处理和语法检查的操作。这一节我们来看下webpack是如何处理css文件的。<br><br>
+我们知道，webpack只能识别js的内容，显然直接让webpack识别css文件是不可行的。那要如何将css文件中的内容转换成webpack可以识别的js内容呢？这里我们又需要借助“翻译官” <code>loader</code> 的帮助了。<br><br>
+要想将css转换成js，我们需要用到两个loader：<code>style-loader</code> 以及 <code>css-loader</code>。我们先来简单看下这两个loader的作用：</p>
+<blockquote>
+<p>style-loader：生成style标签 ，将js中的css内容写入style标签中，并将其插入head标签中。<br><br>
+css-loader：将css内容变成 <code>commonjs</code> 模块加载到js中，里面的内容是样式字符串。</p>
+</blockquote>
+<h1 id="安装">安装</h1>
+<pre><code class="language-js">yarn add -D style-loader css-loader
+</code></pre>
+<h1 id="使用">使用</h1>
+<p>在上一节中，我们了解到loader的执行是有顺序的，即<strong>按照从后往前的配置顺序执行</strong>。根据上面对两个loader的描述，我们需要先通过 <code>css-loader</code> 将css内容转换成js，然后通过 <code>style-loader</code> 将js中的css内容写入到style标签中。所以loader的顺序应该是 <code>css-loader</code> 先于 <code>style-loader</code> 执行。因此，我们需要在 <code>webpack.config.js</code> 中添加的配置如下：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+
+module.exports = {
+  // 入口文件
+  entry: './src/index.js',
+  // 输出
+  output: {
+    filename: '[name].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  // loader配置
+  module: {
+    rules: [
+      {
+        test: /\.css$/, // 匹配以css结尾的文件
+        // 使用哪些loader包处理，执行顺序是从后往前
+        use: [
+          // 生成style标签，将js中的样式资源写入其中，并添加到head标签中
+          'style-loader',
+          // 将css的内容变成commonjs模块加载到js中，里面的内容是样式字符串
+          'css-loader'
+        ]
+      }
+    ]
+  },
+  // 插件
+  plugins: [],
+  // 模式 development / production
+  mode: 'development'
+}
+</code></pre>
+<p>配置完成后，我们先准备一个简单的css文件，保存在 <code>src/css/index.css</code>中：</p>
+<pre><code class="language-css">html, body {
+  padding: 0;
+  margin: 0;
+  background: #ff5512;
+}
+</code></pre>
+<p>然后在入口 <code>index.js</code> 文件中引入 <code>index.css</code> 文件，之后执行打包操作。在打包生成的js文件中，我们就可以看到 <code>index.css</code> 中的内容：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/db759eb2c3bf4db4b38563e9a3f2680b~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+之后，我们新建一个 <code>index.html</code> 文件，将打包之后的js文件引入页面，即可以看到样式生效。</p>
+<h1 id="sass-loader">sass-loader</h1>
+<p>在现阶段项目的开发过程中，我们经常会用到诸如 <code>sass</code>、<code>less</code>、<code>stylus</code>等等的 <code>css预处理器</code>。那应该如何让webpack可以识别出我们使用这些 <code>css预处理器</code> 写出的css代码呢？<br><br>
+其实也并不复杂，基本的思路就是<strong>使用对应 <code>css预处理器</code> 的 <code>loader</code>，将代码转换为普通的css代码，然后再通过 <code>css-loader</code> 与 <code>style-loader</code> 将css转换成js代码，并插入到页面的style标签中去。</strong><br><br>
+本文中以 <code>sass</code> 为例。想要将 <code>sass</code> 代码转换为普通的css代码，我们需要安装两个工具：</p>
+<pre><code class="language-js">yarn add -D sass sass-loader
+</code></pre>
+<p>之后只需要在 <code>webpack.config.js</code> 文件中加入相应的loader配置，并将文件匹配的正则调整下即可：</p>
+<pre><code class="language-js">/* ... */
+// loader配置
+module: {
+  rules: [
+    {
+      test: /\.s[ac]ss$/, // 匹配以.scss或者.sass结尾的文件
+      // 使用哪些loader包处理，执行顺序是从后往前
+      use: [
+        // 生成style标签，将js中的样式资源写入其中，并添加到head标签中
+        'style-loader',
+        // 将css的内容变成commonjs模块加载到js中，里面的内容是样式字符串
+        'css-loader',
+        // 将使用sass编写的代码转换为普通的css代码 
+        'sass-loader'
+      ]
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>修改完配置后，我们将 <code>index.css</code> 文件修改为 <code>index.scss</code>，并在其中加入sass的语法：</p>
+<pre><code class="language-css">html, body {
+  padding: 0;
+  margin: 0;
+  background: #ff5512;
+  div {
+    background: blue
+  }
+}
+</code></pre>
+<p>然后运行打包命令，打开打包后的js文件，我们可以看到sass的内容会被转换为普通的css内容：<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/af9c3a2e6a724c1094fa9048b93a37b2~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h1 id="预告">预告</h1>
+<p>这一节我们知道了在webpack中如何对css文件做处理，以及在使用 <code>css预处理器</code> 时如何对其内容做相应的转换。<br><br>
+但是css的内容在转换过后，依旧存在于js文件中。随着我们项目开发的推进，打包出来的js文件会愈发庞大。除此之外，针对于不同平台以及不同设备，我们所写的css代码也需要做相应的兼容性处理。<br><br>
+针对以上的问题，我们下节一起来看下如何将js中的css代码提取成单独的文件，并对其做相应的兼容性与代码压缩处理。敬请期待~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webpack学习笔记六：css兼容性处理以及文件提取]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/">
+        </link>
+        <updated>2021-12-24T08:40:37.000Z</updated>
+        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6905647041368555527">上一节</a>我们学习到webpack中如何处理css文件，以及在使用了 <code>css预处理器</code> 后又改怎么处理。文章末尾我们也提到了两个需要解决的问题：</p>
+<blockquote>
+<ol>
+<li>随着项目推进，一直将css写入js中会导致文件逐渐臃肿；</li>
+<li>css兼容性<br>
+这一节，我们将针对这两个问题提出相应的解决方案。</li>
+</ol>
+</blockquote>
+<h1 id="css文件提取">css文件提取</h1>
+<p>上一节中我们使用到了 <code>style-loader</code> 、 <code>css-loader</code> 以及 <code>sass-loader</code> 三种loader，在这三种loader的协同作用下，.scss文件先通过sass-loader转成普通的css文件，再通过css-loader将css转换成commonjs模块并打包到js中，最后通过style-loader将js文件中的css样式加载到head里的style标签中去。<br><br>
+除了上面提到的第一个问题外，这样也会导致页面会有短暂的错乱，然后等js文件加载完成后，页面样式才会恢复正常，这显然不符合我们的要求，用户的体验也非常不好。此时，我们需要将js中的css单独提取出来，作为css文件引入页面，这样就可以解决这个问题。而且js的文件体积会更小，上述第一个问题也能被解决。</p>
+<h2 id="如何使用">如何使用</h2>
+<p>要将js中的css提取成单独的文件，我们需要用到一个 <code>插件</code> ：<code>mini-css-extract-plugin</code>。</p>
+<h3 id="安装">安装</h3>
+<pre><code class="language-js">yarn add -D mini-css-extract-plugin
+</code></pre>
+<h3 id="配置">配置</h3>
+<p>前几节我们主要使用的是webpack中的 <code>loader</code> ，与 <code>loader</code> 不同的是，<code>插件</code> 在使用之前需要先引入进来，然后在wbepack.config.js的 <code>plugin</code> 字段中添加配置：</p>
+<pre><code class="language-js">const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+    /* ... */
+    plugins: [
+    	new MiniCssExtractPlugin({
+         filename: 'css/index.[contenthash:10].css',
+       }),
+    ]
+    /* ... */
+}
+</code></pre>
+<p>其中，在实例化这个插件时，可以传入配置。上述配置中指定了提取出css文件的输出路径。<br><br>
+在配置完插件之后，我们来回顾一下之前的处理方式，最终的结果是<strong>通过 <code>style-loader</code> 将css的内容插入到页面的style标签中</strong>。而现在我们要实现的是<strong>将css文件单独提取出来</strong>。所以我们需要将 <code>style-loader</code> 替换掉。<br><br>
+在 <code>mini-css-extract-plugin</code> 插件内部提供了一个用于提取css的loader: <code>MiniCssExtractPlugin.loader</code>，我们只需要将 <code>style-loader</code> 替换为 <code>MiniCssExtractPlugin.loader</code> 即可：</p>
+<pre><code class="language-js">const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+    /* ... */
+    module: {
+        rules: [
+            /* ... */
+            {
+              test: /\.s[ac]ss/,
+              exclude: /(node_modules|build)/,
+              use: [
+                MiniCssExtractPlugin.loader,,
+                'css-loader',
+                'sass-loader'
+              ],
+            },
+        ]
+    },
+    plugins: [
+    	new MiniCssExtractPlugin({
+         filename: 'css/index.[contenthash:10].css',
+       }),
+    ]
+    /* ... */
+}
+</code></pre>
+<h1 id="css兼容性处理">css兼容性处理</h1>
+<p>在日常开发中，为了让css样式能够适用于大多数的设备或者浏览器，我们需要对css做好兼容性处理。<br><br>
+css的兼容性处理需要用到 <a href="https://www.postcss.com.cn/">postcss</a>。 <code>postcss</code> 是一个用 JavaScript 工具和插件转换 CSS 代码的工具。在webpack中使用它需要用到两个包：<code>postcss-loader</code> 以及 <code>postcss-preset-env</code>。<br><br>
+其中，<code>postcss-preset-env</code> 的作用是帮助 <code>postcss-loader</code> 找到 <code>browserslist</code> 的配置，加载指定的兼容性。<code>browserslist</code> 一般会配置到package.json下，或者在根目录下有一个 <code>.browserslistrc</code> 的文件去写相关的配置。</p>
+<blockquote>
+<p>注意：package.json中的配置与.browserslistrc文件，两者只能存其一，否则会报错！！</p>
+</blockquote>
+<h3 id="安装-2">安装</h3>
+<pre><code class="language-js">yarn add -D postcss-loader postcss-preset-env
+</code></pre>
+<h3 id="配置-2">配置</h3>
+<p>我们在上面的loader配置基础上进行一些修改：</p>
+<pre><code class="language-js">{
+  test: /\.s[ac]ss$/i,
+  use: [
+    MiniCssExtractPlugin.loader,
+    'css-loader',
+    {
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          plugins: [
+            [
+              'postcss-preset-env',
+              {
+                // Options
+              },
+            ],
+          ],
+        },
+      }
+    },
+    // 将 Sass 编译成 CSS
+    'sass-loader',
+  ],
+},
+</code></pre>
+<p>然后在 <code>package.json</code> 文件中添加如下配置（更多配置可以参考:<a href="https://github.com/browserslist/browserslist">browserslist</a>）：</p>
+<pre><code class="language-json">&quot;browserslist&quot;: {
+    &quot;development&quot;: [ // 开发环境
+      &quot;last 1 chrome version&quot;,
+      &quot;last 1 safari version&quot;,
+      &quot;last 1 firefox version&quot;
+    ],
+    &quot;production&quot;: [ // 生产环境
+      &quot;&gt; 0.2%&quot;,
+      &quot;not dead&quot;,
+      &quot;not op_mini all&quot;
+    ]
+}
+</code></pre>
+<p>或者也可以在根目录下创建.browserslistrc文件。</p>
+<blockquote>
+<p>注意：配置项是有顺序的！！&gt; 0.2%写到后面会报错</p>
+</blockquote>
+<pre><code class="language-json">&gt; 0.2%
+not dead
+not op_mini all
+</code></pre>
+<p>关于postcss-loader更多的配置可以<a href="https://webpack.js.org/loaders/postcss-loader/#root">参考</a>。</p>
+<h1 id="css文件压缩">css文件压缩</h1>
+<p>在对css文件做完兼容性处理并提取成单个文件之后，我们可以进一步对其进行优化，将抽出的css文件进行压缩。此时我们需要用到一个插件： <code>optimize-css-assets-webpack-plugin</code>。</p>
+<h3 id="安装-3">安装</h3>
+<pre><code class="language-js">yarn add -D optimize-css-assets-webpack-plugin
+</code></pre>
+<h3 id="使用">使用</h3>
+<p>使用非常简单 ，只需要在 <code>webpack.config.js</code> 中引入使用即可。默认配置已经可以满足压缩需要，如果需要添加配置，可以<a href="https://www.npmjs.com/package/optimize-css-assets-webpack-plugin">参考</a>。</p>
+<pre><code class="language-js">const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+    /* ... */
+    module: {
+      rules: [
+        /* ... */
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            MiniCssExtractPlugin.loader,
+            'css-loader',
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    [
+                      'postcss-preset-env',
+                      {
+                        // Options
+                      },
+                    ],
+                  ],
+                },
+              }
+            },
+            // 将 Sass 编译成 CSS
+            'sass-loader',
+          ],
+        },
+      ]
+    },
+    plugins: [
+    	new MiniCssExtractPlugin({
+         filename: 'css/index.[contenthash:10].css',
+       }),
+       new OptimizeCssAssetsWebpackPlugin()
+    ]
+    /* ... */
+}
+</code></pre>
+<h1 id="预告">预告</h1>
+<p>通过这两节，我们已经知道了webpack中如何对css文件进行处理，并在此过程中对其做了一些优化，包括提取单个css文件，兼容性处理以及css代码压缩。<br><br>
+下一节我们一起来看下，除了css文件与js文件外，其他的文件webpack要如何进行处理呢？拭目以待吧~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webpack学习笔记七：其他文件的打包]]></title>
+        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-qi-qi-ta-wen-jian-de-da-bao/</id>
+        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-qi-qi-ta-wen-jian-de-da-bao/">
+        </link>
+        <updated>2021-12-24T08:38:47.000Z</updated>
+        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6907627139198107655">上一节</a>我们介绍了如何对css做兼容性处理，以及如何将代码中的css单独提取成css文件，并对其进行压缩处理。结合前几个章节的内容，我们已经知道了在webpack中如何对js以及css文件处理。那么除了js与css文件外，类似于 <code>html资源</code>、 <code>图片资源</code> 以及 <code>其他的资源</code> 又该怎么去处理呢？这一节我们一起来看一下~</p>
+<h1 id="打包html资源">打包html资源</h1>
+<p>要想对html资源进行打包，我们需要用到一个插件：<code>html-webpack-plugin</code>。这个插件的作用主要是<strong>生成html文件，并自动将output生成的文件引入</strong>。</p>
+<h3 id="安装">安装</h3>
+<pre><code class="language-js">yarn add -D html-webpack-plugin
+</code></pre>
+<h3 id="配置">配置</h3>
+<p>安装完成后，我们需要在 <code>webpack.config.js</code> 中引入插件，并配置到 <code>plugins</code> 选项中：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [/*...*/]
+  },
+  plugins: [
+    new HtmlWebpackPlugin()
+  ],
+  mode: 'development'
+}
+</code></pre>
+<p>配置完成后，执行打包命令，会看到在 <code>build</code> 目录下多出了一个 <code>index.html</code> 文件。这个文件就是通过 <code>html-webpack-plugin</code> 插件生成出来的。</p>
+<h3 id="js与css文件的自动引入">js与css文件的自动引入</h3>
+<p>打开生成的 <code>index.html</code> 文件，我们可以看到打包出来的js文件被自动引入了：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d5fc7220af747ce826b51e9f028175e~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+还记的我们上一节中提到的提取css文件的操作么？如果我们将css文件也提取出来之后也会被自动引入到 <code>index.html</code> 文件中么？我们一起来试一试，将上节中的配置写入进来：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [
+    	{
+        // 匹配.js文件
+        test: /\.js$/,
+        // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+        exclude: /node_modules/,
+        // 使用babel-loader
+        use: [
+          {
+            loader: 'babel-loader',
+            // loader的相关配置
+            options: {
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    // 指定按需加载
+                    useBuiltIns: 'usage',
+                    // 指定core-js的版本
+                    corejs: {
+                      version: 3,
+                    },
+                    // 指定兼容的浏览器版本
+                    targets: {
+                      chrome: '60',
+                      firefox: '60',
+                      ie: '9',
+                      safari: '10',
+                      edge: '17',
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.s[ac]ss/,
+        exclude: /(node_modules|build)/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/index.[contenthash:10].css', // 设置css文件的输出路径
+    }),
+  ],
+  mode: 'development'
+}
+</code></pre>
+<p>此时我们再次执行打包命令，之后打开生成的 <code>index.html</code> 文件，我们可以看到提取出来的css文件也会被引入进来：<br>
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8827558e583a431f80e9abc49002de1d~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h3 id="配置自定义html模板">配置自定义html模板</h3>
+<p>在上面的栗子中，我们只是单纯的使用了 <code>html-webpack-plugin</code> 这个插件。在不传入任何配置的情况下，这个插件会生成一个最简单的html文件。如果我们对生成的html文件有定制化的需求，此时，我们可以给这个插件传入相应的参数，用来声明生成html文件时所需要使用的模板。<br><br>
+在传入配置之前，我们先在src目录下创建一个 <code>index.html</code> 文件，用来定义我们自定义的页面模板：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;webpack-image&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;我的自定义模板&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>之后，我们给插件传入如下配置：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  /* ... */
+  plugins: [
+    new HtmlWebpackPlugin({
+    	template: resolve(__dirname, 'src/index.html')
+    })
+  ]
+  /* ... */
+}
+</code></pre>
+<p>此时，当我们再次执行打包命令后，点开生成的html文件：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/79acb15065944aca998e86eeb4b5c002~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+我们可以看到，在生成的html文件中，存在我们自定义的内容，与此同时，css与js文件也会被自动引入进来。</p>
+<blockquote>
+<p><strong>注意</strong> <br><br>
+由于js与css文件会被自动引入进来，所以我们在模板中不需要手动引入css与js，否则会出现重复引入的情况！</p>
+</blockquote>
+<h3 id="指定html文件的生成目录">指定html文件的生成目录</h3>
+<p>除此之外，我们也可以指定html文件生成的路径：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  /* ... */
+  plugins: [
+    new HtmlWebpackPlugin({
+       template: resolve(__dirname, 'src/index.html'),
+       filename: 'html/index.html'
+    })
+  ]
+  /* ... */
+}
+</code></pre>
+<p>配置完成后，html文件就会被打包至 <code>build/html</code> 路径下，文件名为 <code>index.html</code>。</p>
+<h1 id="打包图片资源">打包图片资源</h1>
+<p>图片资源主要有两个来源，一个是来自于html文件中，另一个是来源于css文件中。针对这两种不同的情况，处理的方式也各有不同。</p>
+<h2 id="打包css文件中的图片">打包css文件中的图片</h2>
+<p>要想打包css文件中的图片，我们需要用到一个loader工具：<code>url-loader</code>。这个loader的作用是<strong>处理css中的图片</strong>(其依赖于file-loader，所以也要下下来)。</p>
+<h3 id="安装-2">安装</h3>
+<pre><code class="language-js">yarn add -D url-loader file-loader
+</code></pre>
+<h3 id="配置-2">配置</h3>
+<p>安装完成后，我们在 <code>webpack.config.js</code> 中加入以下配置:</p>
+<pre><code class="language-js">/* ... */
+rules: [
+  {
+    test: /\.(jpeg|png|gif|jpg)$/,
+    loader: 'url-loader',
+    options: {
+      // 限制图片大小为8kb，含义是当图片的大小小于8kb时，会被编译成base64的形式写入样式，而超过8kb则会引入图片。
+      // 优点：减少请求
+      // 缺点：base64之后的大小可能会比原先图片的大小更大
+      limit: 8 * 1024, 
+      // 设置打包出来的图片名称，其中hash表示hash值，10表示截取hash值的前10位，ext表示保留图片原本的后缀名
+      // 可以设置图片打包出去的路径
+      // 比如'img/[hash:10].[ext]'表示将图片打包到build下的img文件夹中
+      // 注意：1、此处的路径设置是相对于build文件夹的，如果设置'../[hash:10].[ext]'就是打包到build的上一级目录。
+      // 2、这里设置的路径，也是最后css文件中引入的路径。比如设置的'img/[hash:10].[ext]'，那在css中引入的就是：background: url(img/....)。
+      name: '[hash:10].[ext]'
+    }
+  }
+]
+/* ... */
+</code></pre>
+<h2 id="打包html文件中的图片">打包html文件中的图片</h2>
+<p>处理html中的图片文件需要使用到另外一个loader：<code>html-loader</code>。这个loader的作用是<strong>引入html文件中的img，从而可以使其被url-loader处理</strong>。</p>
+<h3 id="安装-3">安装</h3>
+<pre><code class="language-js">yarn add -D html-loader
+</code></pre>
+<h3 id="配置-3">配置</h3>
+<p>安装完成后，我们只需要在 <code>webpack.config.js</code> 的 <code>rules</code> 配置项中加入以下内容：</p>
+<pre><code class="language-js">{
+  test: /\.html$/,
+  loader: 'html-loader'
+}
+</code></pre>
+<p>然后在上述的 <code>src/index.html</code> 模板中，引入一张图片：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;webpack-image&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;我的自定义模板&lt;/p&gt;
+  &lt;img src=&quot;./images/luoxiaohei1.jpeg&quot; alt=&quot;&quot;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>之后运行打包命令，打开生成的html文件，我们即可看到引入的图片。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c1209c0e30e46968d9d375cae4350e2~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<blockquote>
+<p><strong>注意</strong> <br><br>
+如果图片的显示路径是&quot;[Object Module]&quot;，原因是url-loader默认试用ES6的方式解析，而html-loader引入的图片是commonjs，所以在解析时会报错。此时需要将url-loader的 <code>esModule</code> 属性设置为fasle:</p>
+<pre><code class="language-js">{
+  test: /\.(jpeg|png|gif|jpg)$/,
+  loader: 'url-loader',
+  options: {
+    limit: 8 * 1024,
+    name: '[name].[hash:10].[ext]',
+    esModule: false
+  },
+},
+</code></pre>
+</blockquote>
+<h1 id="打包其他资源">打包其他资源</h1>
+<p>打包其他资源（比如字体文件等不需要进过loader处理的文件）就是将其他资源原封不动原样输出。这需要用到 <code>file-loader</code>。在上述对css中的图片进行打包时，我们已经安装过这个包了。接下来的配置很简单 ，只需要在 <code>webpack.config.js</code> 中加入如下配置：</p>
+<pre><code class="language-js">{
+    exclude: /\.(html|js|css|sass)$/,
+    loader: 'file-loader',
+    options: {
+      name: '[name]-[hash:10].[ext]'
+    }
+}
+</code></pre>
+<p>与其他loader配置不同的是，我们不需要用test的属性去匹配具体格式的文件，而是通过exclude的方式将不需要处理的文件排除出去，之后通过file-loader进行处理输出即可。</p>
+<h1 id="devserver">devServer</h1>
+<p>在日常开发过程中，我们通常会在本地启动一个服务用来做一些诸如自动编译，自动刷新等等的自动化操作。此时，我们需要用到 <code>devServer</code>。相对于打包输出文件到对应目录，<strong>devServer不会有任何文件输出</strong>。</p>
+<h3 id="安装-4">安装</h3>
+<pre><code class="language-js">yarn add -D webpack-dev-server
+</code></pre>
+<h3 id="配置-4">配置</h3>
+<p>在 <code>webpack.config.js</code> 文件下，我们加入以下配置：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [/*...*/]
+  },
+  plugins: [
+    /* ... */
+  ],
+  mode: 'development',
+  devServer: {
+    // 设置运行的项目路径
+    contentBase: resolve(__dirname, 'build'),
+    // 启动后打开浏览器
+    open: true,
+    // 启动gzip压缩
+    compress: true,
+    // 端口配置
+    port: 3000
+  }
+}
+</code></pre>
+<h3 id="启动">启动</h3>
+<p>配置完成后，我们可以在控制台中输入启动命令（也可以将启动命令写入 <code>package.json</code> 文件中）：</p>
+<pre><code class="language-js">npx webpack-dev-server
+</code></pre>
+<p>启动完成后，会自动唤起浏览器，打开端口为3000的本地页面，并且当我们对代码进行修改时，它会自动监听代码的改动进行自动编译，并刷新页面。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[控制台的一些调试技巧]]></title>
+        <id>https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/</id>
+        <link href="https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/">
+        </link>
+        <updated>2021-12-24T08:37:35.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="copying-saving">copying &amp; saving</h1>
+<h3 id="copy方法">copy()方法</h3>
+<p>通过这个方法，可以复制指定的值到剪切板。引用类型的值被拷贝之后，可以得到格式化后的结果。例如：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/15d1a892a2d04468902b4fabacc82f17~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h3 id="store-as-global-存储为一个全局变量">store as global (存储为一个全局变量)</h3>
+<p>在值上右键，选择Store as global variable，可以把这个值变成全局变量，第一次操作，自动创建全局变量   temp1，第二次为temp2，以此类推。</p>
+<h3 id="保存堆栈信息-stack-trace">保存堆栈信息 (stack trace)</h3>
+<p>团队协作时，可以把打印出来的报错信息右键另存为文件，然后将文件发送给其他同事。</p>
+<h1 id="一些快捷键">一些快捷键</h1>
+<ol>
+<li>
+<p>在PC与M站开发切换时， 遇到调试后台位置需要切换的情况时，我们通常会选择点击控制台的快捷按钮来调整控制台的显示位置，此时，我们也可以使用 <code>command+shift+D</code> 快捷键进行切换；</p>
+</li>
+<li>
+<p>控制台有很多面板，诸如Console、Element、Network。。(BALABALA...)，日常切换我们可能会通过鼠标或者触控板去点击切换，此时，我们也可以使用 <code>command+[</code> 以及 <code>command+]</code> 进行左右切换；</p>
+</li>
+<li>
+<p>在调试样式的时候，需要修改数值，除了可以直接选择进行修改以外，我们也有快捷增减的方式，方式如下：</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>上下箭头：每次增减1;</li>
+<li>shift + 上下箭头： 每次增减10;</li>
+<li>command + 上下箭头：每次增减100;</li>
+<li>option + 上下箭头：每次增减0.1;</li>
+</ul>
+</blockquote>
+<h1 id="一些命令">一些命令</h1>
+<ol>
+<li>在控制台中，通过快捷键command + shift + p，可以看到一些指令，主要分为以下几类：</li>
+</ol>
+<blockquote>
+<ul>
+<li>Panel</li>
+<li>Drawer</li>
+<li>Appearance</li>
+<li>Console</li>
+<li>DevTools</li>
+<li>Elements</li>
+<li>Help</li>
+<li>Mobile</li>
+<li>Navigation</li>
+<li>Network</li>
+<li>Performance</li>
+<li>Persistence</li>
+<li>Rendering</li>
+<li>Resources</li>
+<li>Screenshot</li>
+<li>Settings</li>
+<li>Sources</li>
+</ul>
+</blockquote>
+<p>一些好用的指令：</p>
+<blockquote>
+<ol>
+<li>截屏：我们可以在弹出来的面板中搜索screen，然后可以看到Screenshot的几个选项：</li>
+</ol>
+<ul>
+<li>Capture area screenshoot: 选中该功能后，用户可以自由选择截图区域（请自行脑补微信截图谢谢）；</li>
+<li>Capture full size screenshoot：截取真个网页（不是当前视口的截图，而是整个网页的完整截图）；</li>
+<li>Capture node screenshoot: 在选中某个节点后，可以使用该功能截取对应节点；</li>
+<li>Capture screenshoot：该功能是截取开启控制面板后页面的可视区域。</li>
+</ul>
+<ol start="2">
+<li>切换主题：在弹出的面板中搜索theme，可以切换黑色主题或者白色主题；</li>
+<li>快速显示某个选项：在弹出的面板中搜索panel，可以快速显示某个选项卡；</li>
+<li>快速显示Drawer面板以及Drawer面板中的某些选项卡：在弹出的面板中搜索Drawer进行切换即可；</li>
+<li>想要测试在较慢网速下的加载情况，可以调到3g模式，搜索netWork即可找到该项配置；</li>
+<li>通过Console下的show TimeStamps功能，可以给打印的console字段加上时间戳。</li>
+</ol>
+</blockquote>
+<ol start="2">
+<li>在source面板，通过command + P快捷键，调出面板，输入: <code>+ 数字</code> ，可以跳转到对应的行数</li>
+</ol>
+<h1 id="代码块的使用">代码块的使用</h1>
+<p>我们可以把一些JS代码块放到DevTools中，然后可以复用这些代码块。在Sources面板中，选择左侧菜单中的<code>Snippets</code> 功能，然后输入你想要复用的代码，然后保存即可。通过快捷键 <code>command + enter</code> 可以运行代码。在其他面板中，通过 <code>command + p</code> 快捷键调出命令面板，键入 <code>! + 保存的代码块名称</code>，也可以直接运行先前保存的代码。</p>
+<h1 id="console中的">console中的 ‘$’</h1>
+<ol>
+<li><code>$0</code> 指代的是当前我们选中的节点，<code>$1</code>指我们前一次选中的DOM节点，<code>$2</code> 指上上次，以此类推，一直到<code>$4</code>;</li>
+<li><code>$</code> 和 <code>$$</code>: 如果没有引入JQ或者重定义过<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">，</mi><mi mathvariant="normal">那</mi><mi mathvariant="normal">么</mi></mrow><annotation encoding="application/x-tex">，那么</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">那</span><span class="mord cjk_fallback">么</span></span></span></span>则是 <code>document.querySelector</code> 的别名，即:<code>$('div') === document.querySelector('div')</code>；而 <code>$$</code> 则是 <code>document.querySelectorAll</code>，返回的是符合条件的节点数组；</li>
+<li>如果你想查看上一次的执行结果，可以通过 <code>$_</code> 查看；</li>
+<li><code>$i</code>: 这个就厉害了，是在控制面板中使用npm包，需要配合一个chrome插件：<code>Console Importer</code>, 然后在console面板中使用 <code>$i</code> 命令。例如：<code>$i('lodash')</code>, 然后就可以在面板中使用lodash的功能。当然，这个也可以引入一些库。</li>
+</ol>
+<h1 id="镜像方法">镜像方法</h1>
+<h3 id="monitor">monitor</h3>
+<p>这个方法可以追踪方法的调用，然后在调用这个方法时，控制台会打印出方法名以及传入的参数例如：先定义一个类：</p>
+<pre><code class="language-js">class Person {
+  constructor(name, role) {
+    this.name = name;
+    this.role = role;
+  }
+  greet() {
+    return this.getMessage('greeting');
+  }
+  getMessage(type) {
+    if (type === 'greeting') {
+      return `Hello, I'm ${this.name}!`;
+    }
+  }
+}
+</code></pre>
+<p>然后在控制台中输入:</p>
+<pre><code class="language-js">let Json = new Person('Json')
+monitor(Json.getMessage) // 追踪getMessage方法
+Json.greet()
+// 此时输出如下
+// function getMessage called with arguments: greeting
+// &quot;Hello, I'm Json!&quot;
+// 可以看到输出了被调用方法的名称“getMessage”以及调用这个方法时传入的参数“greeting”
+</code></pre>
+<p>通过这种方式，可以减少我们使用console的次数，不用在getMessage中使用console去打印传入的参数。通        过 <code>unmonitor</code> 可以取消镜像。</p>
+<h3 id="monitorevents-镜像事件方法">monitorEvents 镜像事件方法</h3>
+<p>该方法可以镜像events的一些方法，例如：<code>monitorEvents($0, 'click')</code>，这个可以镜像click方法，然后点击每个元素的时候会返回click方法名以及参数。通过unmonitorEvents方法可以取消镜像。</p>
+<h1 id="console的一些操作">console的一些操作</h1>
+<h3 id="consoleassert">console.assert()</h3>
+<p>当该方法的第一个参数为false时，会打印出后面的信息，也可以看到堆栈信息。通过这种方式，我们可以减少if条件语句的使用:</p>
+<pre><code class="language-js">let a = null
+console.assert(a, 'error')
+// 如果用if改写
+if (!a) console.log('errror')
+</code></pre>
+<h3 id="consolelog">console.log({...})</h3>
+<p>当我们需要打印多个值的时候，直接使用console.log()打印出来的是值的列表，但是看起来不太方便，无法对应到具体的值:</p>
+<pre><code class="language-js">const a = 1
+const b = 'test'
+const c = +new Date()
+console.log(a, b, c) // 1 &quot;test&quot; 1570695681442
+// 这时候，我们可以改写一下
+console.log({a, b, c}) // {a: 1, b: &quot;test&quot;, c: 1570695681442}
+// 此时可以比较清楚的看到变量名与值之间的对应
+</code></pre>
+<h3 id="consoletable">console.table()</h3>
+<p>相较于 <code>console.log</code>, 这种方式可以把数组或者对象类型的值，打印成表格的形式，更加直观，配合上面的方式，也可以打印多个值：<code>console.table({a, b, c})</code>；</p>
+<h3 id="consoledir">console.dir()</h3>
+<p>输出某一节点的详细信息，包括节点上的属性等等；</p>
+<h3 id="c">%c</h3>
+<p>我们可以通过在console.log的内容前加上 <code>'%c'</code> 的方式来给打印的内容添加样式 <strong>(注意：'%c'与打印的内容之间需要用空格隔开)</strong>，例如：</p>
+<pre><code class="language-js">console.log('%c test', 'font-size:13px;color:red;')
+</code></pre>
+<h3 id="实时表达式">实时表达式</h3>
+<p>在console面板下，有个长得像眼睛的玩意：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/25c621a3c8714708a1b923a02aa3b588~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+通过这个按钮，我们可以创建一个实时表达式，表达式的值会不断更新。</p>
+<h1 id="重新发送接口请求">重新发送接口请求</h1>
+<p>可以右键某一个请求，选择replay XHR，而不用通过刷新页面的方式；</p>
+<h1 id="元素面板的一些技巧">元素面板的一些技巧</h1>
+<ol>
+<li>
+<p>选中某个DOM元素，通过H键控制该DOM元素的显示跟隐藏；</p>
+</li>
+<li>
+<p>在样式面板中，可以点开box-shadow的编辑面板直接编辑，而非通过改值的方式:<br>
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9ba73e76797146888dd9d6281dbac942~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>通过样式面板右下角的快捷按钮也可以快速调整样式:<br>
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9c785bf31864493be2375eec90a57a3~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>一次性展开所有的DOM节点：如果想查看某个父节点下的子节点，如果子节点的层级较深，通过点箭头展开的方式太过麻烦，可以使用 <code>expand recursively</code> 命令一次性展开该节点下的所有子节点；</p>
+</li>
+<li>
+<p>DOM断点：通过选择对应节点Break on中的设置来监听DOM的操作，主要有如下三种设置：</p>
+</li>
+</ol>
+<blockquote>
+<ul>
+<li>subtree modifications: 监听该节点内部节点被移除或者添加的事件；</li>
+<li>attribute modifications: 监听选中节点属性的添加，移除或修改的事件；</li>
+<li>node removal：监听选中元素被移除的事件。</li>
+</ul>
+</blockquote>
+<h1 id="drawer面板">Drawer面板</h1>
+<p>Drawer面板是与主面板平行的一组面板，隐藏在主面板之下，通过点击esc键可以控制显示或者隐藏。<br>
+Drawer中有几个有趣的属性:</p>
+<ol>
+<li>控制传感器：当我们需要模拟测试陀旋仪或者测试一些获取地理位置的API时，可以使用Senors选项；</li>
+<li>模拟网络状态：我们可以通过Network conditions属性控制网络的状态，甚至可以控制离线；</li>
+<li>检查修改的内容：当我们在控制面板中对样式做出修改时，我们可以通过changes看到所有的变化，并可以看到修改前后的对比（请自行脑补GIT谢谢~）。然后可以撤销所有改动；</li>
+<li>代码检查：coverage属性可以用来检查当前加载的JS与CSS文件的那些行正在被执行，并显示未使用字节的百分比。其中，运行的用绿线表示，未运行的用红线表示。</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[利用Git Actions部署vuepress]]></title>
+        <id>https://luhaifeng666.github.io/post/li-yong-git-actions-bu-shu-vuepress/</id>
+        <link href="https://luhaifeng666.github.io/post/li-yong-git-actions-bu-shu-vuepress/">
+        </link>
+        <updated>2021-12-24T08:36:22.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<p>最近打算在git上发布一个学习笔记文档，文档使用 <code>vuepress</code> 搭建，然后发布到git的pages上。考虑到每次发布都需要手动deploy一把，有点繁琐，于是乎打算使用git的 <code>Actions</code> 功能将这个手动的过程自动化。</p>
+<h1 id="开始">开始</h1>
+<h2 id="初始化vupress项目">初始化vupress项目</h2>
+<p>关于vuepress项目的初始化，官网已经给出了非常详细的操作步骤，可以移步至<a href="https://vuepress.vuejs.org/zh/guide/getting-started.html">官网</a>查看。</p>
+<h2 id="部署">部署</h2>
+<h3 id="第一步-配置pages">第一步: 配置pages</h3>
+<p>关于pages的配置方法，vuepress官网也给出了详尽的描述：<a href="https://vuepress.vuejs.org/zh/guide/deploy.html#github-pages">GitPages</a>。</p>
+<h3 id="第二步-设置deploy-key-以及-secrets">第二步: 设置Deploy Key 以及 Secrets</h3>
+<p>后面发布时，需要将构建后的代码推送到代码仓库，所以需要Git的秘钥。</p>
+<p>首先通过以下命令生成私钥跟公钥：</p>
+<pre><code>ssh-keygen -t rsa -C '邮箱地址'
+</code></pre>
+<p>生成后，打开Git项目的设置，选择 <code>Deploy keys</code>新建deploy key，将公钥的内容填入：</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3be33455d934152b424ecd4e5b70b2a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>之后再选择 <code>Secrets</code> 选项，新建私钥，将私钥内容填入：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ed4aa1c2cc64923b163e6b4fa98b5e2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h3 id="第三步-新建action">第三步: 新建Action</h3>
+<p>选择 <code>Actions</code>， 新建一个workflow。在Actions界面，Git会提供一些模板供我们使用，这里我们选择默认的即可</p>
+<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/457b7538384c4f3d8872a7269b3aa9c4~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>新建完成后，会默认在我们的项目下生成一个 <code>.github/workflows/blank.yml</code> 文件，用于配置脚本, 我们将其稍作修改：</p>
+<pre><code class="language-js"># ci脚本的名称
+name: VUE3-STUDY DOCS CI
+# 触发的时机
+on:
+  # 在push阶段触发
+  push:
+    # 对应的分支
+    branches: [ main ]
+  # 在PR阶段触发
+  pull_request:
+    # 对应的分支
+    branches: [ main ]
+# 执行的任务
+jobs:
+  # 任务名称
+  build:
+    # 执行的环境，默认是在最新版本的Ubuntu系统
+    runs-on: ubuntu-latest
+    # 执行的步骤
+    steps:
+      # checkout代码
+      # 其中actions是github官方账号，checkout是改账号下提供的库，可以直接拿来使用，对应的版本是v2
+      # setup-node同上
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        # 设置node的版本
+        with:
+          node-version: '14'
+        # 执行步骤的名称
+      - name: Compiling start
+        # 执行的具体脚本
+        run: echo Compiling start!
+        # 如果在执行的时候报错，提示需要用户名跟邮箱，那么需要单独设置下邮箱跟用户名
+      - run: git config --global user.email &quot;your email address&quot;
+      - run: git config --global user.name &quot;your user name&quot;
+        # 执行安装跟打包命令
+      - run: npm install &amp;&amp; npm run docs:build
+      - name: Deploy
+        # 这个是第三方提供的库，可以推送打包后的内容到指定分支
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # 这边需要设置第二步获取到的deploy key，否则会提示没有权限推送代码
+          deploy_key: ${{ secrets.VUE3STUDY }}
+          # 推送到该仓库中，地址格式为github名称/仓库名
+          external_repository: xxx/xxx
+          # 推送的分支
+          publish_branch: gh-pages
+          # 推送的内容
+          publish_dir: docs/.vuepress/dist
+</code></pre>
+<p>配置完成后，将内容push上去，action就会自动执行了：</p>
+<figure data-type="image" tabindex="4"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1a0ae8e55e714f669f0d91afbd8c3ece~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>等待执行完毕后，即可查看页面~</p>
+<h1 id="写在最后">写在最后</h1>
+<p>本文是关于git actions的一次简单尝试，有兴趣的同学可以去参考<a href="https://docs.github.com/en/actions/learn-github-actions">git aciton官方文档</a>去做进一步研究~</p>
+<p>文中所述文档已部署，<a href="https://luhaifeng666.github.io/vue3-study/">欢迎戳</a>~</p>
+<p><a href="https://github.com/luhaifeng666/vue3-study">Git地址</a>, 欢迎⭐️交流~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[通过Git Actions自动创建issues]]></title>
+        <id>https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/</id>
+        <link href="https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/">
+        </link>
+        <updated>2021-12-24T08:34:12.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="前言">前言</h1>
+<p>最近在刷LeetCode上的题，想着怎么着得搞个文档记录下题目、思路跟解法吧，刚好前阵子使用GitHub的<code>Actions</code>，结合 <code>vuepress</code> ，将文章自动部署到了GitHub的pages上。那不如也在GitHub上建个算法的文档呗。</p>
+<p>但是算法的解题方法跟思路不一定只有几个，不同语言的实现方式也是不尽相同的，既如此，那就针对不同的算法题创建对应的issue作为评论区，以供大佬们展示各自的骚操作，这样一来，岂不是美滋儿滋儿~</p>
+<figure data-type="image" tabindex="1"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d2092390eb6344468ebfd67edf032dac~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>但是手动创建这些个issues显然不够优雅，既然已经尝过 <code>Actions</code> 的甜头了，那这个活儿就交给它去做吧！</p>
+<p>（Actions过来下！来活儿了！）</p>
+<pre><code>注：本文主要分享如何利用Actions自动创建issues，关于如果自动部署文档的方法，具体可以参考我的上一篇文章：
+https://juejin.cn/post/7029247758582153252
+</code></pre>
+<h1 id="开始">开始</h1>
+<p>想要完成如题所述的功能，主要有两个步骤：</p>
+<pre><code>1. 创建issue
+2. 通过Actions，将创建issue的过程自动化
+</code></pre>
+<h2 id="创建issue">创建issue</h2>
+<p>这里创建issue的方式肯定不是手动去GitHub的项目下创建。</p>
+<div align="center">
+<figure data-type="image" tabindex="2"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ac99a913c4c9433db885416e5fe880f6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+</div>
+<p>这里推荐一个库：<code>octokit</code>。这个库提供了操作GitHub的能力，在这里，我们使用它来帮助我们创建issue。</p>
+<p>当然，它所提供的能力不只是可以操作GitHub，官方所给的描述如下：</p>
+<pre><code>The `octokit` package integrates the three main Octokit libraries
+1.  **API client** (REST API requests, GraphQL API queries, Authentication)
+2.  **App client** (GitHub App &amp; installations, Webhooks, OAuth)
+3.  **Action client** (Pre-authenticated API client for single repository)
+</code></pre>
+<p>有兴趣的小伙伴可以<a href="https://www.npmjs.com/package/octokit">戳链接</a>自行探究，这里不做过多赘述~</p>
+<h4 id="第一步老规矩既然要用到它那就先安装一把">第一步：老规矩，既然要用到它，那就先安装一把：</h4>
+<pre><code>yarn add -D octokit
+</code></pre>
+<h4 id="第二步新建创建issue的执行文件">第二步：新建创建issue的执行文件</h4>
+<p>将刚才安装的 <code>octokit</code> 引入进来，开始编写创建issue的逻辑。</p>
+<pre><code class="language-js">// utils/createIssues.js
+
+const { Octokit } = require(&quot;octokit&quot;)
+// 初始化，这里需要传入GitHub账号的token
+const octokit = new Octokit({ auth: 'your token' })
+
+octokit.rest.issues.create({
+  owner: &quot;your name&quot;, // GitHub账户名
+  repo: &quot;your project name&quot; // 项目名称
+  title: '删除排序数组中的重复项', // issue标题
+  body: '关于删除排序数组中的重复项的更多解法，欢迎在issue中讨论~' // issue描述
+})
+</code></pre>
+<p>初始化 <code>octokit</code> 的时候，需要GitHub账户的token，可以去账户设置中新建一个</p>
+<figure data-type="image" tabindex="3"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f211f33ab11a42e9a9c33e9d04266ace~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>文件创建完成后，在控制台中尝试运行下，看看是否已经可以创建issue了。<br>
+首先在 <code>package.json</code> 的 <code>scripts</code> 中添加 <code>create:issue</code> 命令</p>
+<pre><code>scripts: {
+  &quot;create:issue&quot;: &quot;node utils/createIssues.js&quot;
+}
+</code></pre>
+<p>然后执行</p>
+<pre><code>yarn create:issue
+</code></pre>
+<p>执行完脚本后，到GitHub相应的项目目录下，点开 <code>Issues</code> 选项：</p>
+<figure data-type="image" tabindex="4"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d0905d145ccf49febddc5c439380f401~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>当当~ 此时我们已经可以看到issue被成功创建！至此，我们第一个功能点就已经完成了！（撒花~）</p>
+<h2 id="通过actions将创建issue的过程自动化">通过Actions，将创建issue的过程自动化</h2>
+<p>现在，我们需要把创建issue的过程自动化。在这里，我们通过官方提供的<a href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action">创建Javascript的actions</a>的方式来完成这个功能。</p>
+<h4 id="第一步创建操作元数据文件">第一步：创建操作元数据文件</h4>
+<p>在项目根目录下，创建 <code>action.yml</code>文件：</p>
+<pre><code class="language-yml">name: 'GET TOKEN' # 名称
+description: 'Get secrets token' # 描述
+runs:
+  using: 'node12' # 指定在node12的环境中执行
+  main: 'utils/createIssues.js' # 指定需要执行的文件
+</code></pre>
+<h4 id="第二步新建action">第二步：新建Action</h4>
+<p>在GitHub项目中，选择 <code>Actions</code>， 新建一个workflow。在Actions界面，Git会提供一些模板供我们使用，这里我们选择默认的即可：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aef627edb4f24dd98ae35a18359c7994~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
+新建完成后，会默认在我们的项目下生成一个 <code>.github/workflows/blank.yml</code> 文件，用于配置脚本, 我们将其稍作修改：</p>
+<pre><code># action名称
+name: CREATE ISSUES
+
+# action执行时机
+on:
+  # 在push时执行
+  push:
+    # 分支指定为master
+    branches: [ master ]
+  # 在PR阶段执行
+  pull_request:
+    # 分支指定为master
+    branches: [ master ]
+# 执行的任务列表
+jobs:
+  build:
+    # 在ubuntu-latest平台执行
+    runs-on: ubuntu-latest
+
+    # 执行步骤
+    steps:
+      # 执行名称
+      - name: Checkout
+        # checkout代码
+        uses: actions/checkout@v2
+      - name: Install packages
+        # 安装包
+        run: npm install
+      - name: Create an issue
+        uses: ./ # 使用根目录下的action.yml
+</code></pre>
+<h4 id="第三步验证-发现问题">第三步：验证 &amp;&amp; 发现问题</h4>
+<p>action创建完成并提交后，我们切到GitHub的 <code>Actions</code> 选项，等待脚本执行结束，此时再切换到 <code>Issues</code> 选项，此时发现，issue并没有被成功创建！此时不禁张飞问号：</p>
+<div align="center">
+<figure data-type="image" tabindex="5"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89d447f78706427985cfeef6b2316ec8~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+</div>
+<p>原因是什么呢？我们点开控制台看下问题所在：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e58c1ae1d8a045168b124df5ed907fd6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
+简而言之，就是token已经失效了！</p>
+<p>那token为什么会失效呢？问题出在我们创建issue的 <code>utils/createIssues.js</code> 上。在这个文件里，我们初始化 <code>octokit</code> 时所传入的token是明文传入的，在上传执行action的时候，token会立即失效。</p>
+<h4 id="第四步解决问题">第四步：解决问题</h4>
+<p>不懂就问：那要怎么第三步中的问题呢？<br><br>
+答：既然问题出在明文传入token上，那咱们就不明文传入token呗！<br><br>
+不懂再问：那如何在 <code>utils/createIssue.js</code> 中以不明文的方式获取到token呢？<br><br>
+答：官方提供了一个工具包：<a href="https://github.com/actions/toolkit/tree/main/packages/core">@actions/core</a>。<br>
+通过这个包，我们可以获取到action中传过来的内容。</p>
+<h5 id="解决问题第一式老规矩既然要用它那我们就安装它">解决问题第一式：老规矩，既然要用它，那我们就安装它！</h5>
+<pre><code>yarn add -D @actions/core
+</code></pre>
+<h5 id="解决问题第二式修改action执行脚本">解决问题第二式：修改action执行脚本</h5>
+<p>既然说要通过action来获取token，那我们首先要让它抛出来才行。</p>
+<p>回到用户设置界面，我们重新生成一个token，并将这个token设置到 <strong>项目设置中的 <code>Secrets</code> 选项中</strong>:</p>
+<figure data-type="image" tabindex="6"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/796408d0d7db417a90d9b197b4fee579~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>之后对脚本文件稍作修改，加入 <code>with</code> 配置</p>
+<pre><code> # 省略前方好多代码...
+      - name: Create an issue
+        uses: ./ # 使用根目录下的action.yml
+        with:
+          token: ${{ secrets.TOKEN }} # 将TOKEN抛出
+</code></pre>
+<h5 id="解决问题第三式修改actionyml文件定义输入项用于接受token">解决问题第三式：修改action.yml文件，定义输入项，用于接受token</h5>
+<pre><code class="language-yml">name: 'GET TOKEN' # 名称
+description: 'Get secrets token' # 描述
+# 定义输入项
+inputs:
+  token:  # 输入项的名称
+    description: 'Get secrets token' # 输入项的描述
+    required: true # 输入项是否必须
+runs:
+  using: 'node12' # 指定在node12的环境中执行
+  main: 'utils/createIssues.js' # 指定需要执行的文件
+</code></pre>
+<h5 id="解决问题第四式设置token">解决问题第四式：设置token</h5>
+<p>在 <code>utils/createIssues.js</code> 文件中添加 <code>@actions/core</code> 的引用，并获取token：</p>
+<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;)
+const core = require('@actions/core')
+
+const auth = core.getInput('token')
+const octokit = new Octokit({ auth })
+
+octokit.rest.issues.create({
+  owner: &quot;your name&quot;, // GitHub账户名
+  repo: &quot;your project name&quot; // 项目名称
+  title: '删除排序数组中的重复项', // issue标题
+  body: '关于删除排序数组中的重复项的更多解法，欢迎在issue中讨论~' // issue描述
+})
+</code></pre>
+<p>而后提交修改项，再次查看GitHub中的 <code>Actions</code> 选项，发现脚本运行无误，且 <code>Issues</code> 中也已经出现了新建的issue。</p>
+<p>行文至此，功能完成已告一段落~</p>
+<h2 id="思考">思考</h2>
+<p>通过上面的操作，我们现在已经实现了自动创建issue的功能，但是功能还不够完美，主要还存在以下两个问题：</p>
+<pre><code>1. 每次更新完文档，我必须手动修改issue的title与body，来保证我创建issue的正确性，这显然是不行的；
+2. 每次重新执行，我如何保证issue没有被重复创建呢？
+</code></pre>
+<p>那该如何解决呢？</p>
+<h4 id="针对问题1">针对问题1:</h4>
+<p>既然不想手动，那就自动嘛~在 <code>docs/.vuepress/config.js</code> 中，我们可以获取到sidebar的配置，通过这个配置，我必然有方法可以获取到标题信息。</p>
+<p>在这里，我借助了一个库：<a href="https://npmmirror.com/package/markdown-to-ast">markdown-to-ast</a>。这个库可以将markdown文件内容转换成 <code>AST</code>,我可以借此获取到标题内容：</p>
+<pre><code class="language-js">const vuepressConfig = require(&quot;../docs/.vuepress/config&quot;)
+const fs = require(&quot;fs&quot;)
+const path = require(&quot;path&quot;)
+const { parse } = require(&quot;markdown-to-ast&quot;)
+
+const baseDir = '/notes/exercises/'
+// 获取习题文件
+const { themeConfig: { sidebar } } = vuepressConfig
+const exercisesSidebar = sidebar[`${baseDir}`]
+const exercisesFiles = exercisesSidebar.reduce((files, item) =&gt; {
+ if ( item &amp;&amp; item.children ) {
+  files.push(...item.children)
+ }
+ return files
+}, [])
+// 获取标题与文件路径对应关系
+const docs = exercisesFiles.map(fileDir =&gt; {
+ const content = fs.readFileSync(path.resolve(__dirname, '../', `docs${baseDir}${fileDir}`), {
+  encoding: 'utf-8'
+ })
+ const { children } = parse(content)
+ const titleConfig = children.filter(ch =&gt; ch.type === 'Header' &amp;&amp; ch.depth === 1)
+ let title = ''
+ if (titleConfig &amp;&amp; titleConfig.length) title = titleConfig[0].raw.replace('# ', '')
+ return {
+  title,
+  fileDir
+ }
+})
+
+module.exports = { exercisesSidebar, exercisesFiles, docs }
+</code></pre>
+<p>之后我只需要在 <code>utils/createIssues.js</code> 中引入 <code>docs</code>，遍历获取 <code>title</code> 即可：</p>
+<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;);
+const core = require('@actions/core');
+const { docs } = require('./getAllDocs')
+
+const auth = core.getInput('token')
+const octokit = new Octokit({ auth })
+
+const titles = docs.filter(doc =&gt; doc.title)
+
+titles.forEach(title =&gt; {
+ octokit.rest.issues.create({
+  owner: &quot;your name&quot;,
+  repo: &quot;your project name&quot;,
+  title,
+  body: `关于${title}的更多解法，欢迎在issue中讨论~`
+ });
+})
+</code></pre>
+<h3 id="针对问题2">针对问题2：</h3>
+<p>那又该如何避免同名issue重复创建的问题呢？<br><br>
+如果我可以获取到当前已经被创建的活跃issues列表，然后做下筛选剔除，不就可以解决这个问题了么？<br><br>
+那我该如何获取到当前已创建的活跃issues呢？<br><br>
+答案是使用上文中我们提到的 <code>octokit</code> 库。它提供了获取活跃issues列表的方式：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/690a5da59beb4de8a799bf031bddca2a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"><br>
+我们再次对 <code>utils/createIssues.js</code> 文件做些修改：</p>
+<pre><code class="language-js">const { Octokit } = require(&quot;octokit&quot;);
+const core = require('@actions/core');
+const { docs } = require('./getAllDocs')
+
+const auth = core.getInput('token')
+const octokit = new Octokit({ auth })
+
+// 定义项目通用参数
+const REPO_INFO = {
+ owner: &quot;your name&quot;,
+ repo: &quot;your project name&quot;
+}
+// 获取所有issues
+async function getAllIssues () {
+ return await octokit.paginate(octokit.rest.issues.listForRepo, {
+  ...REPO_INFO,
+  per_page: 100,
+ })
+}
+getAllIssues().then(data =&gt; {
+ if (data &amp;&amp; data.length) {
+  let issuesList = data.map(issue =&gt; issue.title)
+  // 获取没有创建issue的标题
+  const titles = docs.filter(doc =&gt; !issuesList.includes(doc.title))
+  // 将没有创建issue的算法都创建对应的issue
+  titles.forEach(item =&gt; {
+   const { title } = item
+   octokit.rest.issues.create({
+    ...REPO_INFO,
+    title,
+    body: `关于${title}的更多解法，欢迎在issue中讨论~`
+   });
+  })
+ }
+}).catch(err =&gt; { console.log(err) })
+</code></pre>
+<p>这样一来，我们就可以过滤到已经创建过的issues，完美解决这个问题~~</p>
+<div align="center">
+<figure data-type="image" tabindex="7"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/14fb25ef883248ffac27d7f59e1853a2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+</div>
+<h1 id="结语">结语</h1>
+<p>行文至此，我们已经完成了通过GitHub Actions自动创建issues的功能。</p>
+<p>有关于此文的项目跟源码，感兴趣的小伙伴可以<a href="https://github.com/luhaifeng666/arithmetic-practice">戳这里~</a>。欢迎小伙伴儿们star，并在issues中留下自己的骚操作~</p>
+<p>此文中所提到的文档地址也已部署，可以<a href="https://luhaifeng666.github.io/arithmetic-practice/">戳这里~</a></p>
+<h1 id="参考文档-视频">参考文档 &amp;&amp; 视频</h1>
+<p><a href="https://www.bilibili.com/video/BV1F34y1U7JT">崔大的教学视频~</a></p>
+<p><a href="https://juejin.cn/post/7029247758582153252">利用Git Actions部署vuepress</a></p>
+<p><a href="https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action">创建Javascript的actions</a></p>
+<p><a href="https://www.npmjs.com/package/octokit">octokit</a></p>
+<p><a href="https://github.com/actions/toolkit/tree/main/packages/core">@actions/core</a></p>
+<p><a href="https://npmmirror.com/package/markdown-to-ast">markdown-to-ast</a></p>
 ]]></content>
     </entry>
 </feed>

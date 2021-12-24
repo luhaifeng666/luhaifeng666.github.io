@@ -1,120 +1,250 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>酱豆腐精的小站</title>
-<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640327710483">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+    <meta charset="utf-8" >
+
+<title>文章归档 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
 <link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="酱豆腐精的小站 - Atom Feed" href="https://luhaifeng666.github.io/atom.xml">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="我吹，你听" />
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="我吹，你听">
   </head>
   <body>
-    <div class="main">
-      <div class="main-content">
-        <div class="site-header">
-  <a href="https://luhaifeng666.github.io">
-  <img class="avatar" src="https://luhaifeng666.github.io/images/avatar.png?v=1640327710483" alt="">
-  </a>
-  <h1 class="site-title">
-    酱豆腐精的小站
-  </h1>
-  <p class="site-description">
-    我吹，你听
-  </p>
-  <div class="menu-container">
-    
-      
-        <a href="/" class="menu">
-          首页
-        </a>
-      
-    
-      
-        <a href="/archives" class="menu">
-          归档
-        </a>
-      
-    
-      
-        <a href="/tags" class="menu">
-          标签
-        </a>
-      
-    
-      
-        <a href="/post/about" class="menu">
-          关于
-        </a>
-      
-    
-  </div>
-  <div class="social-container">
-    
-      
-        <a href="https://github.com/luhaifeng666" target="_blank">
-          <i class="ri-github-line"></i>
-        </a>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-  </div>
-</div>
+    <div id="app" class="main">
 
-    
-        
-
-<div class="archives-container">
-  
-    <h2 class="year">2021</h2>
-    
-      
-        <a href="https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/" class="post">
-          <h2 class="post-title">
-            从零开始创建属于自己的脚手架工具
-          </h2>
-          <div class="time">2021-12-24</div>
-        </a>
-      
-    
-      
-        <a href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/" class="post">
-          <h2 class="post-title">
-            浏览器中+号的处理
-          </h2>
-          <div class="time">2021-12-24</div>
-        </a>
-      
-    
-  
-</div>
-
-    
-        <div class="pagination-container">
-  
-  
-</div>
-
-    
-        <div class="site-footer">
-  Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a>
-  <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">
-    <i class="ri-rss-line"></i> RSS
-  </a>
-</div>
-
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
       </div>
     </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          
+
+          <h2 class="archives-title">文章归档</h2>
+          <div class="archives-container">
+            
+              <h2 class="year" data-aos="fade-in" data-aos-delay="500">2021</h2>
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/">
+                      <h2 class="post-title">
+                        Webpack学习笔记一：一些基础知识
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-er-webpack-chu-ti-yan/">
+                      <h2 class="post-title">
+                        Webpack学习笔记二：Webpack初体验
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li/">
+                      <h2 class="post-title">
+                        Webpack学习笔记三：js的兼容性处理
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/">
+                      <h2 class="post-title">
+                        Webpack学习笔记四：eslint语法检查
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-wu-da-bao-css-wen-jian/">
+                      <h2 class="post-title">
+                        Webpack学习笔记五：打包css文件
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/">
+                      <h2 class="post-title">
+                        Webpack学习笔记六：css兼容性处理以及文件提取
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-qi-qi-ta-wen-jian-de-da-bao/">
+                      <h2 class="post-title">
+                        Webpack学习笔记七：其他文件的打包
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/">
+                      <h2 class="post-title">
+                        控制台的一些调试技巧
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/li-yong-git-actions-bu-shu-vuepress/">
+                      <h2 class="post-title">
+                        利用Git Actions部署vuepress
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/">
+                      <h2 class="post-title">
+                        通过Git Actions自动创建issues
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/">
+                      <h2 class="post-title">
+                        从零开始创建属于自己的脚手架工具
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+                
+                  <article class="post">
+                    <a href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/">
+                      <h2 class="post-title">
+                        浏览器中+号的处理
+                      </h2>
+                    </a>
+                  </article>
+                
+              
+            
+          </div>
+
+          <div class="pagination-container">
+  
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
   </body>
 </html>

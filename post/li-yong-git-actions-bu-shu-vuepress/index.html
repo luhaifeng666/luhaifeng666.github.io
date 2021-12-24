@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>利用Git Actions部署vuepress | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="背景
+最近打算在git上发布一个学习笔记文档，文档使用 vuepress 搭建，然后发布到git的pages上。考虑到每次发布都需要手动deploy一把，有点繁琐，于是乎打算使用git的 Actions 功能将这个手动的过程自动化。
+开始
+..." />
+    <meta name="keywords" content="学习" />
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">利用Git Actions部署vuepress</h2>
+            <div class="post-date">2021-12-24</div>
+            
+              <div class="feature-container" style="background-image: url('https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7b5e93e22c164c97910b2aa6827269c0~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp?')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="背景">背景</h1>
+<p>最近打算在git上发布一个学习笔记文档，文档使用 <code>vuepress</code> 搭建，然后发布到git的pages上。考虑到每次发布都需要手动deploy一把，有点繁琐，于是乎打算使用git的 <code>Actions</code> 功能将这个手动的过程自动化。</p>
+<h1 id="开始">开始</h1>
+<h2 id="初始化vupress项目">初始化vupress项目</h2>
+<p>关于vuepress项目的初始化，官网已经给出了非常详细的操作步骤，可以移步至<a href="https://vuepress.vuejs.org/zh/guide/getting-started.html">官网</a>查看。</p>
+<h2 id="部署">部署</h2>
+<h3 id="第一步-配置pages">第一步: 配置pages</h3>
+<p>关于pages的配置方法，vuepress官网也给出了详尽的描述：<a href="https://vuepress.vuejs.org/zh/guide/deploy.html#github-pages">GitPages</a>。</p>
+<h3 id="第二步-设置deploy-key-以及-secrets">第二步: 设置Deploy Key 以及 Secrets</h3>
+<p>后面发布时，需要将构建后的代码推送到代码仓库，所以需要Git的秘钥。</p>
+<p>首先通过以下命令生成私钥跟公钥：</p>
+<pre><code>ssh-keygen -t rsa -C '邮箱地址'
+</code></pre>
+<p>生成后，打开Git项目的设置，选择 <code>Deploy keys</code>新建deploy key，将公钥的内容填入：</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3be33455d934152b424ecd4e5b70b2a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>之后再选择 <code>Secrets</code> 选项，新建私钥，将私钥内容填入：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ed4aa1c2cc64923b163e6b4fa98b5e2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h3 id="第三步-新建action">第三步: 新建Action</h3>
+<p>选择 <code>Actions</code>， 新建一个workflow。在Actions界面，Git会提供一些模板供我们使用，这里我们选择默认的即可</p>
+<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/457b7538384c4f3d8872a7269b3aa9c4~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>新建完成后，会默认在我们的项目下生成一个 <code>.github/workflows/blank.yml</code> 文件，用于配置脚本, 我们将其稍作修改：</p>
+<pre><code class="language-js"># ci脚本的名称
+name: VUE3-STUDY DOCS CI
+# 触发的时机
+on:
+  # 在push阶段触发
+  push:
+    # 对应的分支
+    branches: [ main ]
+  # 在PR阶段触发
+  pull_request:
+    # 对应的分支
+    branches: [ main ]
+# 执行的任务
+jobs:
+  # 任务名称
+  build:
+    # 执行的环境，默认是在最新版本的Ubuntu系统
+    runs-on: ubuntu-latest
+    # 执行的步骤
+    steps:
+      # checkout代码
+      # 其中actions是github官方账号，checkout是改账号下提供的库，可以直接拿来使用，对应的版本是v2
+      # setup-node同上
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        # 设置node的版本
+        with:
+          node-version: '14'
+        # 执行步骤的名称
+      - name: Compiling start
+        # 执行的具体脚本
+        run: echo Compiling start!
+        # 如果在执行的时候报错，提示需要用户名跟邮箱，那么需要单独设置下邮箱跟用户名
+      - run: git config --global user.email &quot;your email address&quot;
+      - run: git config --global user.name &quot;your user name&quot;
+        # 执行安装跟打包命令
+      - run: npm install &amp;&amp; npm run docs:build
+      - name: Deploy
+        # 这个是第三方提供的库，可以推送打包后的内容到指定分支
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # 这边需要设置第二步获取到的deploy key，否则会提示没有权限推送代码
+          deploy_key: ${{ secrets.VUE3STUDY }}
+          # 推送到该仓库中，地址格式为github名称/仓库名
+          external_repository: xxx/xxx
+          # 推送的分支
+          publish_branch: gh-pages
+          # 推送的内容
+          publish_dir: docs/.vuepress/dist
+</code></pre>
+<p>配置完成后，将内容push上去，action就会自动执行了：</p>
+<figure data-type="image" tabindex="4"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1a0ae8e55e714f669f0d91afbd8c3ece~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>等待执行完毕后，即可查看页面~</p>
+<h1 id="写在最后">写在最后</h1>
+<p>本文是关于git actions的一次简单尝试，有兴趣的同学可以去参考<a href="https://docs.github.com/en/actions/learn-github-actions">git aciton官方文档</a>去做进一步研究~</p>
+<p>文中所述文档已部署，<a href="https://luhaifeng666.github.io/vue3-study/">欢迎戳</a>~</p>
+<p><a href="https://github.com/luhaifeng666/vue3-study">Git地址</a>, 欢迎⭐️交流~</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/tong-guo-git-actions-zi-dong-chuang-jian-issues/">
+                  <h3 class="post-title">
+                    通过Git Actions自动创建issues
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

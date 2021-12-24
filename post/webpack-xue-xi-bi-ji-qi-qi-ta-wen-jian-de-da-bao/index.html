@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Webpack学习笔记七：其他文件的打包 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="上一节我们介绍了如何对css做兼容性处理，以及如何将代码中的css单独提取成css文件，并对其进行压缩处理。结合前几个章节的内容，我们已经知道了在webpack中如何对js以及css文件处理。那么除了js与css文件外，类似于 html资源..." />
+    <meta name="keywords" content="学习" />
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Webpack学习笔记七：其他文件的打包</h2>
+            <div class="post-date">2021-12-24</div>
+            
+              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/webpack-xue-xi-bi-ji-qi-qi-ta-wen-jian-de-da-bao.jpeg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p><a href="https://juejin.cn/post/6907627139198107655">上一节</a>我们介绍了如何对css做兼容性处理，以及如何将代码中的css单独提取成css文件，并对其进行压缩处理。结合前几个章节的内容，我们已经知道了在webpack中如何对js以及css文件处理。那么除了js与css文件外，类似于 <code>html资源</code>、 <code>图片资源</code> 以及 <code>其他的资源</code> 又该怎么去处理呢？这一节我们一起来看一下~</p>
+<h1 id="打包html资源">打包html资源</h1>
+<p>要想对html资源进行打包，我们需要用到一个插件：<code>html-webpack-plugin</code>。这个插件的作用主要是<strong>生成html文件，并自动将output生成的文件引入</strong>。</p>
+<h3 id="安装">安装</h3>
+<pre><code class="language-js">yarn add -D html-webpack-plugin
+</code></pre>
+<h3 id="配置">配置</h3>
+<p>安装完成后，我们需要在 <code>webpack.config.js</code> 中引入插件，并配置到 <code>plugins</code> 选项中：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [/*...*/]
+  },
+  plugins: [
+    new HtmlWebpackPlugin()
+  ],
+  mode: 'development'
+}
+</code></pre>
+<p>配置完成后，执行打包命令，会看到在 <code>build</code> 目录下多出了一个 <code>index.html</code> 文件。这个文件就是通过 <code>html-webpack-plugin</code> 插件生成出来的。</p>
+<h3 id="js与css文件的自动引入">js与css文件的自动引入</h3>
+<p>打开生成的 <code>index.html</code> 文件，我们可以看到打包出来的js文件被自动引入了：<br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1d5fc7220af747ce826b51e9f028175e~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+还记的我们上一节中提到的提取css文件的操作么？如果我们将css文件也提取出来之后也会被自动引入到 <code>index.html</code> 文件中么？我们一起来试一试，将上节中的配置写入进来：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [
+    	{
+        // 匹配.js文件
+        test: /\.js$/,
+        // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+        exclude: /node_modules/,
+        // 使用babel-loader
+        use: [
+          {
+            loader: 'babel-loader',
+            // loader的相关配置
+            options: {
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    // 指定按需加载
+                    useBuiltIns: 'usage',
+                    // 指定core-js的版本
+                    corejs: {
+                      version: 3,
+                    },
+                    // 指定兼容的浏览器版本
+                    targets: {
+                      chrome: '60',
+                      firefox: '60',
+                      ie: '9',
+                      safari: '10',
+                      edge: '17',
+                    },
+                  },
+                ],
+              ],
+            },
+          },
+        ],
+      },
+      {
+        test: /\.s[ac]ss/,
+        exclude: /(node_modules|build)/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/index.[contenthash:10].css', // 设置css文件的输出路径
+    }),
+  ],
+  mode: 'development'
+}
+</code></pre>
+<p>此时我们再次执行打包命令，之后打开生成的 <code>index.html</code> 文件，我们可以看到提取出来的css文件也会被引入进来：<br>
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8827558e583a431f80e9abc49002de1d~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h3 id="配置自定义html模板">配置自定义html模板</h3>
+<p>在上面的栗子中，我们只是单纯的使用了 <code>html-webpack-plugin</code> 这个插件。在不传入任何配置的情况下，这个插件会生成一个最简单的html文件。如果我们对生成的html文件有定制化的需求，此时，我们可以给这个插件传入相应的参数，用来声明生成html文件时所需要使用的模板。<br><br>
+在传入配置之前，我们先在src目录下创建一个 <code>index.html</code> 文件，用来定义我们自定义的页面模板：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;webpack-image&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;我的自定义模板&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>之后，我们给插件传入如下配置：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  /* ... */
+  plugins: [
+    new HtmlWebpackPlugin({
+    	template: resolve(__dirname, 'src/index.html')
+    })
+  ]
+  /* ... */
+}
+</code></pre>
+<p>此时，当我们再次执行打包命令后，点开生成的html文件：<br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/79acb15065944aca998e86eeb4b5c002~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
+我们可以看到，在生成的html文件中，存在我们自定义的内容，与此同时，css与js文件也会被自动引入进来。</p>
+<blockquote>
+<p><strong>注意</strong> <br><br>
+由于js与css文件会被自动引入进来，所以我们在模板中不需要手动引入css与js，否则会出现重复引入的情况！</p>
+</blockquote>
+<h3 id="指定html文件的生成目录">指定html文件的生成目录</h3>
+<p>除此之外，我们也可以指定html文件生成的路径：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+module.exports = {
+  /* ... */
+  plugins: [
+    new HtmlWebpackPlugin({
+       template: resolve(__dirname, 'src/index.html'),
+       filename: 'html/index.html'
+    })
+  ]
+  /* ... */
+}
+</code></pre>
+<p>配置完成后，html文件就会被打包至 <code>build/html</code> 路径下，文件名为 <code>index.html</code>。</p>
+<h1 id="打包图片资源">打包图片资源</h1>
+<p>图片资源主要有两个来源，一个是来自于html文件中，另一个是来源于css文件中。针对这两种不同的情况，处理的方式也各有不同。</p>
+<h2 id="打包css文件中的图片">打包css文件中的图片</h2>
+<p>要想打包css文件中的图片，我们需要用到一个loader工具：<code>url-loader</code>。这个loader的作用是<strong>处理css中的图片</strong>(其依赖于file-loader，所以也要下下来)。</p>
+<h3 id="安装-2">安装</h3>
+<pre><code class="language-js">yarn add -D url-loader file-loader
+</code></pre>
+<h3 id="配置-2">配置</h3>
+<p>安装完成后，我们在 <code>webpack.config.js</code> 中加入以下配置:</p>
+<pre><code class="language-js">/* ... */
+rules: [
+  {
+    test: /\.(jpeg|png|gif|jpg)$/,
+    loader: 'url-loader',
+    options: {
+      // 限制图片大小为8kb，含义是当图片的大小小于8kb时，会被编译成base64的形式写入样式，而超过8kb则会引入图片。
+      // 优点：减少请求
+      // 缺点：base64之后的大小可能会比原先图片的大小更大
+      limit: 8 * 1024, 
+      // 设置打包出来的图片名称，其中hash表示hash值，10表示截取hash值的前10位，ext表示保留图片原本的后缀名
+      // 可以设置图片打包出去的路径
+      // 比如'img/[hash:10].[ext]'表示将图片打包到build下的img文件夹中
+      // 注意：1、此处的路径设置是相对于build文件夹的，如果设置'../[hash:10].[ext]'就是打包到build的上一级目录。
+      // 2、这里设置的路径，也是最后css文件中引入的路径。比如设置的'img/[hash:10].[ext]'，那在css中引入的就是：background: url(img/....)。
+      name: '[hash:10].[ext]'
+    }
+  }
+]
+/* ... */
+</code></pre>
+<h2 id="打包html文件中的图片">打包html文件中的图片</h2>
+<p>处理html中的图片文件需要使用到另外一个loader：<code>html-loader</code>。这个loader的作用是<strong>引入html文件中的img，从而可以使其被url-loader处理</strong>。</p>
+<h3 id="安装-3">安装</h3>
+<pre><code class="language-js">yarn add -D html-loader
+</code></pre>
+<h3 id="配置-3">配置</h3>
+<p>安装完成后，我们只需要在 <code>webpack.config.js</code> 的 <code>rules</code> 配置项中加入以下内容：</p>
+<pre><code class="language-js">{
+  test: /\.html$/,
+  loader: 'html-loader'
+}
+</code></pre>
+<p>然后在上述的 <code>src/index.html</code> 模板中，引入一张图片：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;webpack-image&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;p&gt;我的自定义模板&lt;/p&gt;
+  &lt;img src=&quot;./images/luoxiaohei1.jpeg&quot; alt=&quot;&quot;&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>之后运行打包命令，打开生成的html文件，我们即可看到引入的图片。<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c1209c0e30e46968d9d375cae4350e2~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<blockquote>
+<p><strong>注意</strong> <br><br>
+如果图片的显示路径是&quot;[Object Module]&quot;，原因是url-loader默认试用ES6的方式解析，而html-loader引入的图片是commonjs，所以在解析时会报错。此时需要将url-loader的 <code>esModule</code> 属性设置为fasle:</p>
+<pre><code class="language-js">{
+  test: /\.(jpeg|png|gif|jpg)$/,
+  loader: 'url-loader',
+  options: {
+    limit: 8 * 1024,
+    name: '[name].[hash:10].[ext]',
+    esModule: false
+  },
+},
+</code></pre>
+</blockquote>
+<h1 id="打包其他资源">打包其他资源</h1>
+<p>打包其他资源（比如字体文件等不需要进过loader处理的文件）就是将其他资源原封不动原样输出。这需要用到 <code>file-loader</code>。在上述对css中的图片进行打包时，我们已经安装过这个包了。接下来的配置很简单 ，只需要在 <code>webpack.config.js</code> 中加入如下配置：</p>
+<pre><code class="language-js">{
+    exclude: /\.(html|js|css|sass)$/,
+    loader: 'file-loader',
+    options: {
+      name: '[name]-[hash:10].[ext]'
+    }
+}
+</code></pre>
+<p>与其他loader配置不同的是，我们不需要用test的属性去匹配具体格式的文件，而是通过exclude的方式将不需要处理的文件排除出去，之后通过file-loader进行处理输出即可。</p>
+<h1 id="devserver">devServer</h1>
+<p>在日常开发过程中，我们通常会在本地启动一个服务用来做一些诸如自动编译，自动刷新等等的自动化操作。此时，我们需要用到 <code>devServer</code>。相对于打包输出文件到对应目录，<strong>devServer不会有任何文件输出</strong>。</p>
+<h3 id="安装-4">安装</h3>
+<pre><code class="language-js">yarn add -D webpack-dev-server
+</code></pre>
+<h3 id="配置-4">配置</h3>
+<p>在 <code>webpack.config.js</code> 文件下，我们加入以下配置：</p>
+<pre><code class="language-js">const { resolve } = require('path')
+
+module.exports = {
+  entry: './src/js/index.js',
+  // 输出
+  output: {
+    filename: 'js/[name].[contenthash:10].js',
+    //   __dirname表示当前文件所在目录的绝对路径
+    path: resolve(__dirname, 'build'),
+  },
+  module: {
+    rules: [/*...*/]
+  },
+  plugins: [
+    /* ... */
+  ],
+  mode: 'development',
+  devServer: {
+    // 设置运行的项目路径
+    contentBase: resolve(__dirname, 'build'),
+    // 启动后打开浏览器
+    open: true,
+    // 启动gzip压缩
+    compress: true,
+    // 端口配置
+    port: 3000
+  }
+}
+</code></pre>
+<h3 id="启动">启动</h3>
+<p>配置完成后，我们可以在控制台中输入启动命令（也可以将启动命令写入 <code>package.json</code> 文件中）：</p>
+<pre><code class="language-js">npx webpack-dev-server
+</code></pre>
+<p>启动完成后，会自动唤起浏览器，打开端口为3000的本地页面，并且当我们对代码进行修改时，它会自动监听代码的改动进行自动编译，并刷新页面。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/">
+                  <h3 class="post-title">
+                    控制台的一些调试技巧
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

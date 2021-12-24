@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Webpack学习笔记三：js的兼容性处理 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640336328196">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="上一节中我们简单实现了webpack的打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解，也了解了下控制台输出信息的含义。接下来的几节我们一起来了解下，针对于不同类型的资源，webpack是如何..." />
+    <meta name="keywords" content="学习" />
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640336328196" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Webpack学习笔记三：js的兼容性处理</h2>
+            <div class="post-date">2021-12-24</div>
+            
+              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li.jpeg')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p><a href="https://juejin.cn/post/6903529588271136782">上一节</a>中我们简单实现了webpack的打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解，也了解了下控制台输出信息的含义。接下来的几节我们一起来了解下，针对于不同类型的资源，webpack是如何进行编译打包的，在打包期间又需要做一些什么处理。</p>
+<h1 id="js兼容性处理">js兼容性处理</h1>
+<p>在上一节中，我们写了一段简单的js代码，用来做打包示例，并对js的打包有了初步的了解：</p>
+<pre><code class="language-js">const add = (x, y) =&gt; x + y
+console.log(add(1, 2))
+</code></pre>
+<p>我们截取打包后的代码：</p>
+<pre><code class="language-js">eval(&quot;const add = (x, y) =&gt; x + y;\n\nconsole.log(add(1, 2));\n\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
+</code></pre>
+<p>我们可以看到，在打包出来的代码中，<code>add</code> 的定义依旧是使用的 <code>const</code>，而不是兼容性最好的 <code>var</code>。现阶段，在我们的日常开发过程中基本上使用的都是ES6语法，但是一些版本较低的浏览器并不能完全兼容ES6语法，此时我们就要对js代码做兼容性处理。<br><br>
+要对js做兼容性处理，这里我们需要用到两个工具：<code>babel-loader</code> 以及 <code>@babel/core</code>。我们先来安装下这两个工具：</p>
+<pre><code class="language-js">yarn add babel-loader @babel/core
+</code></pre>
+<p>安装完成后要怎么使用呢？这里我们需要使用到webpack五个基本概念中的 <code>loader</code>。在上一篇配置的基础上，我们加入 <code>loader</code> 的配置。<code>loader</code> 的相关配置写到配置文件的 <code>module</code> 中：</p>
+<pre><code class="language-js">// 引入node的path模块
+const { resolve } = require('path')
+
+module.exports = {
+    // 入口文件
+    entry: './src/index.js',
+    // 文件输出配置
+    output: {
+    	// 输出的文件名称
+        // 配置[name]则取的是入口文件的名称
+    	filename: 'js/[name].js',
+        // 输出的文件路径
+        // 这里是指输出到根目录下的build目录下，如果对__dirname不是很了解的小伙伴可以去nodejs官网了解一下
+        path: resolve(__dirname, 'build')
+    },
+    // 用于配置loader
+    module: {
+      rules: [
+      	{
+          // 匹配.js文件
+          test: /\.js$/,
+          // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+          exclude: /node_modules/, 
+          // 使用babel-loader
+          loader: 'babel-loader',
+          // loader的相关配置
+          options: {}
+        }
+      ]
+    },
+    // 用于配置插件信息
+    plugins: [],
+    // 启用开发模式
+    mode: 'development'
+}
+</code></pre>
+<p>配置完成后，我们运行 <code>yarn build:dev</code> 命令，我们会发现结果跟之前是一样的，ES6的代码并没有被转换。这是因为我们还没有“告诉” <code>babel-loader</code> 要怎么去做兼容性处理。那具体该怎么去处理js的兼容性问题呢？我们接着往下看。</p>
+<h1 id="处理js兼容的三种方式">处理js兼容的三种方式</h1>
+<p>针对js的兼容性处理主要有三种方式，我们依次来了解一下。</p>
+<h2 id="方法一基本兼容性处理">方法一：基本兼容性处理</h2>
+<p>基本兼容性处理是指可以处理一些基本的js兼容性问题，比如js中的const/let定义的转换，箭头函数的转换等等。此时我们需要用到一个工具：<code>@babel/preset-env</code>。这个工具可以帮助我们处理一些基本的js兼容性问题。</p>
+<pre><code class="language-js">yarn add -D @babel/preset-env
+</code></pre>
+<p>安装完成后，我们在 <code>babel-loader</code> 的 <code>options</code> 中加入以下配置：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/, 
+      // 使用babel-loader
+      loader: 'babel-loader',
+      // loader的相关配置
+      options: {
+        presets: ['@babel/preset-env']
+      }
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>配置完成后 ，我面再去执行刚才的打包命令, 然后截取出我们所写的代码：</p>
+<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
+</code></pre>
+<p>此时我们可以发现，代码中的 <code>const</code> 声明已经被转换成了 <code>var</code>, 而原先的 <code>箭头函数</code> 也被转换成了普通的函数形式。说明loader已经生效了。<br><br>
+在介绍这种兼容性处理方式的时候有提到过此种方式只能处理一些基本的js问题。如果我们在文件中加入一些稍微复杂的东西，比如 <code>Promise</code>， 然后执行打包会发生什么呢？</p>
+<pre><code class="language-js">const add = (x, y) =&gt; x + y;
+console.log(add(1, 2));
+
+const promiseHandle = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; {
+    resolve('完成');
+  }, 1000)
+})
+console.log(promiseHandle);
+</code></pre>
+<p>执行打包命令后，我们再来看下我们所写的代码：</p>
+<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\nvar promiseHandle = new Promise(function (resolv
+</code></pre>
+<p>我们可以看到，类似于 <code>const</code> 以及 <code>箭头函数</code> 的定义都被转换成了ES5的语法，但是 <code>Promise</code> 的内容并没有被转换，而且代码中也没有其他对 <code>Promise</code> 进行处理的方法。此时要怎么处理呢？莫慌，我们来看第二种js的兼容性处理方式。</p>
+<h2 id="方法二babelpolyfill">方法二：@babel/polyfill</h2>
+<p>如题，我们需要引入另外一种工具：<code>@babel/polyfill</code>。这种兼容方法比较全面，它可以对 <strong>全部js</strong> 做兼容性处理。</p>
+<pre><code class="language-js">yarn add -D @babel/polyfill
+</code></pre>
+<p>这个工具使用比较简单，安装完成后，只需在需要使用的js文件中引入即可。我们在刚才的js文件基础上，引入这个包。</p>
+<pre><code class="language-js">import '@babel/polyfill'
+
+const add = (x, y) =&gt; x + y;
+console.log(add(1, 2));
+
+const promiseHandle = new Promise((resolve, reject) =&gt; {
+  setTimeout(() =&gt; {
+    resolve('完成');
+  }, 1000)
+})
+console.log(promiseHandle);
+</code></pre>
+<p>再次执行打包命令，此时我们打开打包之后的js文件，会发现js文件中引入了大量的polyfill来对js兼容性的处理，其中就有对Promise的兼容处理(由于内容太长，此处就不贴代码了，建议小伙伴们动手试一下~)。此种方式可以解决我们第一种兼容性处理中的问题。<br><br>
+但是，使用这种方式又会引发另外一个问题。我们来看下打包后的文件输出：</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/816a05df0ea642a38d0367050c9552ed~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>不难发现，由于引入了大量的polyfill，导致我们原先仅仅只有几k的文件，膨胀到了511k, 因为引入的polyfill囊括了所有的兼容性处理，这显然不是我们愿意看到的。而且事实上我们也用不到这么多的兼容性处理。那我们又该如何处理这个问题呢？我们来看下第三种兼容性处理方案。</p>
+<h2 id="方法三core-js">方法三：core-js</h2>
+<p>说白了，要解决方法二中的弊端，核心思路就是 <code>按需引入</code>。这个时候，我们需要使用到 <code>code-js</code>。其实在方法二中用到的 <code>@babel/polyfill</code>中也有它的影子, 有兴趣的小伙伴们可以去打包生成的文件中找找看~这里我们单独安装一份 <code>core-js</code>:</p>
+<pre><code class="language-js">yarn add -D core-js
+</code></pre>
+<p>想要使用它，我们需要对刚才的 <code>babel-loader</code> 配置再进行一些改造：</p>
+<pre><code class="language-js">/* ... */
+module: {
+  rules: [
+    {
+      // 匹配.js文件
+      test: /\.js$/,
+      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
+      exclude: /node_modules/, 
+      // 使用babel-loader
+      loader: 'babel-loader',
+      // loader的相关配置
+      options: {
+        &quot;presets&quot;: [
+          [
+            &quot;@babel/preset-env&quot;,
+            {
+              // 指定按需加载
+              &quot;useBuiltIns&quot;: &quot;usage&quot;,
+              // 指定core-js的版本
+              &quot;corejs&quot;: {
+                &quot;version&quot;: 3
+              },
+              // 指定兼容的浏览器版本
+              &quot;targets&quot;: {
+                &quot;chrome&quot;: &quot;60&quot;,
+                &quot;firefox&quot;: &quot;60&quot;,
+                &quot;ie&quot;: &quot;9&quot;,
+                &quot;safari&quot;: &quot;10&quot;,
+                &quot;edge&quot;: &quot;17&quot;
+              }
+            }
+          ]
+        ]
+      }
+    }
+  ]
+},
+/* ... */
+</code></pre>
+<p>此时，我们指定了按需加载，指定了coreJs的版本是3，指定了需要兼容的具体的浏览器的版本。</p>
+<blockquote>
+<p>注意：使用这种方式的时候，需要把第二种方式中引入的@babel/polyfill注释掉，两者不可共用！！</p>
+</blockquote>
+<p>然后我们再次进行打包：</p>
+<figure data-type="image" tabindex="2"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4c69c325e1b14ecb9a607f7e39156d07~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
+<p>再次打包后我们可以发现，Promise的兼容性处理会被引入进来，并且文件大小也缩小至105k, 相较于第二种方式，显然此种方式更佳~如果有小伙伴觉得这样配置显得代码有些冗余，不够优雅，我们也可将 <code>presets</code> 中配置的内容移动到根目录的 <code>.babelrc</code> 文件中：</p>
+<pre><code class="language-json">{
+  &quot;presets&quot;: [
+    [
+      &quot;@babel/preset-env&quot;,
+      {
+        // 指定按需加载
+        &quot;useBuiltIns&quot;: &quot;usage&quot;,
+        // 指定core-js的版本
+        &quot;corejs&quot;: {
+          &quot;version&quot;: 3
+        },
+        // 指定兼容的浏览器版本
+        &quot;targets&quot;: {
+          &quot;chrome&quot;: &quot;60&quot;,
+          &quot;firefox&quot;: &quot;60&quot;,
+          &quot;ie&quot;: &quot;9&quot;,
+          &quot;safari&quot;: &quot;10&quot;,
+          &quot;edge&quot;: &quot;17&quot;
+        }
+      }
+    ]
+  ]
+}
+</code></pre>
+<p>行文至此，js的打包方式以及处理兼容的几种方式都已经介绍完毕。当然loader的配置不止这些，在日后的开发过程中，小伙伴们可以根据项目需要去查询对应loader的文档，来定制化适合自己项目的配置。<br><br>
+处理完js的兼容性问题，那么开发团队在日常开发中的js风格统一化又该怎么去处理？一些容易犯的低级错误又该怎么去避免呢？下一章节我们就来介绍处理这些问题的方法~<br><br>
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/90b2c8f2bb0447828ffbea8e6eab02a6~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/">
+                  <h3 class="post-title">
+                    Webpack学习笔记四：eslint语法检查
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+    </script>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
