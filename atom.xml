@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T05:16:41.460Z</updated>
+    <updated>2021-12-24T05:20:47.393Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,4 +10,17 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[浏览器中+号的处理]]></title>
+        <id>https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/</id>
+        <link href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/">
+        </link>
+        <updated>2021-12-24T05:16:44.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="问题原因">问题原因</h1>
+<p>跳转地址中带有 <code>+</code> 号，违背浏览器的安全策略，在跳转时浏览器将+号转为空格。<br>
+期间尝试使用 <code>encodeURIComponent</code> 对+号进行转换，但是转换后的接口在浏览器中依旧会被替换成空格。</p>
+<h1 id="解决办法">解决办法</h1>
+<p>将地址中的+号全部替换为 <code>%2B</code> , 之后再 <code>encodeURI</code> 进行转码，变成 <code>%252B</code>，即可解决此问题。</p>
+]]></content>
+    </entry>
 </feed>

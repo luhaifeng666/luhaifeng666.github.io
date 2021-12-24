@@ -2,20 +2,21 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>关于 | 酱豆腐精的小站</title>
+<title>浏览器中+号的处理 | 酱豆腐精的小站</title>
 <link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640323211654">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="关于 | 酱豆腐精的小站 - Atom Feed" href="https://luhaifeng666.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="浏览器中+号的处理 | 酱豆腐精的小站 - Atom Feed" href="https://luhaifeng666.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
-
-" />
-    <meta name="keywords" content="" />
+    <meta name="description" content="问题原因
+跳转地址中带有 + 号，违背浏览器的安全策略，在跳转时浏览器将+号转为空格。
+期间尝试使用 encodeURIComponent 对+号进行转换，但是转换后的接口在浏览器中依旧会被替换成空格。
+解决办法
+将地址中的+号全部替换为 ..." />
+    <meta name="keywords" content="工作" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
   </head>
@@ -81,27 +82,37 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              关于
+              浏览器中+号的处理
             </h2>
             <div class="post-info">
               <span>
-                2019-01-25
+                2021-12-24
               </span>
               <span>
                 1 min read
               </span>
               
+                <a href="https://luhaifeng666.github.io/tag/Wo1q0AwkP/" class="post-tag">
+                  # 工作
+                </a>
+              
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
-</blockquote>
+                <h1 id="问题原因">问题原因</h1>
+<p>跳转地址中带有 <code>+</code> 号，违背浏览器的安全策略，在跳转时浏览器将+号转为空格。<br>
+期间尝试使用 <code>encodeURIComponent</code> 对+号进行转换，但是转换后的接口在浏览器中依旧会被替换成空格。</p>
+<h1 id="解决办法">解决办法</h1>
+<p>将地址中的+号全部替换为 <code>%2B</code> , 之后再 <code>encodeURI</code> 进行转码，变成 <code>%252B</code>，即可解决此问题。</p>
 
               </div>
               <div class="toc-container">
-                
+                <ul class="markdownIt-TOC">
+<li><a href="#%E9%97%AE%E9%A2%98%E5%8E%9F%E5%9B%A0">问题原因</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95">解决办法</a></li>
+</ul>
+
               </div>
             </div>
           </article>
