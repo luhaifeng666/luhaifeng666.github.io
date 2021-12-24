@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T09:11:10.728Z</updated>
+    <updated>2021-12-24T09:16:31.824Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -16,8 +16,11 @@
         <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi/">
         </link>
         <updated>2021-12-24T08:44:20.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
-<p>在日常开发过程中，相信大家都会使用到脚手架，比如 <code>vue-cli</code> 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 <code>webpack</code> 。尤其在公司的技术栈日趋稳定之后，我们手动配置 <code>webpack</code> 的机会就越来越少，我就是如此...Orz。所以借此机会，我决定再重头学习一遍这个熟悉而又有点陌生的工具，并将笔记做一个梳理，希望对同样有此感触，或者想学习 <code>webpack</code> 的小伙伴们有所帮助~</p>
+        <summary type="html"><![CDATA[<p>在日常开发过程中，相信大家都会使用到脚手架，比如 <code>vue-cli</code> 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 <code>webpack</code> 。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>在日常开发过程中，相信大家都会使用到脚手架，比如 <code>vue-cli</code> 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 <code>webpack</code> 。</p>
+<!-- more -->
+<p>尤其在公司的技术栈日趋稳定之后，我们手动配置 <code>webpack</code> 的机会就越来越少，我就是如此...Orz。所以借此机会，我决定再重头学习一遍这个熟悉而又有点陌生的工具，并将笔记做一个梳理，希望对同样有此感触，或者想学习 <code>webpack</code> 的小伙伴们有所帮助~</p>
 <p>此处主子镇楼~</p>
 <figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/456b7108fbd64ed8b270b7287cb4b364~tplv-k3u1fbpfcp-watermark.awebp" alt="主子" loading="lazy"></figure>
 <blockquote>
