@@ -24,7 +24,8 @@ webpack的使用依托于nodejs，本文及之后的篇幅里，使用的node版
 初始化node项目
 开始之前，切换到存放项目的路径，在本地目录下初始化一个node项目，本文是在 webpack-study 目录下。初..." />
     <meta name="keywords" content="学习" />
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
   <body>
     <div id="app" class="main">
@@ -325,6 +326,7 @@ EntryPoint main: 入口文件名称；<br><br>
               </div>
             
             <div id="vcomments"></div>
+            <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
@@ -347,9 +349,13 @@ EntryPoint main: 入口文件名称；<br><br>
     <script type="text/javascript">
       // 设置valine
       new Valine({
+        av: AV,
         el: '#vcomments',
+        count_el: '#comment-count',
         appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
-        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF',
+        placeholder: '你说，我在听',
+        visitor: true
       })
     </script>
 

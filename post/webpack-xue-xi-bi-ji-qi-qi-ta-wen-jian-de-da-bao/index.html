@@ -20,7 +20,8 @@
 
     <meta name="description" content="上一节我们介绍了如何对css做兼容性处理，以及如何将代码中的css单独提取成css文件，并对其进行压缩处理。结合前几个章节的内容，我们已经知道了在webpack中如何对js以及css文件处理。那么除了js与css文件外，类似于 html资源..." />
     <meta name="keywords" content="学习" />
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
   <body>
     <div id="app" class="main">
@@ -392,6 +393,7 @@ module.exports = {
               </div>
             
             <div id="vcomments"></div>
+            <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
@@ -414,9 +416,13 @@ module.exports = {
     <script type="text/javascript">
       // 设置valine
       new Valine({
+        av: AV,
         el: '#vcomments',
+        count_el: '#comment-count',
         appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
-        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF',
+        placeholder: '你说，我在听',
+        visitor: true
       })
     </script>
 

@@ -20,7 +20,8 @@
 
     <meta name="description" content="上一节中我们简单实现了webpack的打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解，也了解了下控制台输出信息的含义。接下来的几节我们一起来了解下，针对于不同类型的资源，webpack是如何..." />
     <meta name="keywords" content="学习" />
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
   <body>
     <div id="app" class="main">
@@ -305,6 +306,7 @@ module: {
               </div>
             
             <div id="vcomments"></div>
+            <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
@@ -327,9 +329,13 @@ module: {
     <script type="text/javascript">
       // 设置valine
       new Valine({
+        av: AV,
         el: '#vcomments',
+        count_el: '#comment-count',
         appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
-        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF',
+        placeholder: '你说，我在听',
+        visitor: true
       })
     </script>
 

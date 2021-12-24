@@ -22,7 +22,8 @@
 前段时间接到个需求，需要开发一个业务组件的包提供给业务组的小伙伴们去用。在此之前也开发过类似的包，除却包的作用不同之外，有些内容基本是大差不差的。比如git commit的规范，一些必备的诸如 src/index.js 的文件等等。
 ..." />
     <meta name="keywords" content="" />
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
   <body>
     <div id="app" class="main">
@@ -474,6 +475,7 @@ await $`yarn`
             </div>
             
             <div id="vcomments"></div>
+            <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
@@ -496,9 +498,13 @@ await $`yarn`
     <script type="text/javascript">
       // 设置valine
       new Valine({
+        av: AV,
         el: '#vcomments',
+        count_el: '#comment-count',
         appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
-        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF',
+        placeholder: '你说，我在听',
+        visitor: true
       })
     </script>
 

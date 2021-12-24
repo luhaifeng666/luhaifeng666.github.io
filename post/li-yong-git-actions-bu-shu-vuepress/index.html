@@ -23,7 +23,8 @@
 开始
 ..." />
     <meta name="keywords" content="学习" />
-    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
   <body>
     <div id="app" class="main">
@@ -191,6 +192,7 @@ jobs:
               </div>
             
             <div id="vcomments"></div>
+            <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
@@ -213,9 +215,13 @@ jobs:
     <script type="text/javascript">
       // 设置valine
       new Valine({
+        av: AV,
         el: '#vcomments',
+        count_el: '#comment-count',
         appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
-        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF',
+        placeholder: '你说，我在听',
+        visitor: true
       })
     </script>
 
