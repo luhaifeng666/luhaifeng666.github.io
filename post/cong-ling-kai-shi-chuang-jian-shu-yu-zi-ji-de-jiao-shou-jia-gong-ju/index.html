@@ -1,22 +1,102 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://luhaifeng666.github.io</id>
-    <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T05:36:01.884Z</updated>
-    <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://luhaifeng666.github.io"/>
-    <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
-    <subtitle>我吹，你听</subtitle>
-    <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
-    <icon>https://luhaifeng666.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
-    <entry>
-        <title type="html"><![CDATA[从零开始创建属于自己的脚手架工具]]></title>
-        <id>https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/</id>
-        <link href="https://luhaifeng666.github.io/post/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju/">
-        </link>
-        <updated>2021-12-24T05:28:18.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>从零开始创建属于自己的脚手架工具 | 酱豆腐精的小站</title>
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640324159619">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="从零开始创建属于自己的脚手架工具 | 酱豆腐精的小站 - Atom Feed" href="https://luhaifeng666.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="背景
+前段时间接到个需求，需要开发一个业务组件的包提供给业务组的小伙伴们去用。在此之前也开发过类似的包，除却包的作用不同之外，有些内容基本是大差不差的。比如git commit的规范，一些必备的诸如 src/index.js 的文件等等。
+..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://luhaifeng666.github.io">
+  <img class="avatar" src="https://luhaifeng666.github.io/images/avatar.png?v=1640324159619" alt="">
+  </a>
+  <h1 class="site-title">
+    酱豆腐精的小站
+  </h1>
+  <p class="site-description">
+    我吹，你听
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+        <a href="https://github.com/luhaifeng666" target="_blank">
+          <i class="ri-github-line"></i>
+        </a>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              从零开始创建属于自己的脚手架工具
+            </h2>
+            <div class="post-info">
+              <span>
+                2021-12-24
+              </span>
+              <span>
+                12 min read
+              </span>
+              
+            </div>
+            
+              <img class="post-feature-image" src="https://luhaifeng666.github.io/post-images/cong-ling-kai-shi-chuang-jian-shu-yu-zi-ji-de-jiao-shou-jia-gong-ju.webp" alt="">
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="背景">背景</h1>
 <p>前段时间接到个需求，需要开发一个业务组件的包提供给业务组的小伙伴们去用。在此之前也开发过类似的包，除却包的作用不同之外，有些内容基本是大差不差的。比如git commit的规范，一些必备的诸如 <code>src/index.js</code> 的文件等等。</p>
 <p>如果要新建一个包的工程，诸如上述所说的文件大多会去既有的工程中拷贝一份过来修修改改，继而再次基础上完成接下来的开发。等到下一次有新的类似需求来的时候，周而复始。。。Orz</p>
 <p>那既然如此，我为啥不去搞一个脚手架工具去把这些人工操作的事情自动化掉呢~</p>
@@ -386,19 +466,114 @@ await $`yarn`
 <p>本文中的脚手架工具已经上传到<a href="https://github.com/luhaifeng666/cli-create-tool">git</a>, 欢迎⭐️交流~</p>
 <p>同时也已上传至 <a href="https://www.npmjs.com/package/cli-create-tool">npm</a>, 有兴趣的小伙伴们可以全局安装尝试下~</p>
 <p>看到这里，快动手织个网吧~</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[浏览器中+号的处理]]></title>
-        <id>https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/</id>
-        <link href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/">
-        </link>
-        <updated>2021-12-24T05:16:44.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="问题原因">问题原因</h1>
-<p>跳转地址中带有 <code>+</code> 号，违背浏览器的安全策略，在跳转时浏览器将+号转为空格。<br>
-期间尝试使用 <code>encodeURIComponent</code> 对+号进行转换，但是转换后的接口在浏览器中依旧会被替换成空格。</p>
-<h1 id="解决办法">解决办法</h1>
-<p>将地址中的+号全部替换为 <code>%2B</code> , 之后再 <code>encodeURI</code> 进行转码，变成 <code>%252B</code>，即可解决此问题。</p>
-]]></content>
-    </entry>
-</feed>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E9%80%A0%E8%BD%AE%E5%AD%90">开始造轮子</a>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%AE%9A%E4%B9%89%E5%91%BD%E4%BB%A4">第一步：定义命令</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6">创建脚本文件</a></li>
+<li><a href="#%E7%BC%96%E5%86%99%E8%84%9A%E6%9C%AC">编写脚本</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%AE%9E%E7%8E%B0%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA%E9%80%BB%E8%BE%91">第二步：实现项目创建逻辑</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE">创建项目</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%B8%B8%E7%94%A8%E7%9A%84%E6%96%87%E4%BB%B6">创建常用的文件</a></li>
+<li><a href="#%E8%B7%B3%E8%BD%AC%E5%88%B0%E5%AF%B9%E5%BA%94%E7%9A%84%E7%9B%AE%E5%BD%95%E6%89%A7%E8%A1%8C%E5%AE%89%E8%A3%85%E6%93%8D%E4%BD%9C">跳转到对应的目录，执行安装操作</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E5%8F%91%E5%B8%83%E8%BF%99%E4%B8%AA%E5%B7%A5%E5%85%B7%E5%88%B0npm">第三步：发布这个工具到npm</a></li>
+</ul>
+</li>
+<li><a href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB">扩展阅读</a>
+<ul>
+<li><a href="#%E5%85%B3%E4%BA%8E%E5%91%BD%E4%BB%A4%E8%A7%A3%E6%9E%90">关于命令解析</a></li>
+<li><a href="#%E5%85%B3%E4%BA%8E%E6%89%93%E5%8D%B0%E4%BF%A1%E6%81%AF%E7%9A%84%E9%A2%9C%E8%89%B2">关于打印信息的颜色</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%93%E6%9D%9F%E8%AF%AD">结束语</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://luhaifeng666.github.io/post/liu-lan-qi-zhong-hao-de-chu-li/">
+              <h3 class="post-title">
+                浏览器中+号的处理
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a>
+  <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+    <div id="vcomments"></div>
+
+    <script>
+      // 设置valine
+      new Valine({
+        el: '#vcomments',
+        appId: 'zYWibXSnGWE9VHeQWDPXrJIF-gzGzoHsz',
+        appKey: 'qsFJvfKHzCIlBAzfJRaJEJRF'
+      })
+
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
