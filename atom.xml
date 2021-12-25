@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-24T18:37:14.221Z</updated>
+    <updated>2021-12-25T04:36:19.919Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -36,12 +36,12 @@
 <h4 id="问题1关于同步">问题1：关于同步</h4>
 <ul>
 <li>由于同步是将你的改动同步到 <code>GitHub Pages</code> 上的，由于现阶段国内访问Github会有长时间打不开页面，需要翻墙的情况，建议小伙伴们在长时间无法同步的情况下，尝试下翻墙同步，可能会稍好一些；</li>
-<li>我当前试用的 <code>Gridea</code> 的版本是 <code>0.9.2</code>，存在这样一个问题，在检测远程连接时，提示我连接成功，但是同步却一直都失败，无论是否开启翻墙，均是如此。官方在 <a href="https://github.com/getgridea/gridea/issues/890">#890</a> 这个issue中提供了一个解决方案，并给出了修复后的包的下载地址，我下载后试用并不理想（不排除是我本地网络环境的原因），但依旧可以作为一个解决方案提供给小伙伴们尝试下~</li>
+<li>我当前使用的 <code>Gridea</code> 的版本是 <code>0.9.2</code>，存在这样一个问题，在检测远程连接时，提示我连接成功，但是同步却一直都失败，无论是否开启翻墙，均是如此。官方在 <a href="https://github.com/getgridea/gridea/issues/890">#890</a> 这个issue中提供了一个解决方案，并给出了修复后的包的下载地址，我下载后使用并不理想（不排除是我本地网络环境的原因），但依旧可以作为一个解决方案提供给小伙伴们尝试下~</li>
 </ul>
 <h4 id="问题2关于主题">问题2：关于主题</h4>
 <p>目前我使用的是 <code>Simple</code> 主题，各方面使用情况都还不错，推荐大家使用这款。<br>
 当然，官方也提供了其他的 <a href="https://gridea.dev/themes">多款主题</a> 供小伙伴们食用，大家可以根据自己的喜好自行选择。<br>
-当然，如果有精力有兴趣的小伙伴儿们也可以尝试自己 <a href="https://gridea.dev/theme/">开发一个主题</a> ，毕竟自己动手，丰衣足食嘛~<br>
+如果有精力有兴趣的小伙伴儿们也可以尝试自己 <a href="https://gridea.dev/theme/">开发一个主题</a> ，毕竟自己动手，丰衣足食嘛~<br>
 至于我遇到的问题，是在我使用 <code>Notes</code> 这个主题的时候，发现在编辑完文章后，markdown中的代码区块内容在预览时表现正常，但是在同步到 <code>GitHub Pages</code> 之后，打开页面发现markdown中的代码区块没有正常渲染出来，大家在食用的时候需要留意下~</p>
 <h1 id="添加vline评论">添加Vline评论</h1>
 <p>现在已经有了自己的博客了，也有个地方可以记录自己的工作，学习，生活了，自然也不能少了让 <code>看官们</code> 留下自己足迹的地方~<br>
@@ -54,7 +54,7 @@
 其中，<code>Valine.min.js</code> 的引入需要放在对应主题的 <code>post.ejs</code> 模板下。</p>
 <h2 id="关于leancloud的配置">关于LeanCloud的配置</h2>
 <h3 id="创建class">创建Class</h3>
-<p>评论会调用 <code>LeanCloud</code> 提供的数据接口，其中有个接口是获取评论总数的：<code>https://xxxx/1.1/classes/Comment</code>。调用这个接口的前提，是需要在 <code>数据存储 &gt; 结构化数据</code> 下手动创建一个名为 <code>Comment</code> 的class的，否则接口会报404，这个需要注意下：<br>
+<p>评论会调用 <code>LeanCloud</code> 提供的数据接口，其中有个接口是获取评论总数的：<code>https://xxxx/1.1/classes/Comment</code>。调用这个接口的前提，是需要在 <code>数据存储 &gt; 结构化数据</code> 下手动创建一个名为 <code>Comment</code> 的class，否则接口会报404，这个需要注意下：<br>
 <img src="https://luhaifeng666.github.io/post-images/1640369813288.png" alt="" loading="lazy"></p>
 <h3 id="创建应用">创建应用</h3>
 <p>创建应用时，可以选择创建区域:<br>
