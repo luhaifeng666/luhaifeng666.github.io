@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-27T09:23:01.317Z</updated>
+    <updated>2021-12-29T12:40:16.834Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,288 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[mini-vue学习：reactivity 的核心流程]]></title>
+        <id>https://luhaifeng666.github.io/post/mini-vue-xue-xi-reactivity-de-he-xin-liu-cheng/</id>
+        <link href="https://luhaifeng666.github.io/post/mini-vue-xue-xi-reactivity-de-he-xin-liu-cheng/">
+        </link>
+        <updated>2021-12-29T12:38:48.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="写在开始">写在开始</h2>
+<p>在正式开始学习之前，我们先一起来了解一个思想：<code>TDD</code>。什么是 <code>TDD</code> 呢？我们先来看下它的概念：</p>
+<pre><code>TDD是测试驱动开发（Test-Driven Development）的英文简称。
+它是敏捷开发中的一项核心实践和技术，也是一种设计方法论。
+TDD的原理是在开发功能代码之前，先编写单元测试用例代码，测试代码确定需要编写什么产品代码。
+TDD虽是敏捷方法的核心实践，但不只适用于XP（Extreme Programming），同样可以适用于其他开发方法和过程。
+</code></pre>
+<p>简而言之，就是 <code>测试驱动开发</code>，在动手开发之前先写好测试用例，然后再进行开发。<br><br>
+在接下来的学习过程中，<code>TDD</code> 的思想将贯穿始终。话不多说，让我们一起进入vue3的源码学习吧~</p>
+<blockquote>
+<p><strong>声明：</strong><br><br>
+笔记中的内容来源于 <strong>崔大(wx: cuixr1314)</strong> 的 <a href="https://github.com/cuixiaorui/mini-vue">mini-vue</a> 教学，目前已经 <code>4k+</code>的⭐️了，欢迎大家踊跃star~<br><br>
+热爱学习的小伙伴们，可以搜索 <code>催学社</code> 微信群，里面都是一群热爱学习的小伙伴，学习氛围一级棒！期待你的加入~<br><br>
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fab46bb312db444c8352d44cbe9f4c70~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></p>
+</blockquote>
+<h2 id="正文开始">正文开始</h2>
+<p>我们知道，不论是在 <code>vue2</code> 中，还是在 <code>vue3</code> 中， <code>响应式数据</code> 一直都是vue的核心概念。这一节，我们也先从 <code>响应式数据</code> 开始说起。</p>
+<h3 id="vue2-与-vue3-中对响应式数据处理的区别">vue2 与 vue3 中对响应式数据处理的区别</h3>
+<p>熟悉 <code>vue2</code> 的小伙伴儿们都知道，在 <code>vue2</code> 中，数据的响应式是通过 <code>Object.defineProperty</code> 来实现的。针对对象，通过遍历对象的属性，来设置属性对应的 <code>getter</code> 以及 <code>setter</code> 方法，以达到 <code>依赖收集</code> 与 <code>触发依赖</code> 的目的；<br>
+而针对数组，则是通过重写数组一系列更新元素的方法来实现对数组元素修改的劫持。<br><br>
+但是通过这种方式来实现数据响应式，存在以下几个问题：</p>
+<pre><code>1. 对象直接新添加新的属性，或者删除已有的属性, 界面不会自动更新；
+2. 直接通过替换数组对应下标的元素，或者更新数组的length, 界面也不会自动更新；
+3. 如果对象的属性较多，且嵌套层次较深时，需要深度遍历，循环量大，性能损耗较大。
+</code></pre>
+<p>针对以上几个问题，<code>vue3</code> 中使用了 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> 来代替 <code>Object.defineProperty</code>。<br><br>
+针对 <code>问题1</code> 和 <code>问题3</code>，<code>Proxy</code> 代理了整个对象，并且提供了多达13种对对象属性的操作（如属性查找、赋值、枚举、函数调用等），在对象发生变化时，<code>Proxy</code> 都可以进行捕获，与 <code>Object.defineProperty</code> 不同，无需遍历所有属性；<br><br>
+针对 <code>问题2</code>，<code>Proxy</code> 对数组的监听相较于 <code>Object.defineProperty</code> 性能更优。具体大家可以参考 <a href="https://cloud.tencent.com/developer/news/485729">这篇文章</a> 。<br></p>
+<p>那在 <code>vue3</code> 中具体是如何通过 <code>Proxy</code> 的方式实现响应式的呢？</p>
+<h3 id="reactivity-第一步reactive"><code>reactivity</code> 第一步：reactive</h3>
+<blockquote>
+<p><strong>注：</strong> <br><br>
+本文以 vue3 中的 <code>reactive</code> 为例，如果对 <code>reactive</code> 操作尚不熟悉的同学可以看下 <a href="https://v3.cn.vuejs.org/api/basic-reactivity.html">这篇文档</a>。至于 <code>ref</code>，其底层也是 <code>reactive</code>, 关于 <code>ref</code> 的内容，在完成 <code>reactive</code> 所有相关功能的梳理后，后续的文章中会做补充，这里先埋个伏笔~（手动🌺🐔）</p>
+</blockquote>
+<p>还记得开篇时提到的 <code>TDD</code> 么？开始之前，我们先从测试用例入手：</p>
+<pre><code class="language-ts">// src/reactivity/__tests__/reactive.spec.ts
+
+import { reactive } from '../reactive'
+
+describe('reactive', () =&gt; {
+  it ('happy path', () =&gt; {
+    const original = { foo: 1 }
+    // 创建Proxy代理对象
+    const observeOriginal = reactive(original)
+    // 响应式对象与原对象应该不相等，因为observeOriginal被Proxy包裹
+    expect(observeOriginal).not.toBe(original)
+    // 取值
+    expect(observeOriginal.foo).toBe(1)
+  })
+})
+</code></pre>
+<p>测试用例中， <code>reactive</code> 将传入的对象转换成 <code>Proxy</code> 代理对象，之后通过代理对象来获取其中的值。既然如此，那我们就从 <code>reactive</code> 入手。先来看下 <code>reactive</code> 的定义：</p>
+<pre><code class="language-ts">// src/reactivity/reactive.ts
+
+import { mutableHandlers } from './baseHandlers'
+
+export const reactiveMap = new WeakMap()
+
+/**
+ * 创建reactive对象
+ * @param target
+ */
+export function reactive (target) {
+  return createReactiveObject(target, reactiveMap, mutableHandlers)
+}
+
+/**
+ * 创建响应式对象
+ * @param target
+ * @param proxyMap
+ * @param baseHandlers
+ */
+export function createReactiveObject (target, proxyMap, baseHandlers) {
+  // 判断proxy是否已经保存过
+  if (proxyMap.has(target)) {
+    // 如果存在，则返回
+    return proxyMap.get(target)
+  }
+
+  const proxy = new Proxy(target, baseHandlers)
+
+  // 存储创建好的proxy
+  proxyMap.set(target, proxy)
+  return proxy
+}
+</code></pre>
+<p>从上述代码可以看出，<code>reactive</code> 中调用了 <code>createReactiveObject</code> 方法，既然 <code>reactive</code> 方法是用来返回 <code>Proxy</code> 对象的，那在 <code>createReactiveObject</code> 中又发生了什么呢？我们一起来分析一下：</p>
+<ol>
+<li><code>createReactiveObject</code> 接收三个参数：需要被代理的对象 <code>target</code>, 也就是在 <code>reactive</code> 接收的 <code>target</code> 参数、用于存储 <code>Proxy</code> 对象的 <code>proxyMap</code> 以及 <code>Proxy</code> 对象的处理器 <code>baseHandlers</code>;</li>
+<li>先判断在 <code>proxyMap</code> 是否已经存在当前对象所对应的 <code>Proxy</code> 对象，如果存在，则直接返回, 否则新建一个 <code>Proxy</code> 对象，并以当前的 <code>target</code> 为key，存储到 <code>proxyMap</code>，以便下次取用，并将新建的 <code>Proxy</code> 返回。</li>
+</ol>
+<p>诶，写到这里，细心的小伙伴儿们就会问了，那 <code>baseHandlers</code> 这个处理器具体又干了啥嘞？别急别急，我们现在就一起来看一看。</p>
+<p>这里的 <code>baseHandlers</code> 实际上是从 <code>reactive</code> 中传过来的 <code>mutableHandlers</code>, 我们来一起看下它的定义：</p>
+<pre><code class="language-ts">// src/reactivity/baseHandlers.ts
+
+const get = createGetter()
+const set = createSetter()
+
+export const mutableHandlers = {
+  get,
+  set
+}
+
+export function createGetter () {
+  return function (target, key, receiver) {
+    const res =  Reflect.get(target, key, receiver)
+    return res
+  }
+}
+
+export function createSetter () {
+  return function (target, key, value, receiver) {
+    const res = Reflect.set(target, key, value, receiver)
+    return res
+  }
+}
+</code></pre>
+<p>从上述代码中不难看出，实际上 <code>mutableHandlers</code> 就是定义了 <code>Proxy</code> 对象的 <code>get</code> 和 <code>set</code> 方法。</p>
+<p>回到测试用例中的 <code>expect(observeOriginal.foo).toBe(1)</code> 这个步骤，在获取代理对象的foo属性时，便会触发 <code>get</code> 方法，从而返回属性对应的值。同样，当设置代理对象的foo属性时，便会触发 <code>set</code> 方法，对属性的值做出改变。</p>
+<p>写到这里，我们通过一张流程图，来捋一捋 <code>reactive</code> 的流程：</p>
+<figure data-type="image" tabindex="1"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b014fadb17d641048dcd12f01695afaf~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<blockquote>
+<p>扩展阅读：关于 <code>Proxy</code> 中为啥要用到 <code>Reflect</code>，有兴趣的小伙伴可以参考下 <code>张鑫旭</code> 大佬的这篇文章：<a href="https://www.zhangxinxu.com/wordpress/2021/07/js-proxy-reflect/">Proxy是代理，Reflect是干嘛用的？</a></p>
+</blockquote>
+<p><strong>综上：<code>reactive</code> 通过 <code>createReactiveObject</code> 方法，返回 <code>target</code> 所对应的 <code>proxy</code> 对象，并对 <code>target</code> 中属性的读取与写入操作做了拦截处理。</strong></p>
+<h3 id="reactivity-第二步依赖收集-触发依赖"><code>reactivity</code> 第二步：依赖收集 &amp;&amp; 触发依赖</h3>
+<p>现在我们已经知道了如何通过 <code>Proxy</code> 拦截对象的属性操作, 接下来我们一起看下如何实现 <code>依赖收集</code> 与 <code>依赖触发</code>。</p>
+<p>老规矩，我们还是先从测试用例入手：</p>
+<pre><code class="language-ts">// src/reactivity/__tests__/effect.spec.ts
+
+import { reactive } from '../reactive'
+import { effect } from  '../effect'
+
+describe('effect', () =&gt; {
+  it ('should observe basic properties', () =&gt; {
+    let dummy = 0
+    // 获取proxy对象
+    const data = reactive({ num: 0 })
+    // ？
+    effect(() =&gt; { dummy = data.num })
+    expect(dummy).toBe(0)
+    // 改变值
+    data.num = 1
+    expect(dummy).toBe(1)
+  })
+})
+</code></pre>
+<p>测试用例中，在调用了 <code>reactive</code> 方法获取到 <code>Proxy</code> 对象后，又调用了 <code>effect</code> 方法。那这个 <code>effect</code> 方法又是干啥的呢？我们先来看下 <code>effect</code> 方法的定义：</p>
+<pre><code class="language-ts">// src/reactivity/effect.ts
+
+/**
+ * @param fn
+ */
+export function effect(fn) {
+  const reactiveEffect = new ReactiveEffect(fn)
+  reactiveEffect.run()
+}
+</code></pre>
+<p>可以看到，<code>effect</code> 接受一个函数作为参数，并且在其内部实例化了一个名为 <code>ReactiveEffect</code> 的类，并将接收到的函数传入这个类中，然后执行 <code>ReactiveEffect</code> 类上提供的 <code>run</code> 方法。那这个 <code>ReactiveEffect</code> 类又是何方神圣呢？执行 <code>run</code> 又做了什么事情呢？让我们来一探究竟:</p>
+<pre><code class="language-ts">// src/reactivity/effect.ts
+
+let activeEffect = void 0
+
+export class ReactiveEffect {
+  // 存放所有依赖
+  public deps: any = new Set()
+
+  // 初始化依赖列表
+  constructor(fn) {
+    if (fn) this.deps.add(fn)
+  }
+
+  // 执行收集到的所有依赖
+  run () {
+    activeEffect = this as any
+    this.deps.forEach(dep =&gt; dep())
+  }
+}
+</code></pre>
+<p>通过上面的代码我们可以得知，<code>ReactiveEffect</code> 类在被实例化时，将接收到的函数存储到自己的 <code>deps</code> 属性中，并且在执行它的 <code>run</code> 方法时，则是遍历自身的 <code>deps</code> 属性，执行其中存储的函数。</p>
+<p>由此可知，<strong>借助 <code>ReactiveEffect</code> 类所提供的能力，我们可以将方法保存起来，也可以触发已经被保存起来的方法。</strong></p>
+<blockquote>
+<p><strong>提问：</strong> 在调用 <code>run</code> 方法时，为什么还要将 <code>this</code> 赋值给全局变量 <code>activeEffect</code> 呢？</p>
+</blockquote>
+<p>带着这个问题，我们接着往下看。现在，我们已经拥有了 <code>收集方法</code> 以及 <code>触发被保存方法</code> 的能力。那我们又该如何将收集到的方法绑定到对应的对象及其属性上去呢？</p>
+<p>我们一起来看下具体的实现：</p>
+<pre><code class="language-ts">// src/reactivity/effect.ts
+
+const targetMap = new WeakMap()
+
+/**
+ * 依赖收集
+ * @param target
+ * @param type
+ * @param key
+ */
+export function track(target, type, key) {
+  // 判断targetMap中是否保存有target对象对应的map
+  let depsMap = targetMap.get(target)
+  
+  // 如果没有，则给该对象新建一个空的map，并绑定到targetMap中
+  if (!depsMap) {
+    depsMap = new Map()
+    targetMap.set(target, depsMap)
+  }
+  
+  // 取出target对应的map中，target属性key所对应的依赖
+  let dep = depsMap.get(key)
+  
+  // 如果依赖不存在，则给当前的key创建一个空的依赖集合，并保存到target对象对应的map中
+  if (!dep) {
+    dep = new Set()
+    depsMap.set(key, dep)
+  }
+  
+  // 添加依赖
+  dep.add(activeEffect)
+}
+</code></pre>
+<p><code>track</code> 接收三个参数，需要进行 <code>依赖收集</code> 的对象 <code>target</code> 、收集类型 <code>type</code> 以及绑定依赖的 <code>key</code>。具体流程如注释。</p>
+<p><strong>注意最后一步中的 <code>添加依赖</code> 操作。</strong> 在这一步骤中，将先前保存有 <code>ReactiveEffect</code> 类的 <code>this</code> 的全局变量添加到了 <code>target</code> 对应属性的依赖中。</p>
+<blockquote>
+<p><strong>解答：</strong> 回到刚才的提问，之所以要将 <code>ReactiveEffect</code> 的 <code>this</code> 赋值给全局变量，就是在进行 <code>依赖收集</code> 的时候可以将其添加到对应属性的依赖中去。所以 <code>收集依赖</code> 其实就是收集的 <code>ReactiveEffect</code> 的实例。</p>
+</blockquote>
+<p>现在，我们已经可以成功收集到依赖了，那我们又该如何 <code>触发依赖</code> 呢？</p>
+<pre><code class="language-ts">// src/reactivity/effect.ts
+
+/**
+ * 触发依赖
+ * @param target
+ * @param key
+ */
+export function trigger(target, key) {
+  const depsMap = targetMap.get(target)
+  const dep = depsMap.get(key)
+
+  // 遍历执行依赖
+  for(const effect of dep) {
+    effect.run()
+  }
+}
+</code></pre>
+<p>其实依赖的触发很简单，只需要将 <code>key</code> 中保存的 <code>ReactiveEffect</code> 实例都取出来，然后执行它们的 <code>run</code> 方法即可。</p>
+<p>现在，我们已经完成了依赖的收集与触发功能，那我们又该在何时 <code>收集</code>，又在何时 <code>触发</code> 呢？</p>
+<p>答案是：<strong>在使用时 <code>收集</code>，在改变时 <code>触发</code>。</strong></p>
+<p>回到刚才的测试用例中的 <code>effect(() =&gt; { dummy = data.num })</code> 这一步，在调用了 <code>effect</code> 方法后，会通过 <code>ReactiveEffect</code> 类上提供的 <code>run</code> 方法执行传入的函数，函数中读取了代理对象上的 <code>num</code> 属性，因此会触发 <code>get</code> 方法，在 <code>get</code> 方法中，我们需要进行 <code>依赖收集</code> 的操作；之后通过 <code>data.num = 1</code> 这一步骤，设置 <code>num</code> 属性的值，继而会触发 <code>set</code> 方法，在 <code>set</code> 方法中，我们需要进行 <code>依赖触发</code> 的操作。</p>
+<p>综上所述，我们只需要在 <code>get</code> 中加入 <code>track</code> 方法，在 <code>set</code> 中加入 <code>trigger</code> 方法即可：</p>
+<pre><code class="language-ts">// src/reactivity/baseHandlers.ts
+
+// ...省略部分代码
+
+export function createGetter () {
+  return function (target, key, receiver) {
+    const res =  Reflect.get(target, key, receiver)
+
+    // 触发依赖收集
+    track(target, 'get', key)
+
+    return res
+  }
+}
+
+export function createSetter () {
+  return function (target, key, value, receiver) {
+    const res = Reflect.set(target, key, value, receiver)
+    trigger(target, key)
+    return res
+  }
+}
+</code></pre>
+<p>最后，我们将 <code>依赖收集</code> 与 <code>依赖触发</code> 的流程补充到先前的流程图中去，来完成的看下响应式的流程吧：</p>
+<figure data-type="image" tabindex="2"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c23ce7a3145b4e3f8580958b8a82297a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h1 id="写在最后">写在最后</h1>
+<p>行文至此，我们已经完成了基本的响应式操作，也捋清了其中的基本原理。如果有描述不当之处，还请各位大佬帮忙指正~</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[使用Gridea + Vline搭建属于自己的博客]]></title>
         <id>https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/</id>
@@ -1405,92 +1687,6 @@ Drawer中有几个有趣的属性:</p>
 <li>检查修改的内容：当我们在控制面板中对样式做出修改时，我们可以通过changes看到所有的变化，并可以看到修改前后的对比（请自行脑补GIT谢谢~）。然后可以撤销所有改动；</li>
 <li>代码检查：coverage属性可以用来检查当前加载的JS与CSS文件的那些行正在被执行，并显示未使用字节的百分比。其中，运行的用绿线表示，未运行的用红线表示。</li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[利用Git Actions部署vuepress]]></title>
-        <id>https://luhaifeng666.github.io/post/li-yong-git-actions-bu-shu-vuepress/</id>
-        <link href="https://luhaifeng666.github.io/post/li-yong-git-actions-bu-shu-vuepress/">
-        </link>
-        <updated>2021-12-24T08:36:22.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="背景">背景</h1>
-<p>最近打算在git上发布一个学习笔记文档，文档使用 <code>vuepress</code> 搭建，然后发布到git的pages上。考虑到每次发布都需要手动deploy一把，有点繁琐，于是乎打算使用git的 <code>Actions</code> 功能将这个手动的过程自动化。</p>
-<h1 id="开始">开始</h1>
-<h2 id="初始化vupress项目">初始化vupress项目</h2>
-<p>关于vuepress项目的初始化，官网已经给出了非常详细的操作步骤，可以移步至<a href="https://vuepress.vuejs.org/zh/guide/getting-started.html">官网</a>查看。</p>
-<h2 id="部署">部署</h2>
-<h3 id="第一步-配置pages">第一步: 配置pages</h3>
-<p>关于pages的配置方法，vuepress官网也给出了详尽的描述：<a href="https://vuepress.vuejs.org/zh/guide/deploy.html#github-pages">GitPages</a>。</p>
-<h3 id="第二步-设置deploy-key-以及-secrets">第二步: 设置Deploy Key 以及 Secrets</h3>
-<p>后面发布时，需要将构建后的代码推送到代码仓库，所以需要Git的秘钥。</p>
-<p>首先通过以下命令生成私钥跟公钥：</p>
-<pre><code>ssh-keygen -t rsa -C '邮箱地址'
-</code></pre>
-<p>生成后，打开Git项目的设置，选择 <code>Deploy keys</code>新建deploy key，将公钥的内容填入：</p>
-<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3be33455d934152b424ecd4e5b70b2a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>之后再选择 <code>Secrets</code> 选项，新建私钥，将私钥内容填入：</p>
-<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ed4aa1c2cc64923b163e6b4fa98b5e2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<h3 id="第三步-新建action">第三步: 新建Action</h3>
-<p>选择 <code>Actions</code>， 新建一个workflow。在Actions界面，Git会提供一些模板供我们使用，这里我们选择默认的即可</p>
-<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/457b7538384c4f3d8872a7269b3aa9c4~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>新建完成后，会默认在我们的项目下生成一个 <code>.github/workflows/blank.yml</code> 文件，用于配置脚本, 我们将其稍作修改：</p>
-<pre><code class="language-js"># ci脚本的名称
-name: VUE3-STUDY DOCS CI
-# 触发的时机
-on:
-  # 在push阶段触发
-  push:
-    # 对应的分支
-    branches: [ main ]
-  # 在PR阶段触发
-  pull_request:
-    # 对应的分支
-    branches: [ main ]
-# 执行的任务
-jobs:
-  # 任务名称
-  build:
-    # 执行的环境，默认是在最新版本的Ubuntu系统
-    runs-on: ubuntu-latest
-    # 执行的步骤
-    steps:
-      # checkout代码
-      # 其中actions是github官方账号，checkout是改账号下提供的库，可以直接拿来使用，对应的版本是v2
-      # setup-node同上
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        # 设置node的版本
-        with:
-          node-version: '14'
-        # 执行步骤的名称
-      - name: Compiling start
-        # 执行的具体脚本
-        run: echo Compiling start!
-        # 如果在执行的时候报错，提示需要用户名跟邮箱，那么需要单独设置下邮箱跟用户名
-      - run: git config --global user.email &quot;your email address&quot;
-      - run: git config --global user.name &quot;your user name&quot;
-        # 执行安装跟打包命令
-      - run: npm install &amp;&amp; npm run docs:build
-      - name: Deploy
-        # 这个是第三方提供的库，可以推送打包后的内容到指定分支
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          # 这边需要设置第二步获取到的deploy key，否则会提示没有权限推送代码
-          deploy_key: ${{ secrets.VUE3STUDY }}
-          # 推送到该仓库中，地址格式为github名称/仓库名
-          external_repository: xxx/xxx
-          # 推送的分支
-          publish_branch: gh-pages
-          # 推送的内容
-          publish_dir: docs/.vuepress/dist
-</code></pre>
-<p>配置完成后，将内容push上去，action就会自动执行了：</p>
-<figure data-type="image" tabindex="4"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1a0ae8e55e714f669f0d91afbd8c3ece~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
-<p>等待执行完毕后，即可查看页面~</p>
-<h1 id="写在最后">写在最后</h1>
-<p>本文是关于git actions的一次简单尝试，有兴趣的同学可以去参考<a href="https://docs.github.com/en/actions/learn-github-actions">git aciton官方文档</a>去做进一步研究~</p>
-<p>文中所述文档已部署，<a href="https://luhaifeng666.github.io/vue3-study/">欢迎戳</a>~</p>
-<p><a href="https://github.com/luhaifeng666/vue3-study">Git地址</a>, 欢迎⭐️交流~</p>
 ]]></content>
     </entry>
 </feed>
