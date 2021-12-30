@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-30T03:37:59.713Z</updated>
+    <updated>2021-12-30T05:09:30.369Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -297,7 +297,7 @@ export function createSetter () {
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[使用Gridea + Vline搭建属于自己的博客]]></title>
+        <title type="html"><![CDATA[使用Gridea + Valine搭建属于自己的博客]]></title>
         <id>https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/</id>
         <link href="https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/">
         </link>
@@ -333,7 +333,7 @@ export function createSetter () {
 <p>现在已经有了自己的博客了，也有个地方可以记录自己的工作，学习，生活了，自然也不能少了让 <code>看官们</code> 留下自己足迹的地方~<br>
 我使用的 <code>Simple</code> 主题默认提供了两种发布评论的平台：<br>
 <img src="https://luhaifeng666.github.io/post-images/1640368636573.jpg" alt="" loading="lazy"><br>
-这里我推荐使用 <a href="https://valine.js.org/">Vline</a>，想对于上述的两个而言，它更加友好。至于接入方式，官方也给出了相应的 <a href="https://kveln.cn/post/qE678A4ce/">参考文档</a>。这里我针对官方的文档做一些补充说明以及踩坑的经验分享。</p>
+这里我推荐使用 <a href="https://valine.js.org/">Valine</a>，想对于上述的两个而言，它更加友好。至于接入方式，官方也给出了相应的 <a href="https://kveln.cn/post/qE678A4ce/">参考文档</a>。这里我针对官方的文档做一些补充说明以及踩坑的经验分享。</p>
 <h2 id="关于文档中的说明">关于文档中的说明</h2>
 <p>在官方提供的文档中有这么一处说明：<br>
 <img src="https://luhaifeng666.github.io/post-images/1640369031378.png" alt="" loading="lazy"><br>
