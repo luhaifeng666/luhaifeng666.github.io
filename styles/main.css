@@ -324,8 +324,8 @@ a {
   bottom: 0;
   background-color: #7c8280;
   background-size: cover;
-  background-position: center;
-  background-image: url('../media/images/sidebar-bg.jpg');
+  background-position: 53% 0;
+  background-image: url('../media/images/sidebar-bg-custom.jpeg');
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
