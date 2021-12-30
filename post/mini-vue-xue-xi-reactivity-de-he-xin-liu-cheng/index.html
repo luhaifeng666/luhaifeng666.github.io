@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640781797853">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1640832523712">
 <link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
 
 
@@ -18,10 +18,11 @@
 
 
 
-    <meta name="description" content="写在开始
+    <meta name="description" content="通过这篇文章，我们一起来学习下，在 vue3 中，数据的响应式是如何实现的。
+
+写在开始
 在正式开始学习之前，我们先一起来了解一个思想：TDD。什么是 TDD 呢？我们先来看下它的概念：
-TDD是测试驱动开发（Test-Driven Development）的英文简称。
-它是敏捷开发中的一项核心实践和技术，也是一种设计..." />
+TDD是测试驱动开发（Test-Driven Dev..." />
     <meta name="keywords" content="学习" />
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
@@ -33,7 +34,7 @@ TDD是测试驱动开发（Test-Driven Development）的英文简称。
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://luhaifeng666.github.io">
-        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640781797853" class="site-logo">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1640832523712" class="site-logo">
         <h1 class="site-title">酱豆腐精的小站</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -102,7 +103,9 @@ TDD是测试驱动开发（Test-Driven Development）的英文简称。
               </div>
             
             <div class="post-content" v-pre>
-              <h2 id="写在开始">写在开始</h2>
+              <p>通过这篇文章，我们一起来学习下，在 <code>vue3</code> 中，数据的响应式是如何实现的。</p>
+<!-- more -->
+<h2 id="写在开始">写在开始</h2>
 <p>在正式开始学习之前，我们先一起来了解一个思想：<code>TDD</code>。什么是 <code>TDD</code> 呢？我们先来看下它的概念：</p>
 <pre><code>TDD是测试驱动开发（Test-Driven Development）的英文简称。
 它是敏捷开发中的一项核心实践和技术，也是一种设计方法论。
