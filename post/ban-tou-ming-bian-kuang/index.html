@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>关于 | 酱豆腐精的小站</title>
+<title>半透明边框 | 酱豆腐精的小站</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,11 +18,13 @@
 
 
 
-    <meta name="description" content="
-欢迎来到我的小站呀，很高兴遇见你！🤝
+    <meta name="description" content="《CSS秘密花园》学习笔记：半透明边框。
 
-" />
-    <meta name="keywords" content="" />
+我们在想实现一个透明边框的时候，通常想到的可能是以下代码：
+border: 3px solid rgba(255,255,255,0.6);
+
+可是如果这时候给元素添加一个背景色或者背景图片，背景..." />
+    <meta name="keywords" content="CSS,学习" />
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
@@ -95,21 +97,62 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">关于</h2>
-            <div class="post-date">2021-12-23</div>
+            <h2 class="post-title">半透明边框</h2>
+            <div class="post-date">2022-01-12</div>
             
-              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/about.jpeg')">
+              <div class="feature-container" style="background-image: url('https://s2.loli.net/2022/01/12/PL4Ht8pnyclbJau.jpg')">
               </div>
             
             <div class="post-content" v-pre>
-              <blockquote>
-<p>欢迎来到我的小站呀，很高兴遇见你！🤝</p>
+              <p>《CSS秘密花园》学习笔记：半透明边框。</p>
+<!-- more -->
+<p>我们在想实现一个透明边框的时候，通常想到的可能是以下代码：</p>
+<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
+</code></pre>
+<p>可是如果这时候给元素添加一个背景色或者背景图片，背景图片与背景色会透过透明边框显示出来。这是因为<strong>在默认情况下,背景会延伸到边框所在区域的下层。</strong></p>
+<p>举个<a href="https://codepen.io/luhaifeng666/pen/MWEzyag?editors=1111">栗子</a></p>
+<p>通过这个例子我们可以看到，元素的背景色被设置为蓝色，背景色设置为<code>rgba(255,255,255,.6)</code> ,此时，透过透明边框可以看到元素的背景色。</p>
+<h3 id="解决办法">解决办法</h3>
+<p>通过添加background-clip可以解决。</p>
+<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
+background-clip: padding-box;
+</code></pre>
+<blockquote>
+<p>background-clip属性是用来设置背景裁剪区域的，该属性接受三个参数：content-box | padding-box | border-box | text，裁剪区域如下：</p>
+<ol>
+<li>content-box: content部分，背景被裁剪至内容区（content box）外沿。</li>
+<li>padding-box: content + padding部分，背景延伸至内边距（padding）外沿。不会绘制到边框处。</li>
+<li>border-box: content + padding + border部分，背景延伸至边框外沿（但是在边框下层）。</li>
+<li>text: 裁剪为text前景色</li>
+</ol>
 </blockquote>
+<p>具体用法可以参考MDN文档：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip">background-clip</a></p>
 
             </div>
             
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/zhcOSrSGk/" class="tag">
+                    CSS
+                  </a>
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
             <div id="vcomments"></div>
             <span id="comment-count"></span>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/mini-vue-xue-xi-reactivity-de-he-xin-liu-cheng/">
+                  <h3 class="post-title">
+                    mini-vue学习：reactivity 的核心流程
+                  </h3>
+                </a>
+              </div>
             
 
             

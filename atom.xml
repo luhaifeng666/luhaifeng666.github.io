@@ -2,14 +2,47 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2021-12-30T08:14:29.614Z</updated>
+    <updated>2022-01-12T03:09:53.518Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
     <subtitle>我吹，你听</subtitle>
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
-    <rights>All rights reserved 2021, 酱豆腐精的小站</rights>
+    <rights>All rights reserved 2022, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[半透明边框]]></title>
+        <id>https://luhaifeng666.github.io/post/ban-tou-ming-bian-kuang/</id>
+        <link href="https://luhaifeng666.github.io/post/ban-tou-ming-bian-kuang/">
+        </link>
+        <updated>2022-01-12T02:34:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>《CSS秘密花园》学习笔记：半透明边框。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>《CSS秘密花园》学习笔记：半透明边框。</p>
+<!-- more -->
+<p>我们在想实现一个透明边框的时候，通常想到的可能是以下代码：</p>
+<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
+</code></pre>
+<p>可是如果这时候给元素添加一个背景色或者背景图片，背景图片与背景色会透过透明边框显示出来。这是因为<strong>在默认情况下,背景会延伸到边框所在区域的下层。</strong></p>
+<p>举个<a href="https://codepen.io/luhaifeng666/pen/MWEzyag?editors=1111">栗子</a></p>
+<p>通过这个例子我们可以看到，元素的背景色被设置为蓝色，背景色设置为<code>rgba(255,255,255,.6)</code> ,此时，透过透明边框可以看到元素的背景色。</p>
+<h3 id="解决办法">解决办法</h3>
+<p>通过添加background-clip可以解决。</p>
+<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
+background-clip: padding-box;
+</code></pre>
+<blockquote>
+<p>background-clip属性是用来设置背景裁剪区域的，该属性接受三个参数：content-box | padding-box | border-box | text，裁剪区域如下：</p>
+<ol>
+<li>content-box: content部分，背景被裁剪至内容区（content box）外沿。</li>
+<li>padding-box: content + padding部分，背景延伸至内边距（padding）外沿。不会绘制到边框处。</li>
+<li>border-box: content + padding + border部分，背景延伸至边框外沿（但是在边框下层）。</li>
+<li>text: 裁剪为text前景色</li>
+</ol>
+</blockquote>
+<p>具体用法可以参考MDN文档：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip">background-clip</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[mini-vue学习：reactivity 的核心流程]]></title>
         <id>https://luhaifeng666.github.io/post/mini-vue-xue-xi-reactivity-de-he-xin-liu-cheng/</id>
@@ -1501,196 +1534,6 @@ module.exports = {
 <pre><code class="language-js">npx webpack-dev-server
 </code></pre>
 <p>启动完成后，会自动唤起浏览器，打开端口为3000的本地页面，并且当我们对代码进行修改时，它会自动监听代码的改动进行自动编译，并刷新页面。</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[控制台的一些调试技巧]]></title>
-        <id>https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/</id>
-        <link href="https://luhaifeng666.github.io/post/kong-zhi-tai-de-yi-xie-diao-shi-ji-qiao/">
-        </link>
-        <updated>2021-12-24T08:37:35.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="copying-saving">copying &amp; saving</h1>
-<h3 id="copy方法">copy()方法</h3>
-<p>通过这个方法，可以复制指定的值到剪切板。引用类型的值被拷贝之后，可以得到格式化后的结果。例如：<br>
-<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/15d1a892a2d04468902b4fabacc82f17~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
-<h3 id="store-as-global-存储为一个全局变量">store as global (存储为一个全局变量)</h3>
-<p>在值上右键，选择Store as global variable，可以把这个值变成全局变量，第一次操作，自动创建全局变量   temp1，第二次为temp2，以此类推。</p>
-<h3 id="保存堆栈信息-stack-trace">保存堆栈信息 (stack trace)</h3>
-<p>团队协作时，可以把打印出来的报错信息右键另存为文件，然后将文件发送给其他同事。</p>
-<h1 id="一些快捷键">一些快捷键</h1>
-<ol>
-<li>
-<p>在PC与M站开发切换时， 遇到调试后台位置需要切换的情况时，我们通常会选择点击控制台的快捷按钮来调整控制台的显示位置，此时，我们也可以使用 <code>command+shift+D</code> 快捷键进行切换；</p>
-</li>
-<li>
-<p>控制台有很多面板，诸如Console、Element、Network。。(BALABALA...)，日常切换我们可能会通过鼠标或者触控板去点击切换，此时，我们也可以使用 <code>command+[</code> 以及 <code>command+]</code> 进行左右切换；</p>
-</li>
-<li>
-<p>在调试样式的时候，需要修改数值，除了可以直接选择进行修改以外，我们也有快捷增减的方式，方式如下：</p>
-</li>
-</ol>
-<blockquote>
-<ul>
-<li>上下箭头：每次增减1;</li>
-<li>shift + 上下箭头： 每次增减10;</li>
-<li>command + 上下箭头：每次增减100;</li>
-<li>option + 上下箭头：每次增减0.1;</li>
-</ul>
-</blockquote>
-<h1 id="一些命令">一些命令</h1>
-<ol>
-<li>在控制台中，通过快捷键command + shift + p，可以看到一些指令，主要分为以下几类：</li>
-</ol>
-<blockquote>
-<ul>
-<li>Panel</li>
-<li>Drawer</li>
-<li>Appearance</li>
-<li>Console</li>
-<li>DevTools</li>
-<li>Elements</li>
-<li>Help</li>
-<li>Mobile</li>
-<li>Navigation</li>
-<li>Network</li>
-<li>Performance</li>
-<li>Persistence</li>
-<li>Rendering</li>
-<li>Resources</li>
-<li>Screenshot</li>
-<li>Settings</li>
-<li>Sources</li>
-</ul>
-</blockquote>
-<p>一些好用的指令：</p>
-<blockquote>
-<ol>
-<li>截屏：我们可以在弹出来的面板中搜索screen，然后可以看到Screenshot的几个选项：</li>
-</ol>
-<ul>
-<li>Capture area screenshoot: 选中该功能后，用户可以自由选择截图区域（请自行脑补微信截图谢谢）；</li>
-<li>Capture full size screenshoot：截取真个网页（不是当前视口的截图，而是整个网页的完整截图）；</li>
-<li>Capture node screenshoot: 在选中某个节点后，可以使用该功能截取对应节点；</li>
-<li>Capture screenshoot：该功能是截取开启控制面板后页面的可视区域。</li>
-</ul>
-<ol start="2">
-<li>切换主题：在弹出的面板中搜索theme，可以切换黑色主题或者白色主题；</li>
-<li>快速显示某个选项：在弹出的面板中搜索panel，可以快速显示某个选项卡；</li>
-<li>快速显示Drawer面板以及Drawer面板中的某些选项卡：在弹出的面板中搜索Drawer进行切换即可；</li>
-<li>想要测试在较慢网速下的加载情况，可以调到3g模式，搜索netWork即可找到该项配置；</li>
-<li>通过Console下的show TimeStamps功能，可以给打印的console字段加上时间戳。</li>
-</ol>
-</blockquote>
-<ol start="2">
-<li>在source面板，通过command + P快捷键，调出面板，输入: <code>+ 数字</code> ，可以跳转到对应的行数</li>
-</ol>
-<h1 id="代码块的使用">代码块的使用</h1>
-<p>我们可以把一些JS代码块放到DevTools中，然后可以复用这些代码块。在Sources面板中，选择左侧菜单中的<code>Snippets</code> 功能，然后输入你想要复用的代码，然后保存即可。通过快捷键 <code>command + enter</code> 可以运行代码。在其他面板中，通过 <code>command + p</code> 快捷键调出命令面板，键入 <code>! + 保存的代码块名称</code>，也可以直接运行先前保存的代码。</p>
-<h1 id="console中的">console中的 ‘$’</h1>
-<ol>
-<li><code>$0</code> 指代的是当前我们选中的节点，<code>$1</code>指我们前一次选中的DOM节点，<code>$2</code> 指上上次，以此类推，一直到<code>$4</code>;</li>
-<li><code>$</code> 和 <code>$$</code>: 如果没有引入JQ或者重定义过<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi mathvariant="normal">，</mi><mi mathvariant="normal">那</mi><mi mathvariant="normal">么</mi></mrow><annotation encoding="application/x-tex">，那么</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0em;vertical-align:0em;"></span><span class="mord cjk_fallback">，</span><span class="mord cjk_fallback">那</span><span class="mord cjk_fallback">么</span></span></span></span>则是 <code>document.querySelector</code> 的别名，即:<code>$('div') === document.querySelector('div')</code>；而 <code>$$</code> 则是 <code>document.querySelectorAll</code>，返回的是符合条件的节点数组；</li>
-<li>如果你想查看上一次的执行结果，可以通过 <code>$_</code> 查看；</li>
-<li><code>$i</code>: 这个就厉害了，是在控制面板中使用npm包，需要配合一个chrome插件：<code>Console Importer</code>, 然后在console面板中使用 <code>$i</code> 命令。例如：<code>$i('lodash')</code>, 然后就可以在面板中使用lodash的功能。当然，这个也可以引入一些库。</li>
-</ol>
-<h1 id="镜像方法">镜像方法</h1>
-<h3 id="monitor">monitor</h3>
-<p>这个方法可以追踪方法的调用，然后在调用这个方法时，控制台会打印出方法名以及传入的参数例如：先定义一个类：</p>
-<pre><code class="language-js">class Person {
-  constructor(name, role) {
-    this.name = name;
-    this.role = role;
-  }
-  greet() {
-    return this.getMessage('greeting');
-  }
-  getMessage(type) {
-    if (type === 'greeting') {
-      return `Hello, I'm ${this.name}!`;
-    }
-  }
-}
-</code></pre>
-<p>然后在控制台中输入:</p>
-<pre><code class="language-js">let Json = new Person('Json')
-monitor(Json.getMessage) // 追踪getMessage方法
-Json.greet()
-// 此时输出如下
-// function getMessage called with arguments: greeting
-// &quot;Hello, I'm Json!&quot;
-// 可以看到输出了被调用方法的名称“getMessage”以及调用这个方法时传入的参数“greeting”
-</code></pre>
-<p>通过这种方式，可以减少我们使用console的次数，不用在getMessage中使用console去打印传入的参数。通        过 <code>unmonitor</code> 可以取消镜像。</p>
-<h3 id="monitorevents-镜像事件方法">monitorEvents 镜像事件方法</h3>
-<p>该方法可以镜像events的一些方法，例如：<code>monitorEvents($0, 'click')</code>，这个可以镜像click方法，然后点击每个元素的时候会返回click方法名以及参数。通过unmonitorEvents方法可以取消镜像。</p>
-<h1 id="console的一些操作">console的一些操作</h1>
-<h3 id="consoleassert">console.assert()</h3>
-<p>当该方法的第一个参数为false时，会打印出后面的信息，也可以看到堆栈信息。通过这种方式，我们可以减少if条件语句的使用:</p>
-<pre><code class="language-js">let a = null
-console.assert(a, 'error')
-// 如果用if改写
-if (!a) console.log('errror')
-</code></pre>
-<h3 id="consolelog">console.log({...})</h3>
-<p>当我们需要打印多个值的时候，直接使用console.log()打印出来的是值的列表，但是看起来不太方便，无法对应到具体的值:</p>
-<pre><code class="language-js">const a = 1
-const b = 'test'
-const c = +new Date()
-console.log(a, b, c) // 1 &quot;test&quot; 1570695681442
-// 这时候，我们可以改写一下
-console.log({a, b, c}) // {a: 1, b: &quot;test&quot;, c: 1570695681442}
-// 此时可以比较清楚的看到变量名与值之间的对应
-</code></pre>
-<h3 id="consoletable">console.table()</h3>
-<p>相较于 <code>console.log</code>, 这种方式可以把数组或者对象类型的值，打印成表格的形式，更加直观，配合上面的方式，也可以打印多个值：<code>console.table({a, b, c})</code>；</p>
-<h3 id="consoledir">console.dir()</h3>
-<p>输出某一节点的详细信息，包括节点上的属性等等；</p>
-<h3 id="c">%c</h3>
-<p>我们可以通过在console.log的内容前加上 <code>'%c'</code> 的方式来给打印的内容添加样式 <strong>(注意：'%c'与打印的内容之间需要用空格隔开)</strong>，例如：</p>
-<pre><code class="language-js">console.log('%c test', 'font-size:13px;color:red;')
-</code></pre>
-<h3 id="实时表达式">实时表达式</h3>
-<p>在console面板下，有个长得像眼睛的玩意：<br>
-<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/25c621a3c8714708a1b923a02aa3b588~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
-通过这个按钮，我们可以创建一个实时表达式，表达式的值会不断更新。</p>
-<h1 id="重新发送接口请求">重新发送接口请求</h1>
-<p>可以右键某一个请求，选择replay XHR，而不用通过刷新页面的方式；</p>
-<h1 id="元素面板的一些技巧">元素面板的一些技巧</h1>
-<ol>
-<li>
-<p>选中某个DOM元素，通过H键控制该DOM元素的显示跟隐藏；</p>
-</li>
-<li>
-<p>在样式面板中，可以点开box-shadow的编辑面板直接编辑，而非通过改值的方式:<br>
-<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9ba73e76797146888dd9d6281dbac942~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>通过样式面板右下角的快捷按钮也可以快速调整样式:<br>
-<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9c785bf31864493be2375eec90a57a3~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>一次性展开所有的DOM节点：如果想查看某个父节点下的子节点，如果子节点的层级较深，通过点箭头展开的方式太过麻烦，可以使用 <code>expand recursively</code> 命令一次性展开该节点下的所有子节点；</p>
-</li>
-<li>
-<p>DOM断点：通过选择对应节点Break on中的设置来监听DOM的操作，主要有如下三种设置：</p>
-</li>
-</ol>
-<blockquote>
-<ul>
-<li>subtree modifications: 监听该节点内部节点被移除或者添加的事件；</li>
-<li>attribute modifications: 监听选中节点属性的添加，移除或修改的事件；</li>
-<li>node removal：监听选中元素被移除的事件。</li>
-</ul>
-</blockquote>
-<h1 id="drawer面板">Drawer面板</h1>
-<p>Drawer面板是与主面板平行的一组面板，隐藏在主面板之下，通过点击esc键可以控制显示或者隐藏。<br>
-Drawer中有几个有趣的属性:</p>
-<ol>
-<li>控制传感器：当我们需要模拟测试陀旋仪或者测试一些获取地理位置的API时，可以使用Senors选项；</li>
-<li>模拟网络状态：我们可以通过Network conditions属性控制网络的状态，甚至可以控制离线；</li>
-<li>检查修改的内容：当我们在控制面板中对样式做出修改时，我们可以通过changes看到所有的变化，并可以看到修改前后的对比（请自行脑补GIT谢谢~）。然后可以撤销所有改动；</li>
-<li>代码检查：coverage属性可以用来检查当前加载的JS与CSS文件的那些行正在被执行，并显示未使用字节的百分比。其中，运行的用绿线表示，未运行的用红线表示。</li>
-</ol>
 ]]></content>
     </entry>
 </feed>
