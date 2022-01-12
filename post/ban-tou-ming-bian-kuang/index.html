@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1641958900490">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1641971718458">
 <link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
 
 
@@ -35,7 +35,7 @@ border: 3px solid rgba(255,255,255,0.6);
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://luhaifeng666.github.io">
-        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1641958900490" class="site-logo">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1641971718458" class="site-logo">
         <h1 class="site-title">酱豆腐精的小站</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -110,10 +110,10 @@ border: 3px solid rgba(255,255,255,0.6);
 <pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
 </code></pre>
 <p>可是如果这时候给元素添加一个背景色或者背景图片，背景图片与背景色会透过透明边框显示出来。这是因为<strong>在默认情况下,背景会延伸到边框所在区域的下层。</strong></p>
-<p>举个<a href="https://codepen.io/luhaifeng666/pen/MWEzyag?editors=1111">栗子</a></p>
+<p>先来看一个<a href="https://codepen.io/luhaifeng666/pen/MWEzyag?editors=1111">栗子</a>~</p>
 <p>通过这个例子我们可以看到，元素的背景色被设置为蓝色，背景色设置为<code>rgba(255,255,255,.6)</code> ,此时，透过透明边框可以看到元素的背景色。</p>
 <h3 id="解决办法">解决办法</h3>
-<p>通过添加background-clip可以解决。</p>
+<p>通过添加 <code>background-clip</code> 来解决此类问题。</p>
 <pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
 background-clip: padding-box;
 </code></pre>
