@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-13T12:00:52.302Z</updated>
+    <updated>2022-01-13T12:06:05.921Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -27,6 +27,7 @@ border: 10px solid #67C23A;
 outline: 5px solid #E6A23C;  
 </code></pre>
 <p>如<a href="https://codepen.io/luhaifeng666/pen/QWqzwKO">demo1</a>。其中，绿色的是 <code>border</code>，黄色的是 <code>outline</code>。</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/db1c4a60f8ff486893e11bd1cc5985cc~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
 <blockquote>
 <p><strong>优点</strong></p>
 <ol>
@@ -48,6 +49,7 @@ outline: 5px solid #E6A23C;
 box-shadow: 0 0 0 10px #67C23A, 0 0 0 20px #F56C6C, 0 0 0 30px #E6A23C;  
 </code></pre>
 <p>参考<a href="https://codepen.io/luhaifeng666/pen/QWqzwKO">demo2</a>。</p>
+<figure data-type="image" tabindex="2"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/185eaf1c75844b09962a19f6694305df~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
 <blockquote>
 <p><strong>优点</strong></p>
 <ol>
