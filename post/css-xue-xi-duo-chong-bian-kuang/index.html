@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>半透明边框 | 酱豆腐精的小站</title>
+<title>多重边框 | 酱豆腐精的小站</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,13 +18,12 @@
 
 
 
-    <meta name="description" content="《CSS秘密花园》学习笔记：半透明边框。
+    <meta name="description" content="多重边框主要分为两种情况，一种是两层边框，还有一种是2层以上的边框。针对这两种情况，分别对应有不同的处理方案。
 
-我们在想实现一个透明边框的时候，通常想到的可能是以下代码：
-border: 3px solid rgba(255,255,255,0.6);
-
-可是如果这时候给元素添加一个背景色或者背景图片，背景..." />
-    <meta name="keywords" content="CSS,学习" />
+1、outline
+某些情况下，如果你只需要两层边框，那么可以使用outline来实现。
+background: #409EF..." />
+    <meta name="keywords" content="" />
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
@@ -97,59 +96,69 @@ border: 3px solid rgba(255,255,255,0.6);
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">半透明边框</h2>
-            <div class="post-date">2022-01-12</div>
+            <h2 class="post-title">多重边框</h2>
+            <div class="post-date">2022-01-13</div>
             
               <div class="feature-container" style="background-image: url('https://s2.loli.net/2022/01/12/PL4Ht8pnyclbJau.jpg')">
               </div>
             
             <div class="post-content" v-pre>
-              <p>《CSS秘密花园》学习笔记：半透明边框。</p>
+              <p>多重边框主要分为两种情况，一种是两层边框，还有一种是2层以上的边框。针对这两种情况，分别对应有不同的处理方案。</p>
 <!-- more -->
-<p>我们在想实现一个透明边框的时候，通常想到的可能是以下代码：</p>
-<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
+<h3 id="1-outline">1、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/outline">outline</a></h3>
+<p>某些情况下，如果你只需要两层边框，那么可以使用outline来实现。</p>
+<pre><code class="language-css">background: #409EFF;  
+border: 10px solid #67C23A;  
+outline: 5px solid #E6A23C;  
 </code></pre>
-<p>可是如果这时候给元素添加一个背景色或者背景图片，背景图片与背景色会透过透明边框显示出来。这是因为<strong>在默认情况下,背景会延伸到边框所在区域的下层。</strong></p>
-<p>先来看一个<a href="https://codepen.io/luhaifeng666/pen/MWEzyag?editors=1111">栗子</a>~</p>
-<p>通过这个例子我们可以看到，元素的背景色被设置为蓝色，背景色设置为<code>rgba(255,255,255,.6)</code> ,此时，透过透明边框可以看到元素的背景色。</p>
-<h3 id="解决办法">解决办法</h3>
-<p>通过添加 <code>background-clip</code> 来解决此类问题。</p>
-<pre><code class="language-css">border: 3px solid rgba(255,255,255,0.6);
-background-clip: padding-box;
-</code></pre>
+<p>如<a href="https://codepen.io/luhaifeng666/pen/QWqzwKO">demo1</a>。其中，绿色的是border，黄色的是outline。</p>
 <blockquote>
-<p>background-clip属性是用来设置背景裁剪区域的，该属性接受三个参数：content-box | padding-box | border-box | text，裁剪区域如下：</p>
+<p><strong>优点</strong></p>
 <ol>
-<li>content-box: content部分，背景被裁剪至内容区（content box）外沿。</li>
-<li>padding-box: content + padding部分，背景延伸至内边距（padding）外沿。不会绘制到边框处。</li>
-<li>border-box: content + padding + border部分，背景延伸至边框外沿（但是在边框下层）。</li>
-<li>text: 裁剪为text前景色</li>
+<li>比较灵活，可以自由设置边框的样式；</li>
+<li>也可以通过<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/outline-offset">outline-offset</a>来设置跟元素边缘之间的距离，这个属性可以接受负值。设置负值时则是显示的内边框，类似于box-shadow的inset。</li>
 </ol>
 </blockquote>
-<p>具体用法可以参考MDN文档：<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-clip">background-clip</a></p>
+<blockquote>
+<p><strong>缺点</strong></p>
+<ol>
+<li>只适用于双边框的样式，多边框的样式不能用；</li>
+<li>产生的边框不能贴合设置了圆角的元素，需要配合box-shadow来优化这个问题（后面会提到）;</li>
+<li>根据CSS基本UI特性(第三版)规范，<strong>描边可以不是矩形</strong>，使用时要测试各个浏览器的表现情况。</li>
+</ol>
+</blockquote>
+<h3 id="2-box-shadow">2、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow">box-shadow</a></h3>
+<p>常规的box-shadow是用来设置阴影的，但是这个属性可以设置多值，通过它的偏移特性，我们可以生成多重边框。</p>
+<pre><code class="language-css">margin: 50px auto;  
+box-shadow: 0 0 0 10px #67C23A, 0 0 0 20px #F56C6C, 0 0 0 30px #E6A23C;  
+</code></pre>
+<p>参考<a href="https://codepen.io/luhaifeng666/pen/QWqzwKO">demo2</a>。</p>
+<blockquote>
+<p><strong>优点</strong></p>
+<ol>
+<li>相比较于outline，这种方式可以设置多重边框；</li>
+<li>除了边框，box-shadow的偏移还能实现其他更多神奇的效果</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><strong>缺点</strong></p>
+<ol>
+<li>相比较outline边框的自由设置，box-shadow不能实现类似边框虚线的效果；</li>
+<li>不会影响布局，也不会受到<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing">box-sizing</a>属性的影响。上述例子中，我使用了50px的上偏移就是这个原因；</li>
+<li>不会影响鼠标的事件，比如hover还有click，使用的时候要注意。</li>
+</ol>
+</blockquote>
 
             </div>
-            
-              <div class="tag-container">
-                
-                  <a href="https://luhaifeng666.github.io/tag/zhcOSrSGk/" class="tag">
-                    CSS
-                  </a>
-                
-                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
-                    学习
-                  </a>
-                
-              </div>
             
             <div id="vcomments"></div>
             <span id="comment-count"></span>
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://luhaifeng666.github.io/post/mini-vue-xue-xi-reactivity-de-he-xin-liu-cheng/">
+                <a href="https://luhaifeng666.github.io/post/ban-tou-ming-bian-kuang/">
                   <h3 class="post-title">
-                    mini-vue学习：reactivity 的核心流程
+                    半透明边框
                   </h3>
                 </a>
               </div>
