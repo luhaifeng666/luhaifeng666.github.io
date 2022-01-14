@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-13T12:10:11.958Z</updated>
+    <updated>2022-01-14T02:21:21.061Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,46 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[背景定位]]></title>
+        <id>https://luhaifeng666.github.io/post/bei-jing-ding-wei/</id>
+        <link href="https://luhaifeng666.github.io/post/bei-jing-ding-wei/">
+        </link>
+        <updated>2022-01-14T02:19:40.000Z</updated>
+        <summary type="html"><![CDATA[<p>CSS2.1中，使用 <code>background-position</code> 属性进行背景定位，可以通过设置 <code>top,left,right,bottom</code> 来实现，也可以设置具体的数值或者百分比来实现，但是在不固定宽高的容器中，想要跟容器的边框保留固定的边距，就只能通过百分比实现大概的间距，不能精确到具体位置。而在CSS3中，则存在两种方案，可以实现背景定位的位置。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>CSS2.1中，使用 <code>background-position</code> 属性进行背景定位，可以通过设置 <code>top,left,right,bottom</code> 来实现，也可以设置具体的数值或者百分比来实现，但是在不固定宽高的容器中，想要跟容器的边框保留固定的边距，就只能通过百分比实现大概的间距，不能精确到具体位置。而在CSS3中，则存在两种方案，可以实现背景定位的位置。</p>
+<!-- more -->
+<h3 id="1-background-position的扩展语法">1、background-position的扩展语法</h3>
+<p>在CSS3中，可以指定背景图片<strong>距离任意角的偏移量</strong>，只要我们在<strong>偏移量前指定关键字即可。</strong></p>
+<pre><code class="language-css">background: url(../public/images/orange.jpeg) no-repeat top 10px left 10px / 30%;  
+background-color: #409EFF;  
+</code></pre>
+<p>效果如下图所示:</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/42078d94ae5f4eb2b901920556799c96~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>此时，图中的喵酱距离上边10px，距离左边10px。这样就可以实现精确定位。</p>
+<h3 id="2-background-origin">2、<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-origin">background-origin</a></h3>
+<p>在日常开发过程中，有这样一个场景，我需要图片的偏移量与内边距一致。如果继续使用上述方法的话，可能会出现如下代码：</p>
+<pre><code class="language-css">padding: 10px;  
+background: url(../public/images/orange.jpeg) no-repeat top 10px left 10px / 30%;  
+background-color: #409EFF;  
+</code></pre>
+<p>这样写确实实现了我们想要的效果，可是如果此时我的需求发生变化，内边距需要改为20px，这样一来，就导致我们需要改三个地方的数值。如果只是少数几个地方还好，如果改动的地方比较多，那么久增加了日常维护的成本。</p>
+<p>我们知道，除去margin以外，元素的内容主要分成以下三个部分：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/28fdd248584a482a8012d40c85b0766d~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>背景定位中的 <code>top,left,right,bottom</code> ，它们的定位都是依据 <code>padding-box</code> 来的，此时，我们可以通过 <code>background-origin</code> 来修改默认的参照：</p>
+<pre><code class="language-css">padding: 10px;  
+background: url(../public/images/orange.jpeg) no-repeat top 10px left 10px / 30%;  
+background-origin: content-box;  
+</code></pre>
+<p>我们只需要修改 <code>padding</code> 一个值，就可以灵活应对上述变化了。<br><br>
+与之相仿，我们也可以用<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/calc">calc</a>来实现定位。</p>
+<pre><code class="language-css">padding: 10px;  
+background: url(../public/images/orange.jpeg) no-repeat calc(100% - 20px) calc(100% - 10px) / 30%;  
+background-origin: content-box;  
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[多重边框]]></title>
         <id>https://luhaifeng666.github.io/post/css-xue-xi-duo-chong-bian-kuang/</id>
@@ -1121,186 +1161,6 @@ module: {
 <p>这一节我们知道了在webpack中如何对css文件做处理，以及在使用 <code>css预处理器</code> 时如何对其内容做相应的转换。<br><br>
 但是css的内容在转换过后，依旧存在于js文件中。随着我们项目开发的推进，打包出来的js文件会愈发庞大。除此之外，针对于不同平台以及不同设备，我们所写的css代码也需要做相应的兼容性处理。<br><br>
 针对以上的问题，我们下节一起来看下如何将js中的css代码提取成单独的文件，并对其做相应的兼容性与代码压缩处理。敬请期待~</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Webpack学习笔记六：css兼容性处理以及文件提取]]></title>
-        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/</id>
-        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-liu-css-jian-rong-xing-chu-li-yi-ji-wen-jian-ti-qu/">
-        </link>
-        <updated>2021-12-24T08:40:37.000Z</updated>
-        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6905647041368555527">上一节</a>我们学习到webpack中如何处理css文件，以及在使用了 <code>css预处理器</code> 后又改怎么处理。文章末尾我们也提到了两个需要解决的问题：</p>
-<blockquote>
-<ol>
-<li>随着项目推进，一直将css写入js中会导致文件逐渐臃肿；</li>
-<li>css兼容性<br>
-这一节，我们将针对这两个问题提出相应的解决方案。</li>
-</ol>
-</blockquote>
-<h1 id="css文件提取">css文件提取</h1>
-<p>上一节中我们使用到了 <code>style-loader</code> 、 <code>css-loader</code> 以及 <code>sass-loader</code> 三种loader，在这三种loader的协同作用下，.scss文件先通过sass-loader转成普通的css文件，再通过css-loader将css转换成commonjs模块并打包到js中，最后通过style-loader将js文件中的css样式加载到head里的style标签中去。<br><br>
-除了上面提到的第一个问题外，这样也会导致页面会有短暂的错乱，然后等js文件加载完成后，页面样式才会恢复正常，这显然不符合我们的要求，用户的体验也非常不好。此时，我们需要将js中的css单独提取出来，作为css文件引入页面，这样就可以解决这个问题。而且js的文件体积会更小，上述第一个问题也能被解决。</p>
-<h2 id="如何使用">如何使用</h2>
-<p>要将js中的css提取成单独的文件，我们需要用到一个 <code>插件</code> ：<code>mini-css-extract-plugin</code>。</p>
-<h3 id="安装">安装</h3>
-<pre><code class="language-js">yarn add -D mini-css-extract-plugin
-</code></pre>
-<h3 id="配置">配置</h3>
-<p>前几节我们主要使用的是webpack中的 <code>loader</code> ，与 <code>loader</code> 不同的是，<code>插件</code> 在使用之前需要先引入进来，然后在wbepack.config.js的 <code>plugin</code> 字段中添加配置：</p>
-<pre><code class="language-js">const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-module.exports = {
-    /* ... */
-    plugins: [
-    	new MiniCssExtractPlugin({
-         filename: 'css/index.[contenthash:10].css',
-       }),
-    ]
-    /* ... */
-}
-</code></pre>
-<p>其中，在实例化这个插件时，可以传入配置。上述配置中指定了提取出css文件的输出路径。<br><br>
-在配置完插件之后，我们来回顾一下之前的处理方式，最终的结果是<strong>通过 <code>style-loader</code> 将css的内容插入到页面的style标签中</strong>。而现在我们要实现的是<strong>将css文件单独提取出来</strong>。所以我们需要将 <code>style-loader</code> 替换掉。<br><br>
-在 <code>mini-css-extract-plugin</code> 插件内部提供了一个用于提取css的loader: <code>MiniCssExtractPlugin.loader</code>，我们只需要将 <code>style-loader</code> 替换为 <code>MiniCssExtractPlugin.loader</code> 即可：</p>
-<pre><code class="language-js">const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-module.exports = {
-    /* ... */
-    module: {
-        rules: [
-            /* ... */
-            {
-              test: /\.s[ac]ss/,
-              exclude: /(node_modules|build)/,
-              use: [
-                MiniCssExtractPlugin.loader,,
-                'css-loader',
-                'sass-loader'
-              ],
-            },
-        ]
-    },
-    plugins: [
-    	new MiniCssExtractPlugin({
-         filename: 'css/index.[contenthash:10].css',
-       }),
-    ]
-    /* ... */
-}
-</code></pre>
-<h1 id="css兼容性处理">css兼容性处理</h1>
-<p>在日常开发中，为了让css样式能够适用于大多数的设备或者浏览器，我们需要对css做好兼容性处理。<br><br>
-css的兼容性处理需要用到 <a href="https://www.postcss.com.cn/">postcss</a>。 <code>postcss</code> 是一个用 JavaScript 工具和插件转换 CSS 代码的工具。在webpack中使用它需要用到两个包：<code>postcss-loader</code> 以及 <code>postcss-preset-env</code>。<br><br>
-其中，<code>postcss-preset-env</code> 的作用是帮助 <code>postcss-loader</code> 找到 <code>browserslist</code> 的配置，加载指定的兼容性。<code>browserslist</code> 一般会配置到package.json下，或者在根目录下有一个 <code>.browserslistrc</code> 的文件去写相关的配置。</p>
-<blockquote>
-<p>注意：package.json中的配置与.browserslistrc文件，两者只能存其一，否则会报错！！</p>
-</blockquote>
-<h3 id="安装-2">安装</h3>
-<pre><code class="language-js">yarn add -D postcss-loader postcss-preset-env
-</code></pre>
-<h3 id="配置-2">配置</h3>
-<p>我们在上面的loader配置基础上进行一些修改：</p>
-<pre><code class="language-js">{
-  test: /\.s[ac]ss$/i,
-  use: [
-    MiniCssExtractPlugin.loader,
-    'css-loader',
-    {
-      loader: 'postcss-loader',
-      options: {
-        postcssOptions: {
-          plugins: [
-            [
-              'postcss-preset-env',
-              {
-                // Options
-              },
-            ],
-          ],
-        },
-      }
-    },
-    // 将 Sass 编译成 CSS
-    'sass-loader',
-  ],
-},
-</code></pre>
-<p>然后在 <code>package.json</code> 文件中添加如下配置（更多配置可以参考:<a href="https://github.com/browserslist/browserslist">browserslist</a>）：</p>
-<pre><code class="language-json">&quot;browserslist&quot;: {
-    &quot;development&quot;: [ // 开发环境
-      &quot;last 1 chrome version&quot;,
-      &quot;last 1 safari version&quot;,
-      &quot;last 1 firefox version&quot;
-    ],
-    &quot;production&quot;: [ // 生产环境
-      &quot;&gt; 0.2%&quot;,
-      &quot;not dead&quot;,
-      &quot;not op_mini all&quot;
-    ]
-}
-</code></pre>
-<p>或者也可以在根目录下创建.browserslistrc文件。</p>
-<blockquote>
-<p>注意：配置项是有顺序的！！&gt; 0.2%写到后面会报错</p>
-</blockquote>
-<pre><code class="language-json">&gt; 0.2%
-not dead
-not op_mini all
-</code></pre>
-<p>关于postcss-loader更多的配置可以<a href="https://webpack.js.org/loaders/postcss-loader/#root">参考</a>。</p>
-<h1 id="css文件压缩">css文件压缩</h1>
-<p>在对css文件做完兼容性处理并提取成单个文件之后，我们可以进一步对其进行优化，将抽出的css文件进行压缩。此时我们需要用到一个插件： <code>optimize-css-assets-webpack-plugin</code>。</p>
-<h3 id="安装-3">安装</h3>
-<pre><code class="language-js">yarn add -D optimize-css-assets-webpack-plugin
-</code></pre>
-<h3 id="使用">使用</h3>
-<p>使用非常简单 ，只需要在 <code>webpack.config.js</code> 中引入使用即可。默认配置已经可以满足压缩需要，如果需要添加配置，可以<a href="https://www.npmjs.com/package/optimize-css-assets-webpack-plugin">参考</a>。</p>
-<pre><code class="language-js">const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-module.exports = {
-    /* ... */
-    module: {
-      rules: [
-        /* ... */
-        {
-          test: /\.s[ac]ss$/i,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    [
-                      'postcss-preset-env',
-                      {
-                        // Options
-                      },
-                    ],
-                  ],
-                },
-              }
-            },
-            // 将 Sass 编译成 CSS
-            'sass-loader',
-          ],
-        },
-      ]
-    },
-    plugins: [
-    	new MiniCssExtractPlugin({
-         filename: 'css/index.[contenthash:10].css',
-       }),
-       new OptimizeCssAssetsWebpackPlugin()
-    ]
-    /* ... */
-}
-</code></pre>
-<h1 id="预告">预告</h1>
-<p>通过这两节，我们已经知道了webpack中如何对css文件进行处理，并在此过程中对其做了一些优化，包括提取单个css文件，兼容性处理以及css代码压缩。<br><br>
-下一节我们一起来看下，除了css文件与js文件外，其他的文件webpack要如何进行处理呢？拭目以待吧~</p>
 ]]></content>
     </entry>
 </feed>
