@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" >
 
-<title>Webpack学习笔记一：一些基础知识 | 酱豆腐精的小站</title>
+<title>CSS学习：边框内圆角 | 酱豆腐精的小站</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -18,10 +18,13 @@
 
 
 
-    <meta name="description" content="在日常开发过程中，相信大家都会使用到脚手架，比如 vue-cli 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 webpack 。
+    <meta name="description" content="需求：元素边框外侧的四个角为直角，内侧的四个角为圆角，形成内圆角的效果。
 
-尤其在公司的技术栈日趋..." />
-    <meta name="keywords" content="学习" />
+想法一
+这个需求主要分为两部分，边框和圆角。实现边框跟圆角并不困难，只要使用border以及border-radius属性即可：
+代码1
+border: 10px ..." />
+    <meta name="keywords" content="CSS,学习" />
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
   </head>
@@ -94,53 +97,52 @@
       <div class="main-container">
         <div class="content-container" data-aos="fade-up">
           <div class="post-detail">
-            <h2 class="post-title">Webpack学习笔记一：一些基础知识</h2>
-            <div class="post-date">2021-12-24</div>
+            <h2 class="post-title">CSS学习：边框内圆角</h2>
+            <div class="post-date">2022-01-17</div>
             
-              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/webpack-xue-xi-bi-ji-yi-yi-xie-ji-chu-zhi-shi.jpeg')">
+              <div class="feature-container" style="background-image: url('https://luhaifeng666.github.io/post-images/css-xue-xi-bian-kuang-nei-yuan-jiao.webp')">
               </div>
             
             <div class="post-content" v-pre>
-              <p>在日常开发过程中，相信大家都会使用到脚手架，比如 <code>vue-cli</code> 等等。诚然，脚手架可以让我们的日常开发更加便利，但是久而久之，逐渐依赖脚手架进行开发的我们，可能会对一些工具的使用逐渐生疏，比如 <code>webpack</code> 。</p>
+              <p>需求：<strong>元素边框外侧的四个角为直角，内侧的四个角为圆角，形成内圆角的效果</strong>。</p>
 <!-- more -->
-<p>尤其在公司的技术栈日趋稳定之后，我们手动配置 <code>webpack</code> 的机会就越来越少，我就是如此...Orz。所以借此机会，我决定再重头学习一遍这个熟悉而又有点陌生的工具，并将笔记做一个梳理，希望对同样有此感触，或者想学习 <code>webpack</code> 的小伙伴们有所帮助~</p>
-<p>此处主子镇楼~</p>
-<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/456b7108fbd64ed8b270b7287cb4b364~tplv-k3u1fbpfcp-watermark.awebp" alt="主子" loading="lazy"></figure>
-<blockquote>
-<p>本章节及后面的章节使用的webpack及webpack-cli的版本如下：<br><br>
-<code>&quot;webpack&quot;: &quot;4.41.6&quot;</code> <br><br>
-<code>&quot;webpack-cli&quot;: &quot;3.3.11&quot;</code></p>
-</blockquote>
-<p>在开始学习<code>webpack</code>之前，我们先来了解一下与之相关的一些基础知识。</p>
-<h1 id="构建工具的概念">构建工具的概念</h1>
-<p>通俗点来说，构建工具就是包含一系列小工具的大工具。<br><br>
-我们来举个🌰：比如我们需要将less、sass等css预处理器写的代码编译成正常的css代码，则需要相应的编译工具；而需要将ES6+的代码转换为兼容性更高的ES5的代码，也需要相应的编译工具。而将诸如此类的小工具包含起来的大工具，就叫 <code>构建工具</code> (比如我们接下来要学习的 <code>webpack</code> 就是构建工具)。在构建工具中,我们可以处理所有的这些操作。</p>
-<h1 id="静态模块打包器的概念">静态模块打包器的概念</h1>
-<p>这个概念里主要分为两个小的概念，即 <code>静态模块</code> 与 <code>打包</code>。<br><br>
-我们来看下如下代码：</p>
-<pre><code class="language-js">// main.js
-import $ from 'Jquery'
-import './less/common.less'
+<h3 id="想法一">想法一</h3>
+<p>这个需求主要分为两部分，边框和圆角。实现边框跟圆角并不困难，只要使用border以及<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius">border-radius</a>属性即可：</p>
+<h4 id="代码1">代码1</h4>
+<pre><code class="language-css">border: 10px solid #67C23A;  
+border-radius: 10px;  
 </code></pre>
-<p>我们在入口文件中引入了两个模块，webpack在打包的时候，会先生成对应的依赖关系，即在 <code>main.js</code> 中引入了 <code>Jquery</code> 以及<code>common.less</code> 两个模块：<br>
-<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/463c25df4e2e4c06a694a61c0b4cb717~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
-其中 <code>main.js</code> , <code>Jquery</code> , <code>common.less</code> 称为 <code>（静态）模块</code>，也叫做 <code>chunk</code> ，含义就是代码块; 之后webpack会对chunk代码块进行处理，将less以及ES6语法做转换，转换成浏览器可识别的内容，这个过程叫做<code>打包</code>。打包完成后，输出的文件称之为 <code>bundle</code>。</p>
-<h1 id="webpack的五个核心概念"><a href="https://www.webpackjs.com/concepts/">Webpack的五个核心概念</a></h1>
-<ol>
-<li>entry：指示webpack从哪个入口开始打包，分析并构建内部依赖图。</li>
-<li>output：指示webpack打包之后的bundle文件生成到哪里去。</li>
-<li>loader：webpack只能处理js内容，loader的作用就是将非js的内容（比如css/image）转换成webpack可以识别的内容。</li>
-<li>plugins：相较于loader只能用作代码翻译，plugins可以做更多复杂强大的事情。</li>
-<li>mode：主要分为development以及production模式。相较于生产模式，开发模式的配置会比较简单，具体的区别可以参照下表：<br>
-| 环境 | 描述 | 特点 |<br>
-| ------ | ------ | ------ |<br>
-| development | 会将 <code>process.env.NODE_ENV</code> 的值设为 <code>development</code>。<br>启用 <code>NamedChunksPlugin</code> 和 <code>NamedModulesPlugin</code>。  | 能本地调试 |<br>
-| production | 会将 <code>process.env.NODE_ENV</code> 的值设为 <code>production</code>。<br>启用 <code>FlagDependencyUsagePlugin</code>, <code>FlagIncludedChunksPlugin</code>, <code>ModuleConcatenationPlugin</code>, <code>NoEmitOnErrorsPlugin</code>, <code>OccurrenceOrderPlugin</code>, <code>SideEffectsFlagPlugin</code> 和 <code>UglifyJsPlugin</code>。 | 能优化生产环境的代码 |</li>
-</ol>
+<p>实现效果如下：</p>
+<figure data-type="image" tabindex="1"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3508271000114aada421533011a1808c~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>我们可以看到，最终实现的是外圆角内直角的效果，因为在设置 <code>border-radius</code> 的时候，是算上边框的。</p>
+<h3 id="想法二">想法二</h3>
+<p>在<a href="https://juejin.cn/post/7052624943795666974">多重边框</a>这篇文章中提到过 <code>outline</code>，那我们是否可以通过 <code>outline</code> 以及 <code>border-radius</code> 的方式来实现这个效果呢：</p>
+<h4 id="代码2">代码2</h4>
+<pre><code class="language-css">outline: 10px solid #67C23A;  
+border-radius: 10px;  
+</code></pre>
+<p>具体效果如下所示：</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/50ebe260ff7d4596841484ddd16b8fe0~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>实际效果距离我们的预期已经非常接近了，可是在元素的四个角还存在白色的空隙，那该怎么填上呢？答案是<strong>box-shadow!</strong> 我们可以利用它来实现这个效果：</p>
+<h4 id="代码3">代码3</h4>
+<pre><code class="language-css">outline: 10px solid #67C23A;  
+border-radius: 10px;  
+box-shadow 0 0 0 4px #67C23A  
+</code></pre>
+<p>最后的效果如下所示：</p>
+<demo-1-4 :type="'type3'" />  
+<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fb97b6321e5e4948b5ddf7d757f7bd85~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>那这个偏移量我们要设置多少合适呢？其实计算也非常简单。四个内圆角其实就是4个1/4圆:<br>
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aa239afce1e942338be271fa28241430~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></p>
+<p>通过勾股定理可以求得 <code>L = √2R</code> ，<code>box-shadow</code> 需要设置的偏移量为 <code>L - R = (√2 - 1) * R</code>，其中，<code>R</code> 是 <code>border-radius</code> 的值。所以在上述例子中，偏移量的距离大概为：<code>0.414 * 10 = 4px</code>。</p>
 
             </div>
             
               <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/zhcOSrSGk/" class="tag">
+                    CSS
+                  </a>
                 
                   <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
                     学习
@@ -153,9 +155,9 @@ import './less/common.less'
             
               <div class="next-post">
                 <div class="next">下一篇</div>
-                <a href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-er-webpack-chu-ti-yan/">
+                <a href="https://luhaifeng666.github.io/post/bei-jing-ding-wei/">
                   <h3 class="post-title">
-                    Webpack学习笔记二：Webpack初体验
+                    背景定位
                   </h3>
                 </a>
               </div>
