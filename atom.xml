@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-17T13:39:02.970Z</updated>
+    <updated>2022-01-17T13:42:28.116Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -16,9 +16,9 @@
         <link href="https://luhaifeng666.github.io/post/css-xue-xi-bian-kuang-nei-yuan-jiao/">
         </link>
         <updated>2022-01-17T13:35:26.000Z</updated>
-        <summary type="html"><![CDATA[<p>需求：<strong>元素边框外侧的四个角为直角，内侧的四个角为圆角，形成内圆角的效果</strong>。</p>
+        <summary type="html"><![CDATA[<p>需求：<strong>元素边框内侧的四个角为圆角，形成内圆角的效果</strong>。</p>
 ]]></summary>
-        <content type="html"><![CDATA[<p>需求：<strong>元素边框外侧的四个角为直角，内侧的四个角为圆角，形成内圆角的效果</strong>。</p>
+        <content type="html"><![CDATA[<p>需求：<strong>元素边框内侧的四个角为圆角，形成内圆角的效果</strong>。</p>
 <!-- more -->
 <h3 id="想法一">想法一</h3>
 <p>这个需求主要分为两部分，边框和圆角。实现边框跟圆角并不困难，只要使用border以及<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/border-radius">border-radius</a>属性即可：</p>
