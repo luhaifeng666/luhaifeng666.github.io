@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-17T13:42:54.632Z</updated>
+    <updated>2022-01-18T16:46:46.780Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,122 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[手写练习：防抖节流]]></title>
+        <id>https://luhaifeng666.github.io/post/shou-xie-lian-xi-fang-dou-jie-liu/</id>
+        <link href="https://luhaifeng666.github.io/post/shou-xie-lian-xi-fang-dou-jie-liu/">
+        </link>
+        <updated>2022-01-18T16:45:06.000Z</updated>
+        <summary type="html"><![CDATA[<p>不论在日常工作中，还是在面试过程中，<code>防抖节流</code> 总是会时不时的出现在我们的视野里。在日常使用的时候，可能会直接使用第三方库封装好的方法，比如 <code>lodash</code> 中的防抖方法 <a href="https://lodash.com/docs/4.17.15#debounce"><em>.debounce</a> 和节流方法 <a href="https://lodash.com/docs/4.17.15#throttle"></em>.throttle</a>。抑或是使用开发团队的小伙伴们封装好的方法。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>不论在日常工作中，还是在面试过程中，<code>防抖节流</code> 总是会时不时的出现在我们的视野里。在日常使用的时候，可能会直接使用第三方库封装好的方法，比如 <code>lodash</code> 中的防抖方法 <a href="https://lodash.com/docs/4.17.15#debounce"><em>.debounce</a> 和节流方法 <a href="https://lodash.com/docs/4.17.15#throttle"></em>.throttle</a>。抑或是使用开发团队的小伙伴们封装好的方法。</p>
+<!-- more -->
+<p>在忙碌的工作中，也许小伙伴们知道它们的作用，但是对其中的原理逐渐陌生。今天我们就把这两个 <code>老朋友</code> 请出来，再来一起看看是如何实现的吧~</p>
+<h1 id="节流方法throttle">节流方法：throttle</h1>
+<h2 id="什么是节流">什么是节流</h2>
+<p>用一句话概括节流：</p>
+<blockquote>
+<p>在规定的延时时间内，不管你执行多少次，我都只认第一次。</p>
+</blockquote>
+<h2 id="节流的实现">节流的实现</h2>
+<pre><code class="language-js">/**
+ * 节流函数
+ * @param fn
+ * @param delay
+ */
+function throttle (fn, delay) {
+ // 上一次的调用时间
+ let lastTime = 0
+
+ // 将throttle结果以函数形式返回
+ return function () {
+  // 保存执行时上下文
+  const context = this
+  // 保存调用throttle结果函数时传入的参数
+  const args = arguments
+  // 本地调用的时间
+  const time  = new Date()
+  // 如果本次调用时间减去上一次的调用时间大于延迟时间，则触发传入的fn
+  if (time - lastTime &gt; delay) {
+   lastTime = time
+   fn.apply(context, args)
+  }
+ }
+}
+</code></pre>
+<h1 id="防抖方法debounce">防抖方法：debounce</h1>
+<h2 id="什么是防抖">什么是防抖</h2>
+<p>用一句话概括防抖：</p>
+<blockquote>
+<p>在规定的延时时间内，不管你触发多少次回调，都只认最后一次。</p>
+</blockquote>
+<h2 id="防抖的实现">防抖的实现</h2>
+<pre><code class="language-js">/**
+ * 防抖
+ * @param fn
+ * @param delay
+ */
+function debounce (fn, delay) {
+ // 保存延时
+ let timer = null
+ // 将debounce的处理结果以函数形式返回
+ return function () {
+  // 保存执行时上下文
+  const context = this
+  // 保存执行时传入的参数
+  const args = arguments
+  // 如果存在定时器，则将其清除
+  timer &amp;&amp; clearTimeout(timer)
+  // 设置新的定时器，在计时结束后触发回调
+  timer = setTimeout(() =&gt; {
+   fn.apply(context, args)
+  }, delay)
+ }
+}
+</code></pre>
+<h1 id="防抖的弊端">防抖的弊端</h1>
+<p>防抖与节流的目的，都是在一定时间内限制回调函数被调用的次数，从而在一定程度上提升性能。</p>
+<p>但是防抖存在一个弊端，那就是如果在 <code>delay</code> 指定的时间内不断触发防抖，就会导致回调函数迟迟不会有响应。只有在你 <code>停手</code> 之后，经过 <code>dealy</code> 这段时间后，回调函数才会有响应。</p>
+<p>既然如此，如果我们能在一开始就触发回调，然后在后续频繁的操作里保持防抖的特性，岂不是美滋滋~</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6f590f56f027483396cbd269655ac3e6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h1 id="加强版的节流方法strongerthrottle">加强版的节流方法：strongerThrottle</h1>
+<p>回顾我们之前所实现的 <code>节流</code> 方法，它不正是在一开始就可以立即调用回调函数的么？既然如此，我们可以使用 <code>throttle</code> 方法来对 <code>debounce</code> 方法进行优化，实现一个加强版的节流方法。</p>
+<pre><code class="language-js">/**
+ * 更健壮的节流，结合了防抖
+ * @param fn
+ * @param delay
+ */
+function strongerThrottle (fn, delay) {
+ // 保存计时器与最后一次调用时间
+ let timer = null
+ let lastTime = 0
+ // 将调用strongerThrottle的结果以函数形式返回
+ return function () {
+  // 保存执行上下文
+  const context = this
+  // 保存传入的参数
+  const args = arguments
+  // 保存当前调用时间
+  const time = new Date()
+  // 如果当前调用的时间减去最后一次调用的时间小于延迟时间，则设置定时器
+  if (time - lastTime &lt; delay) {
+   // 如果存在定时器，则先清空
+   timer &amp;&amp; clearTimeout(timer)
+   // 设置新的定时器，在计时结束后触发回调
+   timer = setTimeout(function () {
+    lastTime = time
+    fn.apply(context, args)
+   }, delay)
+  } else {
+   // 如果超出时间，则给出响应
+   lastTime = time
+   fn.apply(context, args)
+  }
+ }
+}
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[CSS学习：边框内圆角]]></title>
         <id>https://luhaifeng666.github.io/post/css-xue-xi-bian-kuang-nei-yuan-jiao/</id>
@@ -990,113 +1106,6 @@ module: {
 <p>行文至此，js的打包方式以及处理兼容的几种方式都已经介绍完毕。当然loader的配置不止这些，在日后的开发过程中，小伙伴们可以根据项目需要去查询对应loader的文档，来定制化适合自己项目的配置。<br><br>
 处理完js的兼容性问题，那么开发团队在日常开发中的js风格统一化又该怎么去处理？一些容易犯的低级错误又该怎么去避免呢？下一章节我们就来介绍处理这些问题的方法~<br><br>
 <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/90b2c8f2bb0447828ffbea8e6eab02a6~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Webpack学习笔记四：eslint语法检查]]></title>
-        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/</id>
-        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-si-eslint-yu-fa-jian-cha/">
-        </link>
-        <updated>2021-12-24T08:42:08.000Z</updated>
-        <content type="html"><![CDATA[<p>在<a href="https://juejin.cn/post/6903910160184868878">上一节</a>文章末尾，我们提出了一个问题，<strong>我们要如何控制代码风格的统一，避免一些低级错误</strong>。这一节我们就来介绍下解决这两个问题的方法：<strong>eslint语法检查</strong>。</p>
-<h1 id="背景">背景</h1>
-<p>在日常开发过程中，项目一般都是多人合作。为了保证代码的统一和规范，我们需要借助eslint去完成。在此过程中，我们需要使用到<code>eslint-loader</code> 以及 <code>eslint</code>。</p>
-<h3 id="安装">安装</h3>
-<pre><code class="language-js">yarn add -D eslint eslint-loader
-</code></pre>
-<h3 id="基本配置">基本配置</h3>
-<p>安装完成后，在webpack.config.js中添加如下配置：</p>
-<pre><code class="language-js">/* ... */
-module: {
-  rules: [
-    {
-        test: /\.js$/,
-        exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
-        loader: 'eslint-loader',
-        options: {}
-    }
-  ]
-}
-/* ... */
-</code></pre>
-<p>配置完成后，eslint还需要知道具体的规则是什么。此时，我们需要在 <code>package.json</code> 文件中配置 <code>eslintConfig</code> 属性，或者在根目录下添加 <code>.eslintrc</code> 文件来配置eslint的规则。<br><br>
-但是手动配置规则显然比较麻烦，此时我们可以借助第三方的工具来完成这件事情。这里我们使用 <code>airbnb</code> 的配置。<br><br>
-想要使用airbnb的eslint规则，我们需要安装几个插件：<code>eslint-config-arbnb-base</code> 与 <code>eslint-plugin-import</code>。</p>
-<pre><code class="language-js">yarn add -D eslint-config-airbnb-base  eslint-plugin-import
-</code></pre>
-<p>之后在 <code>package.json</code> 中添加如下配置：</p>
-<pre><code class="language-js">&quot;eslintConfig&quot;: {
-  &quot;extends&quot;: &quot;airbnb-base&quot;
-}
-</code></pre>
-<p>或者在 <code>.eslintrc</code> 文件中添加：</p>
-<pre><code class="language-js"> &quot;extends&quot;: &quot;airbnb-base&quot;
-</code></pre>
-<p>这样就会继承airbnb的eslint配置。再次打包或者运行时，控制台就会给出相应的报错提示：<br>
-<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d666da14a1b644da8d910166ffd750a3~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
-<blockquote>
-<p>我们也可以通过添加 <code>VScode</code>, 或者小伙伴们所用的其他IDE的 <code>ESlint插件</code> 去辅助我们日常的开发。在这里，笔者使用的是 <code>VScode</code>，如果有跟笔者一样使用这个IDE的小伙伴，推荐安装这个插件：</p>
-<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9eae5c1e455844d3b3ab03fdefe8bd0f~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
-<p>安装并启用这个插件之后，我们就可以在编辑器中看到eslint给出的相应提示：</p>
-<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c7187fa4a4f9473d801b9d3d439709bb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
-<p>当我们将光标移动至波浪线上时，在弹出的窗口中点击 <code>Quick Fix</code>选项后，插件也会提供一些快速修复的方法, 使得修复更加便捷：</p>
-<figure data-type="image" tabindex="3"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/438ed3f9940c41abad755558f8411fbb~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
-</blockquote>
-<h3 id="自动修复配置">自动修复配置</h3>
-<p>如果我们需要自动修复这些问题，我们可以添加一项配置：</p>
-<pre><code class="language-js">module: {
-  rules: [
-    {
-      test: /\.js$/,
-      exclude: /node_modules/, // 需要忽略掉node_modules，不然会对其中的内容也做检查
-      loader: 'eslint-loader',
-      options: {
-          fix: true // 自动修复一些eslint问题
-      }
-    }
-  ]
-}
-</code></pre>
-<p>这样则会自动修复一些问题。但是不是所有的问题都会被自动修复，有一些仍需要手动修复：<br>
-<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/96d4612c60024378a027b819b8124953~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"><br>
-此时我们只要根据给出的提示逐一修复即可。</p>
-<h3 id="配合babel-loader一起使用">配合babel-loader一起使用</h3>
-<p>行文至此，我们已经知道了 <code>ESlint</code> 怎么去使用。那么在日常开发中，如果先对所写的代码做过检查，然后再使用 <code>babel-loader</code> 转换一下，岂不是美滋滋？（手动滑稽）<br><br>
-那如何才能与上一节中提到的 <code>babel-loader</code> 一起去使用呢？当然是一起写到loader配置里就好啦~这里我们需要注意一点：<strong>loader的执行顺序是自左向右，自下向上的，简而言之就是按照从后往前的顺序执行</strong>。所以如果我们需要先检查代码，之后再对代码打包的话，那么 <code>eslint-loader</code> 需要配置在 <code>babel-loader</code> 之后：</p>
-<pre><code class="language-js">// 这里由于都是匹配的js文件，所以我们将两个loader写在一起
-// 注意写法的改变，原先直接是写的loader，现在改为use数组的形式
-module: {
-  rules: [
-    {
-      // 匹配.js文件
-      test: /\.js$/,
-      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
-      exclude: /node_modules/,
-      use: [
-      	// 使用 babel-loader
-        {
-          loader: 'babel-loader',
-          // loader的相关配置
-          options: {
-            presets: ['@babel/preset-env'],
-          },
-        }, 
-        // 使用 eslint-loader, 配置写在 babel-loader之后，优先执行
-        {
-          loader: 'eslint-loader',
-          options: {
-            fix: true,
-          },
-        },
-      ],
-    },
-  ],
-},
-</code></pre>
-<p>配置完成后，我们就可以实现先做代码检查，后进行语法转换啦~ <br></p>
-<h1 id="预告">预告</h1>
-<p>结合上一节的内容，我们介绍了webpack在对js文件做处理时的一些基本操作，包括 <code>语法转换</code> 以及 <code>语法检查</code>。介绍完了js，在下一章节中，我们一起来看下webpack在处理css文件的时候又会做哪些基本操作呢？拭目以待吧~</p>
-<figure data-type="image" tabindex="4"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd370ca53e2c47eeb502d251080d7f90~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
 ]]></content>
     </entry>
 </feed>

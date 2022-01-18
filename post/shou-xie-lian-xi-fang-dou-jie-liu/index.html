@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>手写练习：防抖节流 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1642524400135">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="不论在日常工作中，还是在面试过程中，防抖节流 总是会时不时的出现在我们的视野里。在日常使用的时候，可能会直接使用第三方库封装好的方法，比如 lodash 中的防抖方法 .debounce 和节流方法 .throttle。抑或是使用开发团队的..." />
+    <meta name="keywords" content="JS,学习" />
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1642524400135" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">手写练习：防抖节流</h2>
+            <div class="post-date">2022-01-19</div>
+            
+              <div class="feature-container" style="background-image: url('https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1dc463ab627f49a29b69fe21087dccfa~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp?')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>不论在日常工作中，还是在面试过程中，<code>防抖节流</code> 总是会时不时的出现在我们的视野里。在日常使用的时候，可能会直接使用第三方库封装好的方法，比如 <code>lodash</code> 中的防抖方法 <a href="https://lodash.com/docs/4.17.15#debounce"><em>.debounce</a> 和节流方法 <a href="https://lodash.com/docs/4.17.15#throttle"></em>.throttle</a>。抑或是使用开发团队的小伙伴们封装好的方法。</p>
+<!-- more -->
+<p>在忙碌的工作中，也许小伙伴们知道它们的作用，但是对其中的原理逐渐陌生。今天我们就把这两个 <code>老朋友</code> 请出来，再来一起看看是如何实现的吧~</p>
+<h1 id="节流方法throttle">节流方法：throttle</h1>
+<h2 id="什么是节流">什么是节流</h2>
+<p>用一句话概括节流：</p>
+<blockquote>
+<p>在规定的延时时间内，不管你执行多少次，我都只认第一次。</p>
+</blockquote>
+<h2 id="节流的实现">节流的实现</h2>
+<pre><code class="language-js">/**
+ * 节流函数
+ * @param fn
+ * @param delay
+ */
+function throttle (fn, delay) {
+ // 上一次的调用时间
+ let lastTime = 0
+
+ // 将throttle结果以函数形式返回
+ return function () {
+  // 保存执行时上下文
+  const context = this
+  // 保存调用throttle结果函数时传入的参数
+  const args = arguments
+  // 本地调用的时间
+  const time  = new Date()
+  // 如果本次调用时间减去上一次的调用时间大于延迟时间，则触发传入的fn
+  if (time - lastTime &gt; delay) {
+   lastTime = time
+   fn.apply(context, args)
+  }
+ }
+}
+</code></pre>
+<h1 id="防抖方法debounce">防抖方法：debounce</h1>
+<h2 id="什么是防抖">什么是防抖</h2>
+<p>用一句话概括防抖：</p>
+<blockquote>
+<p>在规定的延时时间内，不管你触发多少次回调，都只认最后一次。</p>
+</blockquote>
+<h2 id="防抖的实现">防抖的实现</h2>
+<pre><code class="language-js">/**
+ * 防抖
+ * @param fn
+ * @param delay
+ */
+function debounce (fn, delay) {
+ // 保存延时
+ let timer = null
+ // 将debounce的处理结果以函数形式返回
+ return function () {
+  // 保存执行时上下文
+  const context = this
+  // 保存执行时传入的参数
+  const args = arguments
+  // 如果存在定时器，则将其清除
+  timer &amp;&amp; clearTimeout(timer)
+  // 设置新的定时器，在计时结束后触发回调
+  timer = setTimeout(() =&gt; {
+   fn.apply(context, args)
+  }, delay)
+ }
+}
+</code></pre>
+<h1 id="防抖的弊端">防抖的弊端</h1>
+<p>防抖与节流的目的，都是在一定时间内限制回调函数被调用的次数，从而在一定程度上提升性能。</p>
+<p>但是防抖存在一个弊端，那就是如果在 <code>delay</code> 指定的时间内不断触发防抖，就会导致回调函数迟迟不会有响应。只有在你 <code>停手</code> 之后，经过 <code>dealy</code> 这段时间后，回调函数才会有响应。</p>
+<p>既然如此，如果我们能在一开始就触发回调，然后在后续频繁的操作里保持防抖的特性，岂不是美滋滋~</p>
+<figure data-type="image" tabindex="1"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6f590f56f027483396cbd269655ac3e6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h1 id="加强版的节流方法strongerthrottle">加强版的节流方法：strongerThrottle</h1>
+<p>回顾我们之前所实现的 <code>节流</code> 方法，它不正是在一开始就可以立即调用回调函数的么？既然如此，我们可以使用 <code>throttle</code> 方法来对 <code>debounce</code> 方法进行优化，实现一个加强版的节流方法。</p>
+<pre><code class="language-js">/**
+ * 更健壮的节流，结合了防抖
+ * @param fn
+ * @param delay
+ */
+function strongerThrottle (fn, delay) {
+ // 保存计时器与最后一次调用时间
+ let timer = null
+ let lastTime = 0
+ // 将调用strongerThrottle的结果以函数形式返回
+ return function () {
+  // 保存执行上下文
+  const context = this
+  // 保存传入的参数
+  const args = arguments
+  // 保存当前调用时间
+  const time = new Date()
+  // 如果当前调用的时间减去最后一次调用的时间小于延迟时间，则设置定时器
+  if (time - lastTime &lt; delay) {
+   // 如果存在定时器，则先清空
+   timer &amp;&amp; clearTimeout(timer)
+   // 设置新的定时器，在计时结束后触发回调
+   timer = setTimeout(function () {
+    lastTime = time
+    fn.apply(context, args)
+   }, delay)
+  } else {
+   // 如果超出时间，则给出响应
+   lastTime = time
+   fn.apply(context, args)
+  }
+ }
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/h8BL6mwKM/" class="tag">
+                    JS
+                  </a>
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            <span id="comment-count"></span>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/css-xue-xi-bian-kuang-nei-yuan-jiao/">
+                  <h3 class="post-title">
+                    CSS学习：边框内圆角
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+  <script type="text/javascript">
+    // 设置valine
+    new Valine({
+      av: AV,
+      el: '#vcomments',
+      count_el: '#comment-count',
+      appId: 'HlwrEhBsDstpVpKVMUMqyfBV-9Nh9j0Va',
+      appKey: 'Cs2jEIpcC6nXJFH8LsEak9Kh',
+      placeholder: '你说，我在听',
+      visitor: true,
+      // 设置Bilibili表情包地址
+      emojiCDN: '//i0.hdslb.com/bfs/emote/',
+      // 表情title和图片映射
+      emojiMaps: {
+        "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+        "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+        "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+        "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+        "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+        "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+        "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+        "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+        "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+        "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+        "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+        "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+        "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+        "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+        "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+        "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+        "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+        "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+        "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+        "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+        "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png"
+      }
+    })
+  </script>
+</html>
