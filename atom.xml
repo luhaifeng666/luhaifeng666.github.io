@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-18T23:18:56.174Z</updated>
+    <updated>2022-01-27T19:00:09.166Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,498 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[Pinia初体验]]></title>
+        <id>https://luhaifeng666.github.io/post/pinia-chu-ti-yan/</id>
+        <link href="https://luhaifeng666.github.io/post/pinia-chu-ti-yan/">
+        </link>
+        <updated>2022-01-27T18:58:57.000Z</updated>
+        <summary type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
+<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
+]]></summary>
+        <content type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
+<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
+<!-- more -->
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/690b04d56e8d4672bc59056611c95967~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p><code>Vue3</code> 相关的技术栈也可以学习起来啦~本文就同大家一起初步体验下 “下一代的Vuex” -- <a href="https://pinia.vuejs.org/">Pinia</a>。</p>
+<h1 id="什么是pinia">什么是Pinia</h1>
+<h2 id="pinia-介绍">Pinia 介绍</h2>
+<p>大概在2019年11月份左右，Pinia 的作者开始尝试重新设计 Store 状态管理以适用于 Composition API，其设计原则跟思想与 Vuex 保持一致。</p>
+<p>在不同版本的 Vue 中，所使用的 Vuex 版本是不一样的。Vue2 中需要使用 Vuex 3.x的版本，而在 Vue3 中需要使用 Vuex 4.x。但是 Pinia 没有这个限制，无论是在 Vue2 中，还是在 Vue3 中均可以使用 Pinia，<strong>且不一定要与 Composition API 一起使用</strong>，API 的使用方式在两者中也是保持一致的。</p>
+<p>现在，Pinia 也已经正式被纳入 Vue 官方体系中。笔者写这篇文章时，其版本已更新至 <strong>v2.0.9</strong> 。</p>
+<h2 id="为啥要用-pinia">为啥要用 Pinia</h2>
+<p>Pinia 是用于 Vue 中的状态管理器，允许你跨组件/页面共享状态。</p>
+<p>如果小伙伴们已经对 Composition API 比较熟悉了的话，可能会考虑使用类似下面这种写法去共享全局状态：</p>
+<pre><code class="language-vue">export const state = reactive({})
+</code></pre>
+<p>在 SPA 应用中，这样去做是可以的，但是如果是在 SSR 中去使用的话会存在安全隐患。所以还是建议使用 Pinia。</p>
+<p>使用 Pinia 有以下好处：</p>
+<ol>
+<li>
+<p><strong>调试工具支持</strong></p>
+<p>笔者目前安装的是 beta 版本的 Vue devtool，小伙伴们可以去 <a href="chrome://extensions">谷歌应用商店</a> 中搜索 <code>Vue devtool</code> 下载对应的 beta 版本。</p>
+</li>
+</ol>
+<figure data-type="image" tabindex="2"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8acca1566bfe4502bc35cee45a4f0589~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<blockquote>
+<ol>
+<li>调试工具中支持追踪 actions，mutations 的timeline(时间线)；</li>
+<li>可以显示当前组件中使用的 store 信息，也可以显示所有 store 容器的信息，支持直接修改数据进行调试；</li>
+<li>支持 Time travel(时间旅行) 以方便调试。</li>
+</ol>
+</blockquote>
+<ol start="2">
+<li><strong>热模块替换</strong>：改变状态时无需手动刷新页面。</li>
+<li><strong>插件支持</strong>：可以通过插件扩展 Pinia 的能力。</li>
+<li><strong>良好的 Typescript 支持</strong>：可以提供较为完善的代码提示以及代码自动补充。</li>
+<li><strong>支持 SSR</strong>。</li>
+</ol>
+<h2 id="pinia-与-vuex-的对比">Pinia 与 Vuex 的对比</h2>
+<p>Pinia 与 Vuex4.x 以下版本相比，有如下区别：</p>
+<blockquote>
+<ol>
+<li><strong>移除了 mutations</strong>： 在 Vuex 中，想要改变状态，需要通过提交 mutations 来实现，而 mutations 不能执行异步操作，因此诞生了 actions ，在异步获取数据后，通过 actions 调用 mutations 修改数据。现在在 Pinia 中，actions 同时支持同步与异步操作，所以 mutations 显得有些冗余了，因此不再需要；</li>
+<li><strong>对于 Typescript 的支持更加友好</strong>：使用 Pinia 时,不再需要定义复杂的 wrappers（包装器）去支持Typescript;</li>
+<li><strong>不会注入魔法字符串</strong>：在组件中使用 Vuex 时，经常会出现类似 <code>this.$store.commit(&quot;xxxxx&quot;)</code> 这样的魔法字符串，虽然会将这些字符串抽为常量暴露出来，但是维护起来还是不太方便。在 Pinia 中不再需要使用这种方式，而是直接调用 <code>defineStore</code> 后暴露出来的方法，而后通过 <code>$patch</code>, <code>action</code> 的方式，或者直接修改 store 中的值即可；</li>
+<li><strong>不需要动态添加 stores</strong>：只要你愿意，你可以随时定义 stores，它们默认是动态的；</li>
+<li><strong>不再需要嵌套结构的 modules</strong>;</li>
+<li><strong>没有带命名空间的模块</strong>。</li>
+</ol>
+</blockquote>
+<h1 id="pina的使用">Pina的使用</h1>
+<h2 id="安装">安装</h2>
+<p>我们先在本地搭建一个Vue3的项目，用于演示 <code>Pinia</code> 的使用，这里我们使用 <a href="https://cn.vitejs.dev/">Vite</a> 来搭建：</p>
+<blockquote>
+<p>Vite 需要 <a href="https://nodejs.org/en/">Node.js</a> 版本 &gt;= 12.0.0。然而，有些模板需要依赖更高的 Node 版本才能正常运行，当你的包管理器发出警告时，请注意升级你的 Node 版本。</p>
+</blockquote>
+<p>Vite官方提供了使用模板的方式构建本地项目，这里我们通过 <a href="https://www.pnpm.cn/">pnpm</a> 来构建一个 <code>Vite + Vue</code> 的本地项目。现在 Vue3 以及 Pinia 对于 Typescript 的支持已经非常良好了,建议大家在使用模板构建项目的时候直接选择 Typescript 对应的模板：</p>
+<pre><code>pnpm create vite pinia-useage-examples -- --template vue-ts
+</code></pre>
+<p>之后，我们在项目中安装 <code>Pinia</code>:</p>
+<pre><code> pnpm add pinia
+</code></pre>
+<p>准备工作完成，接下来就来一起体验一下 <code>Pinia</code> 吧~</p>
+<h2 id="使用">使用</h2>
+<p>首先，我们需要通过 <code>createPinia</code> 初始化 Pinia，并将其挂载到 Vue 的实例上：</p>
+<pre><code class="language-ts">// src/main.ts
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+
+// 创建 pinia
+const pinia = createPinia()
+
+const app = createApp(App)
+// 挂载到 Vue 实例上
+app.use(pinia)
+app.mount('#app')
+</code></pre>
+<p>之后按照惯例，我们先创建 <code>src/store/index.ts</code> 文件，用于存放 store:</p>
+<pre><code class="language-ts">// src/store/index.ts
+
+import { defineStore } from 'pinia'
+
+// 定义store, myFirstStore是store的名称，该名称必须唯一，不可重复
+export const useStore = defineStore('myFirstStore', {
+  
+})
+</code></pre>
+<p><strong>这里需要注意的是，<code>defineStore</code> 的第一个参数用于设置 store 的容器名称，该名称必须唯一，不可重复！</strong></p>
+<p>上文中提到，相比于 Vuex，Pinia 中移除了 mutations，剩余需要了解的内容主要包含三个部分：</p>
+<blockquote>
+<ol>
+<li><strong>State</strong>: 用于存放数据，有点儿类似 <code>data</code> 的概念；</li>
+<li><strong>Getters</strong>: 用于获取数据，有点儿类似 <code>computed</code> 的概念；</li>
+<li><strong>Actions</strong>: 用于修改数据，有点儿类似 <code>methods</code> 的概念；</li>
+<li><strong>Plugins</strong>: Pinia 插件。</li>
+</ol>
+</blockquote>
+<p>现在我们依次来看一看它们的用法。</p>
+<h2 id="state">State</h2>
+<h3 id="定义-state">定义 State</h3>
+<p>在 Vuex 中，通过对象的形式来定义 state ，而在 Pinia 中则需要通过函数的方式定义 state，这种方式有点儿类似组件中 <code>data</code> 的概念:</p>
+<pre><code class="language-ts">// src/store/index.ts
+
+import { defineStore } from 'pinia'
+
+// 定义store, myFirstStore是store的名称，该名称必须唯一，不可重复
+export const useStore = defineStore('myFirstStore', {
+  state: () =&gt; {
+    return {
+      count: 0,
+      name: 'foo',
+      list: [1, 2, 3]
+    }
+  }
+})
+</code></pre>
+<h3 id="读取-state">读取 State</h3>
+<p>state 定义完成后，我们在页面中可以通过引入暴露出去的 <code>useStore</code> 来读取 state 中的数据：</p>
+<pre><code class="language-js">// src/App.vue
+
+&lt;template&gt;
+  &lt;p&gt;count: {{ myStore.count }}&lt;/p&gt;
+  &lt;p&gt;name: {{ myStore.name }}&lt;/p&gt;
+  &lt;p&gt;list: {{ myStore.list }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { useStore } from './store'
+
+const myStore = useStore()
+&lt;/script&gt;
+</code></pre>
+<p>看到这里，有的小伙伴不禁会问，在使用过程中，一直要写 <code>myStore.xxx</code> 不是很麻烦么？能否通过解构的方式来使用呢？</p>
+<p>那我们就一起来试一试，看看是否可以通过解构的方式来获取 store 中的值:</p>
+<pre><code class="language-js">// src/App.vue
+
+&lt;template&gt;
+  &lt;img alt=&quot;Vue logo&quot; src=&quot;./assets/logo.png&quot; /&gt;
+  &lt;p&gt;count: {{ count }}&lt;/p&gt;
+  &lt;p&gt;name: {{ name }}&lt;/p&gt;
+  &lt;p&gt;list: {{ list }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { useStore } from './store'
+
+const { count, name, list } = useStore()
+&lt;/script&gt;
+</code></pre>
+<p>通过这次尝试我们发现，确实可以通过解构的方式来获取到 store 的值。但是这种方式存在一个问题：<strong>直接通过解构的方式获取state中的值是非响应式的！</strong> 这就意味着后面在对 store 中的值进行修改之后，页面不会发生变化。</p>
+<p>那我们改如何解决这个问题呢？答案是通过 Pinia 中提供的 <code>storeToRefs</code> 方法，将结构出来的值转换为响应式的值即可：</p>
+<pre><code class="language-ts">// src/App.vue
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { storeToRefs } from 'pinia'
+import { useStore } from './store'
+
+const { count, name, list } = storeToRefs(useStore())
+&lt;/script&gt;
+</code></pre>
+<p>除了使用这两种方式以外，Pinia 也提供了 <code>mapState</code> 与 <code>computed</code> 相结合的方式去获取 store 中的值，这种方式与 Vuex 中的 <code>mapState</code> 类似：</p>
+<pre><code class="language-js">// src/App.vue
+
+&lt;template&gt;
+  &lt;img alt=&quot;Vue logo&quot; src=&quot;./assets/logo.png&quot; /&gt;
+  &lt;p&gt;count: {{ res.count }}&lt;/p&gt;
+  &lt;p&gt;name: {{ res.name }}&lt;/p&gt;
+  &lt;p&gt;list: {{ res.list }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { mapState } from 'pinia'
+import { useStore } from './store'
+import { computed } from 'vue'
+
+const res = computed(() =&gt; {
+  const data = {
+    ...mapState(useStore, ['count', 'name', 'list'])
+  }
+  return {
+    count: data.count(),
+    name: data.name(),
+    list: data.list()
+  }
+})
+&lt;/script&gt;
+</code></pre>
+<p>由于是通过 <code>computed</code> 获取到的值，所以结构之后的值就是响应式的，不需要使用 <code>stateToRefs</code> 方法进行转换。</p>
+<p>在 <code>computed</code> 内部也可以对属性进行重命名，或者重新定义新的返回值返回值：</p>
+<pre><code class="language-js">&lt;script setup lang=&quot;ts&quot;&gt;
+import { mapState } from 'pinia'
+import { useStore } from './store'
+import { computed } from 'vue'
+
+const res = computed(() =&gt; {
+  const data = {
+    ...mapState(useStore, {
+      // 重命名count为myCount, 并返回count + 1的结果
+      myCount: state =&gt; state.count += 1,
+      // 重命名name为没有Name，并返回name的值
+      myName: 'name',
+      // 重命名list为myList，并返回插入4之后的list
+      myList: state =&gt; {
+        state.list.push(4)
+        return state.list
+      }
+    })
+  }
+  return {
+    count: data.myCount(),
+    name: data.myName(),
+    list: data.myList()
+  }
+})
+&lt;/script&gt;
+</code></pre>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>本文的示例中使用的是 <code>setup</code> 语法糖，如果不使用 <code>setup</code> 语法糖的话，<code>mapState</code> 的使用方式与本文中所举的🌰有些差别(关于这个问题，网上有使用 <code>bind</code> 的方式的栗子，具体可以参考<a href="https://blog.csdn.net/WaiTinglw/article/details/122091494">这篇文章</a>)。详情可以查阅<a href="https://pinia.vuejs.org/core-concepts/state.html#usage-with-the-options-api">官方文档</a>。如果本文中有使用不当之处，还请诸位大佬指正~ Orz；</li>
+<li>通过 <code>computed</code> 返回的 state 无法使用结构的方式获取其中的值，因为返回的不是单纯的对象，而是一个 <code>ComputedRefImpl</code> 类型的值。</li>
+<li>通过 <code>mapState</code> 获取到的值是<strong>只读</strong>的，如果想要其可写，可以使用 <code>mapWritableState</code> 的方式。</li>
+</ol>
+</blockquote>
+<h3 id="修改-state">修改 State</h3>
+<p>现在我们已经可以获取到 State 中存储的值了，那么我们该如何去修改 State 中的值呢？其实很简单，主要分为以下几种方式：</p>
+<h4 id="第一种直接修改">第一种：直接修改</h4>
+<p>直接修改 State 中的值即可：</p>
+<pre><code class="language-js">// src/App.vue
+
+&lt;template&gt;
+  &lt;img alt=&quot;Vue logo&quot; src=&quot;./assets/logo.png&quot; /&gt;
+  &lt;p&gt;count: {{ count }}&lt;/p&gt;
+  &lt;button @click=&quot;handleChangeStore&quot;&gt;change store&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script lang=&quot;ts&quot; setup&gt;
+import { useStore } from './store'
+
+const store = useStore()
+// 修改store中的值
+const handleChangeStore = () =&gt; {
+  // 直接修改
+  store.count += 1
+}
+&lt;/script&gt;
+</code></pre>
+<p>甚至可以通过暴力覆盖 <code>$state</code> 的方式将所有值进行替换修改：</p>
+<pre><code class="language-ts">// src/App.vue
+
+// 省略好多好多代码。。。
+
+// 直接清空store
+store.$state = {}
+</code></pre>
+<h4 id="第二种-通过-patch-的方式修改">第二种: 通过 <code>$patch</code> 的方式修改</h4>
+<p>当我们需要一次性修改多个值的时候，我们可以使用 <code>$patch</code> 方法来批量修改多个值：</p>
+<pre><code class="language-js">// src/App.vue
+
+&lt;template&gt;
+  &lt;img alt=&quot;Vue logo&quot; src=&quot;./assets/logo.png&quot; /&gt;
+  &lt;p&gt;name: {{ name }}&lt;/p&gt;
+  &lt;p&gt;list: {{ list }}&lt;/p&gt;
+  &lt;button @click=&quot;handleChangeStore&quot;&gt;change store&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script lang=&quot;ts&quot; setup&gt;
+import { useStore } from './store'
+
+const store = useStore()
+
+// 修改store中的值
+const handleChangeStore = () =&gt; {
+  // 通过 $patch 的方式修改
+  store.$patch({
+    name: 'test',
+    list: [...store.list, 4]
+  })
+}
+&lt;/script&gt;
+</code></pre>
+<p><code>$patch</code> 会将传入的对象与 Store 中的 state 进行 merge 覆盖。</p>
+<p>除了直接传入对象外，如果存在较为复杂的操作，<code>$patch</code> 方法也接受传入一个回调函数，在回调函数中对需要修改的数据进行操作：</p>
+<pre><code>// src/App.vue
+
+// 省略好多好多代码。。。
+store.$patch(state =&gt; {
+  state.name = `我的名字是：${state.name}`
+})
+
+</code></pre>
+<h4 id="第三种通过-reset-方法恢复原值">第三种：通过 <code>$reset</code> 方法恢复原值</h4>
+<p>当我们修改了 state 中的值以后，倘若我们想让它们恢复到初始值，可以使用 <code>$reset</code> 方法。</p>
+<h4 id="第四种通过调用-actions-中的方法去修改值">第四种：通过调用 <code>actions</code> 中的方法去修改值</h4>
+<p>首先，我们需要在 Store 容器中定义 <code>actions</code>:</p>
+<pre><code class="language-ts">// src/store/index.ts
+
+// 定义store
+export const useStore = defineStore('myFirstStore', {
+  // 省略一些代码
+  actions: {
+    changeCount () {
+      this.count ++
+    }
+  }
+})
+</code></pre>
+<p>在 <code>actions</code> 中定义的方法，可以直接通过 <code>this</code> 来访问 state 中的属性，而无需像 Vuex 那样传入上下文才可以，使用方式有点儿类似 <code>methods</code>。</p>
+<p>定义完成后，我们就可以在引用处直接使用它了：</p>
+<pre><code class="language-ts">// src/App.vue
+
+&lt;template&gt;
+  &lt;img alt=&quot;Vue logo&quot; src=&quot;./assets/logo.png&quot; /&gt;
+  &lt;p&gt;count: {{ count }}&lt;/p&gt;
+  &lt;button @click=&quot;handleChangeStore&quot;&gt;change store&lt;/button&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { useStore } from './store'
+
+const store = useStore()
+
+// 修改store中的值
+const handleChangeStore = () =&gt; {
+  // 通过actions的方式修改
+  store.changeCount()
+}
+&lt;/script&gt;
+</code></pre>
+<p>当然，<code>actions</code> 中的方法也可以接收入参，使用方式与 <code>methods</code> 并无区别，这里不做过多赘述。</p>
+<h3 id="调试-state">调试 State</h3>
+<p>打开控制台，切换到 Vue devtool 中，选择 <code>Pinia</code> 选项，就可以看到 store 容器的信息：</p>
+<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7e6e06b6634e4ec8bfdcac7aeaf3c55d~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>并且点击数据后面的编辑按钮，也可以修改 store 中的值进行调试，非常方便：</p>
+<figure data-type="image" tabindex="4"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c99a0e1af8e74eefa41784219996ad81~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h2 id="getters">Getters</h2>
+<p><code>getters</code> 的使用方式有点儿类似于 <code>computed</code>, 返回一个值(<strong>没有返回值也可以</strong>)且在页面中可以直接使用。如果 <code>getters</code> 中使用了 <code>state</code> 里的数据，当对应的数据发生变化时，<code>getters</code> 的值也会相应发生变化：</p>
+<pre><code class="language-ts">// src/store/index.ts
+
+// 定义store
+export const useStore = defineStore('myFirstStore', {
+  // 省略一些代码
+  getters: {
+    countPlusOne (state) {
+      console.log('------countPlusOne------')
+      return state.count + 1
+    }
+  }
+})
+</code></pre>
+<p>直接在页面中使用，并且 <code>getters</code> 也有缓存，在页面中多次使用时，只会计算一次：</p>
+<pre><code class="language-ts">// src/App.vue
+
+&lt;template&gt;
+  &lt;p&gt;countPlusOne: {{ store.countPlusOne }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang=&quot;ts&quot;&gt;
+import { useStore } from './store'
+
+const store = useStore()
+&lt;/script&gt;
+</code></pre>
+<figure data-type="image" tabindex="5"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/acf3831592af4344a1cfe7483c520ec6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>我们可以看到日志只打印了一次，说明后面两次是取的缓存中的数据。</p>
+<blockquote>
+<p>注意：</p>
+<ol>
+<li><code>getters</code> 中定义的方法，入参 <code>state</code> 是可选参数，如果不传入 <code>state</code>, 可以直接使用 <code>this</code> 访问 <code>state</code> 中的数据；</li>
+<li>如果不传入 <code>state</code> 的话，Typescript 会有报错提示，因为无法推导出 <code>getters</code> 中方法的返回值类型，需要手动声明返回值类型。</li>
+</ol>
+</blockquote>
+<h2 id="actions">Actions</h2>
+<p>上文中提到可以通过 <code>Actions</code> 的方式修改 <code>State</code> 中的值，只不过所使用的是同步的方式。在一开始对 Pinia 的介绍中也提到，<code>Actions</code> 同时支持同步与异步两种修改数据的方式。接下来我们看看如何通过 <code>Actions</code> 异步修改数据。</p>
+<pre><code class="language-ts">// src/store/index.ts
+
+// 省略好多好多代码。。。
+actions: {
+  async changeName () {
+    const newName: string = await new Promise((resolve, reject) =&gt; {
+      setTimeout(() =&gt; {
+        resolve('newName')
+      }, 1000)
+    }).catch(err =&gt; {
+    })
+    this.name = newName
+  }
+}
+</code></pre>
+<p>通过上述代码我们不难发现，其实 <code>Actions</code> 通过异步修改数据的方式与寻常使用 <code>methods</code> 异步修改 <code>data</code> 中的数据类似，相较于 Vuex 简便许多。</p>
+<h2 id="plugins">Plugins</h2>
+<h3 id="插件介绍">插件介绍</h3>
+<p>通过自定义 <code>Plugins</code> 可以扩展 <code>Stores</code>，它可以完成以下这些事情：</p>
+<blockquote>
+<ol>
+<li>新增 <code>store</code> 中的属性;</li>
+<li>定义 <code>store</code> 时传入新的配置项;</li>
+<li>新增 <code>store</code> 中的方法;</li>
+<li>包装 <code>store</code> 中的既有方法;</li>
+<li>修改甚至取消 <code>actions</code>;</li>
+<li>实现一些副作用操作，例如设置 local storage 缓存等等;</li>
+<li>只会应用于特定的 <code>store</code>: 在 Pinia 挂载到 app 上后，插件会挂载到之后创建的 Stores 上，在此之前 Plugins 不会被挂载。</li>
+</ol>
+</blockquote>
+<h3 id="插件定义-使用">插件定义 &amp; 使用</h3>
+<p>插件本质上是一个函数，插件接受一个可选入参： <code>context</code>, 改入参是个对象，其中包含四项内容：</p>
+<ol>
+<li><strong>context.pinia:</strong> 通过 <code>createPinia()</code> 方式创建的 Pinia 实例</li>
+<li><strong>context.app:</strong> 通过 <code>createApp()</code> 方式创建的 app 实例(仅支持Vue 3)</li>
+<li><strong>context.store:</strong> store 对象</li>
+<li><strong>context.options:</strong> 获取定义 store 时传入的配置项</li>
+</ol>
+<p>函数可以通过返回对象的方式，将对象中的值绑定到<strong>所有的</strong> store 上去：</p>
+<pre><code class="language-ts">// src/main.ts
+
+function SecretPiniaPlugin() {
+  return { secret: 'the cake is a lie' }
+}
+</code></pre>
+<p>定义完成后，通过 <code>pinia.use()</code> 的方式使用这个插件：</p>
+<pre><code class="language-ts">// src/main.ts
+import { createPinia } from 'pinia'
+
+const pinia = createPinia()
+
+pinia.use(SecretPiniaPlugin)
+</code></pre>
+<p>之后，在页面中打印 Store 中的 <code>secret</code> 属性时，即可看到我们设定的值。并且通过这种方式新增到 store 中的属性可以被 Vue devtool 捕获到：</p>
+<figure data-type="image" tabindex="6"><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fa5de1b7353e4de3b4a5deca838997c2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>当然你也可以选择直接将值绑定到 store 对象上，但是这样<strong>无法被 Vue devtool捕获</strong>：</p>
+<pre><code class="language-ts">// src/main.ts
+
+// 定义插件
+function SecretPiniaPlugin({ store }) {
+  // 直接将属性绑定到store上去
+  store.secret = 'the cake is a lie'
+}
+</code></pre>
+<figure data-type="image" tabindex="7"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a7178d567ae64a8d9a61e9c40bb0a93a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>此时我们不难发现，上述步骤中的 <code>customProperties</code> 属性不见了。如果在调试过程中需要在 Vue devtool 中看到插件中定义的 store 内容，需要手动添加：</p>
+<pre><code class="language-ts">// src/main.ts
+
+// 定义插件
+function SecretPiniaPlugin({ store }) {
+  // 直接将属性绑定到store上去
+  store.secret = 'the cake is a lie'
+  // 在开发环境中手动添加该属性，以便 Vue devtool 可以捕获到
+  if (process.env.NODE_ENV === 'development') {
+    // add any keys you set on the store
+    store._customProperties.add('secret')
+  }
+}
+</code></pre>
+<p>添加完属性后，当我们直接在页面中使用时，发现页面上并不能显示出插件插入到 store 中的属性，这是因为插入的属性是<strong>非响应式的</strong>，此时，我们只需将插入的属性值变为<strong>响应式数据</strong>即可：</p>
+<pre><code class="language-ts">import { createApp, ref } from 'vue'
+import { createPinia } from 'pinia'
+
+// 创建 pinia
+const pinia = createPinia()
+
+// 定义插件
+function SecretPiniaPlugin({ store }) {
+  // 直接将属性绑定到store上去
+  store.secret = ref('the cake is a lie')
+  // 在开发环境中手动添加该属性，以便 Vue devtool 可以捕获到
+  if (process.env.NODE_ENV === 'development') {
+    // add any keys you set on the store
+    store._customProperties.add('secret')
+  }
+}
+
+// 使用插件
+pinia.use(SecretPiniaPlugin)
+</code></pre>
+<p>设置完成后，再在页面中使用时，就可以在页面上看到数据啦~</p>
+<p>此外，在插件中可以通过 <code>store.$subscribe</code> 以及 <code>store.$onActions</code> 方法监听 actions 的触发。</p>
+<p>关于插件的更多玩法可以参考<a href="https://pinia.vuejs.org/core-concepts/plugins.html">官方文档</a>。</p>
+<h1 id="写在最后">写在最后</h1>
+<p>行文至此，相信大家对于 <code>Pinia</code> 已经有了一个初步的印象。文章中若有描述不当之处还请诸位大佬指正。</p>
+<p>好记性不如烂笔头，关于 Pinia 的其他更多玩法等待着小伙伴们去挖掘。赶快动手 <s>卷起来</s> 尝个鲜吧~</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[手写练习：防抖节流]]></title>
         <id>https://luhaifeng666.github.io/post/shou-xie-lian-xi-fang-dou-jie-liu/</id>
@@ -903,209 +1395,6 @@ EntryPoint main: 入口文件名称；<br><br>
 </blockquote>
 <p>行文至此，我们已经实现了简单的webpack打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解。与此同时，我们对控制台中输出信息的含义也了然于胸。<br><br>
 在后面的章节中，我会依次介绍webpack的其他功能，借此可以帮助大家逐步熟悉webpack的配置，让小伙伴们在之后的开发过程中不会再对webpack的配置感到晦涩陌生。篇幅也许不会太长，但是希望对小伙伴们有所助益~</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Webpack学习笔记三：js的兼容性处理]]></title>
-        <id>https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li/</id>
-        <link href="https://luhaifeng666.github.io/post/webpack-xue-xi-bi-ji-san-js-de-jian-rong-xing-chu-li/">
-        </link>
-        <updated>2021-12-24T08:42:42.000Z</updated>
-        <content type="html"><![CDATA[<p><a href="https://juejin.cn/post/6903529588271136782">上一节</a>中我们简单实现了webpack的打包功能，并且对webpack的一些基本配置、打包命令以及不同模式下打包的区别做了一个简单的了解，也了解了下控制台输出信息的含义。接下来的几节我们一起来了解下，针对于不同类型的资源，webpack是如何进行编译打包的，在打包期间又需要做一些什么处理。</p>
-<h1 id="js兼容性处理">js兼容性处理</h1>
-<p>在上一节中，我们写了一段简单的js代码，用来做打包示例，并对js的打包有了初步的了解：</p>
-<pre><code class="language-js">const add = (x, y) =&gt; x + y
-console.log(add(1, 2))
-</code></pre>
-<p>我们截取打包后的代码：</p>
-<pre><code class="language-js">eval(&quot;const add = (x, y) =&gt; x + y;\n\nconsole.log(add(1, 2));\n\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
-</code></pre>
-<p>我们可以看到，在打包出来的代码中，<code>add</code> 的定义依旧是使用的 <code>const</code>，而不是兼容性最好的 <code>var</code>。现阶段，在我们的日常开发过程中基本上使用的都是ES6语法，但是一些版本较低的浏览器并不能完全兼容ES6语法，此时我们就要对js代码做兼容性处理。<br><br>
-要对js做兼容性处理，这里我们需要用到两个工具：<code>babel-loader</code> 以及 <code>@babel/core</code>。我们先来安装下这两个工具：</p>
-<pre><code class="language-js">yarn add babel-loader @babel/core
-</code></pre>
-<p>安装完成后要怎么使用呢？这里我们需要使用到webpack五个基本概念中的 <code>loader</code>。在上一篇配置的基础上，我们加入 <code>loader</code> 的配置。<code>loader</code> 的相关配置写到配置文件的 <code>module</code> 中：</p>
-<pre><code class="language-js">// 引入node的path模块
-const { resolve } = require('path')
-
-module.exports = {
-    // 入口文件
-    entry: './src/index.js',
-    // 文件输出配置
-    output: {
-    	// 输出的文件名称
-        // 配置[name]则取的是入口文件的名称
-    	filename: 'js/[name].js',
-        // 输出的文件路径
-        // 这里是指输出到根目录下的build目录下，如果对__dirname不是很了解的小伙伴可以去nodejs官网了解一下
-        path: resolve(__dirname, 'build')
-    },
-    // 用于配置loader
-    module: {
-      rules: [
-      	{
-          // 匹配.js文件
-          test: /\.js$/,
-          // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
-          exclude: /node_modules/, 
-          // 使用babel-loader
-          loader: 'babel-loader',
-          // loader的相关配置
-          options: {}
-        }
-      ]
-    },
-    // 用于配置插件信息
-    plugins: [],
-    // 启用开发模式
-    mode: 'development'
-}
-</code></pre>
-<p>配置完成后，我们运行 <code>yarn build:dev</code> 命令，我们会发现结果跟之前是一样的，ES6的代码并没有被转换。这是因为我们还没有“告诉” <code>babel-loader</code> 要怎么去做兼容性处理。那具体该怎么去处理js的兼容性问题呢？我们接着往下看。</p>
-<h1 id="处理js兼容的三种方式">处理js兼容的三种方式</h1>
-<p>针对js的兼容性处理主要有三种方式，我们依次来了解一下。</p>
-<h2 id="方法一基本兼容性处理">方法一：基本兼容性处理</h2>
-<p>基本兼容性处理是指可以处理一些基本的js兼容性问题，比如js中的const/let定义的转换，箭头函数的转换等等。此时我们需要用到一个工具：<code>@babel/preset-env</code>。这个工具可以帮助我们处理一些基本的js兼容性问题。</p>
-<pre><code class="language-js">yarn add -D @babel/preset-env
-</code></pre>
-<p>安装完成后，我们在 <code>babel-loader</code> 的 <code>options</code> 中加入以下配置：</p>
-<pre><code class="language-js">/* ... */
-module: {
-  rules: [
-    {
-      // 匹配.js文件
-      test: /\.js$/,
-      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
-      exclude: /node_modules/, 
-      // 使用babel-loader
-      loader: 'babel-loader',
-      // loader的相关配置
-      options: {
-        presets: ['@babel/preset-env']
-      }
-    }
-  ]
-},
-/* ... */
-</code></pre>
-<p>配置完成后 ，我面再去执行刚才的打包命令, 然后截取出我们所写的代码：</p>
-<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\n\n//# sourceURL=webpack:///./src/js/index.js?&quot;);
-</code></pre>
-<p>此时我们可以发现，代码中的 <code>const</code> 声明已经被转换成了 <code>var</code>, 而原先的 <code>箭头函数</code> 也被转换成了普通的函数形式。说明loader已经生效了。<br><br>
-在介绍这种兼容性处理方式的时候有提到过此种方式只能处理一些基本的js问题。如果我们在文件中加入一些稍微复杂的东西，比如 <code>Promise</code>， 然后执行打包会发生什么呢？</p>
-<pre><code class="language-js">const add = (x, y) =&gt; x + y;
-console.log(add(1, 2));
-
-const promiseHandle = new Promise((resolve, reject) =&gt; {
-  setTimeout(() =&gt; {
-    resolve('完成');
-  }, 1000)
-})
-console.log(promiseHandle);
-</code></pre>
-<p>执行打包命令后，我们再来看下我们所写的代码：</p>
-<pre><code class="language-js">eval(&quot;var add = function add(x, y) {\n  return x + y;\n};\n\nconsole.log(add(1, 2));\nvar promiseHandle = new Promise(function (resolv
-</code></pre>
-<p>我们可以看到，类似于 <code>const</code> 以及 <code>箭头函数</code> 的定义都被转换成了ES5的语法，但是 <code>Promise</code> 的内容并没有被转换，而且代码中也没有其他对 <code>Promise</code> 进行处理的方法。此时要怎么处理呢？莫慌，我们来看第二种js的兼容性处理方式。</p>
-<h2 id="方法二babelpolyfill">方法二：@babel/polyfill</h2>
-<p>如题，我们需要引入另外一种工具：<code>@babel/polyfill</code>。这种兼容方法比较全面，它可以对 <strong>全部js</strong> 做兼容性处理。</p>
-<pre><code class="language-js">yarn add -D @babel/polyfill
-</code></pre>
-<p>这个工具使用比较简单，安装完成后，只需在需要使用的js文件中引入即可。我们在刚才的js文件基础上，引入这个包。</p>
-<pre><code class="language-js">import '@babel/polyfill'
-
-const add = (x, y) =&gt; x + y;
-console.log(add(1, 2));
-
-const promiseHandle = new Promise((resolve, reject) =&gt; {
-  setTimeout(() =&gt; {
-    resolve('完成');
-  }, 1000)
-})
-console.log(promiseHandle);
-</code></pre>
-<p>再次执行打包命令，此时我们打开打包之后的js文件，会发现js文件中引入了大量的polyfill来对js兼容性的处理，其中就有对Promise的兼容处理(由于内容太长，此处就不贴代码了，建议小伙伴们动手试一下~)。此种方式可以解决我们第一种兼容性处理中的问题。<br><br>
-但是，使用这种方式又会引发另外一个问题。我们来看下打包后的文件输出：</p>
-<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/816a05df0ea642a38d0367050c9552ed~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
-<p>不难发现，由于引入了大量的polyfill，导致我们原先仅仅只有几k的文件，膨胀到了511k, 因为引入的polyfill囊括了所有的兼容性处理，这显然不是我们愿意看到的。而且事实上我们也用不到这么多的兼容性处理。那我们又该如何处理这个问题呢？我们来看下第三种兼容性处理方案。</p>
-<h2 id="方法三core-js">方法三：core-js</h2>
-<p>说白了，要解决方法二中的弊端，核心思路就是 <code>按需引入</code>。这个时候，我们需要使用到 <code>code-js</code>。其实在方法二中用到的 <code>@babel/polyfill</code>中也有它的影子, 有兴趣的小伙伴们可以去打包生成的文件中找找看~这里我们单独安装一份 <code>core-js</code>:</p>
-<pre><code class="language-js">yarn add -D core-js
-</code></pre>
-<p>想要使用它，我们需要对刚才的 <code>babel-loader</code> 配置再进行一些改造：</p>
-<pre><code class="language-js">/* ... */
-module: {
-  rules: [
-    {
-      // 匹配.js文件
-      test: /\.js$/,
-      // 需要忽略掉node_modules，不然会对其中的内容也做检查, 会降低打包的性能
-      exclude: /node_modules/, 
-      // 使用babel-loader
-      loader: 'babel-loader',
-      // loader的相关配置
-      options: {
-        &quot;presets&quot;: [
-          [
-            &quot;@babel/preset-env&quot;,
-            {
-              // 指定按需加载
-              &quot;useBuiltIns&quot;: &quot;usage&quot;,
-              // 指定core-js的版本
-              &quot;corejs&quot;: {
-                &quot;version&quot;: 3
-              },
-              // 指定兼容的浏览器版本
-              &quot;targets&quot;: {
-                &quot;chrome&quot;: &quot;60&quot;,
-                &quot;firefox&quot;: &quot;60&quot;,
-                &quot;ie&quot;: &quot;9&quot;,
-                &quot;safari&quot;: &quot;10&quot;,
-                &quot;edge&quot;: &quot;17&quot;
-              }
-            }
-          ]
-        ]
-      }
-    }
-  ]
-},
-/* ... */
-</code></pre>
-<p>此时，我们指定了按需加载，指定了coreJs的版本是3，指定了需要兼容的具体的浏览器的版本。</p>
-<blockquote>
-<p>注意：使用这种方式的时候，需要把第二种方式中引入的@babel/polyfill注释掉，两者不可共用！！</p>
-</blockquote>
-<p>然后我们再次进行打包：</p>
-<figure data-type="image" tabindex="2"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4c69c325e1b14ecb9a607f7e39156d07~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></figure>
-<p>再次打包后我们可以发现，Promise的兼容性处理会被引入进来，并且文件大小也缩小至105k, 相较于第二种方式，显然此种方式更佳~如果有小伙伴觉得这样配置显得代码有些冗余，不够优雅，我们也可将 <code>presets</code> 中配置的内容移动到根目录的 <code>.babelrc</code> 文件中：</p>
-<pre><code class="language-json">{
-  &quot;presets&quot;: [
-    [
-      &quot;@babel/preset-env&quot;,
-      {
-        // 指定按需加载
-        &quot;useBuiltIns&quot;: &quot;usage&quot;,
-        // 指定core-js的版本
-        &quot;corejs&quot;: {
-          &quot;version&quot;: 3
-        },
-        // 指定兼容的浏览器版本
-        &quot;targets&quot;: {
-          &quot;chrome&quot;: &quot;60&quot;,
-          &quot;firefox&quot;: &quot;60&quot;,
-          &quot;ie&quot;: &quot;9&quot;,
-          &quot;safari&quot;: &quot;10&quot;,
-          &quot;edge&quot;: &quot;17&quot;
-        }
-      }
-    ]
-  ]
-}
-</code></pre>
-<p>行文至此，js的打包方式以及处理兼容的几种方式都已经介绍完毕。当然loader的配置不止这些，在日后的开发过程中，小伙伴们可以根据项目需要去查询对应loader的文档，来定制化适合自己项目的配置。<br><br>
-处理完js的兼容性问题，那么开发团队在日常开发中的js风格统一化又该怎么去处理？一些容易犯的低级错误又该怎么去避免呢？下一章节我们就来介绍处理这些问题的方法~<br><br>
-<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/90b2c8f2bb0447828ffbea8e6eab02a6~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
 ]]></content>
     </entry>
 </feed>
