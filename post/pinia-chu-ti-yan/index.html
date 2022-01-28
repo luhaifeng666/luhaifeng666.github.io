@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1643341491308">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1643343491499">
 <link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
 
 
@@ -18,14 +18,13 @@
 
 
 
-    <meta name="description" content="写在开始
-1月20日，尤大在知乎平台发布 Vue3 将自2月7日起成为默认版本的消息
+    <meta name="description" content="1月20日，尤大在知乎平台发布 Vue3 将自2月7日起成为默认版本的消息
 
 
 Vue3 相关的技术栈也可以学习起来啦~本文就同大家一起初步体验下 “下一代的Vuex” -- Pinia。
 什么是Pinia
 Pinia 介绍
-大概..." />
+大概在2019..." />
     <meta name="keywords" content="JS,学习" />
     <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
     <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
@@ -37,7 +36,7 @@ Pinia 介绍
   <div class="top-container" data-aos="fade-right">
     <div class="top-header-container">
       <a class="site-title-container" href="https://luhaifeng666.github.io">
-        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1643341491308" class="site-logo">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1643343491499" class="site-logo">
         <h1 class="site-title">酱豆腐精的小站</h1>
       </a>
       <div class="menu-btn" @click="menuVisible = !menuVisible">
@@ -106,8 +105,7 @@ Pinia 介绍
               </div>
             
             <div class="post-content" v-pre>
-              <h1 id="写在开始">写在开始</h1>
-<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
+              <p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
 <!-- more -->
 <figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/690b04d56e8d4672bc59056611c95967~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
 <p><code>Vue3</code> 相关的技术栈也可以学习起来啦~本文就同大家一起初步体验下 “下一代的Vuex” -- <a href="https://pinia.vuejs.org/">Pinia</a>。</p>
@@ -195,7 +193,7 @@ export const useStore = defineStore('myFirstStore', {
 })
 </code></pre>
 <p><strong>这里需要注意的是，<code>defineStore</code> 的第一个参数用于设置 store 的容器名称，该名称必须唯一，不可重复！</strong></p>
-<p>上文中提到，相比于 Vuex，Pinia 中移除了 mutations，剩余需要了解的内容主要包含三个部分：</p>
+<p>上文中提到，相比于 Vuex，Pinia 中移除了 mutations，剩余需要了解的内容主要包含四个部分：</p>
 <blockquote>
 <ol>
 <li><strong>State</strong>: 用于存放数据，有点儿类似 <code>data</code> 的概念；</li>

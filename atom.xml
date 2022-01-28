@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-01-28T03:44:52.749Z</updated>
+    <updated>2022-01-28T04:18:25.467Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -16,11 +16,9 @@
         <link href="https://luhaifeng666.github.io/post/pinia-chu-ti-yan/">
         </link>
         <updated>2022-01-27T18:58:57.000Z</updated>
-        <summary type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
-<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
+        <summary type="html"><![CDATA[<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
 ]]></summary>
-        <content type="html"><![CDATA[<h1 id="写在开始">写在开始</h1>
-<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
+        <content type="html"><![CDATA[<p>1月20日，尤大在知乎平台发布 <a href="https://zhuanlan.zhihu.com/p/460055155"><code>Vue3</code> 将自2月7日起成为默认版本</a>的消息</p>
 <!-- more -->
 <figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/690b04d56e8d4672bc59056611c95967~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
 <p><code>Vue3</code> 相关的技术栈也可以学习起来啦~本文就同大家一起初步体验下 “下一代的Vuex” -- <a href="https://pinia.vuejs.org/">Pinia</a>。</p>
@@ -108,7 +106,7 @@ export const useStore = defineStore('myFirstStore', {
 })
 </code></pre>
 <p><strong>这里需要注意的是，<code>defineStore</code> 的第一个参数用于设置 store 的容器名称，该名称必须唯一，不可重复！</strong></p>
-<p>上文中提到，相比于 Vuex，Pinia 中移除了 mutations，剩余需要了解的内容主要包含三个部分：</p>
+<p>上文中提到，相比于 Vuex，Pinia 中移除了 mutations，剩余需要了解的内容主要包含四个部分：</p>
 <blockquote>
 <ol>
 <li><strong>State</strong>: 用于存放数据，有点儿类似 <code>data</code> 的概念；</li>
