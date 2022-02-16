@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Tauri 初体验  | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1645020889626">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="提到桌面客户端开发，大家伙儿第一时间会想到的可能是元老级别的 Electron, 亦或者是去年微软新发布的Webview2。今天，我们来结识下一个后起之秀 -- Tauri。
+
+截止目前，Tauri 的 star 数已经达到了 31.4k+..." />
+    <meta name="keywords" content="学习" />
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1645020889626" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Tauri 初体验 </h2>
+            <div class="post-date">2022-02-16</div>
+            
+              <div class="feature-container" style="background-image: url('https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/40f21a07303d4e3297f0541eaa7ee453~tplv-k3u1fbpfcp-zoom-crop-mark:1304:1304:1304:734.awebp?')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>提到桌面客户端开发，大家伙儿第一时间会想到的可能是元老级别的 <code>Electron</code>, 亦或者是去年微软新发布的<code>Webview2</code>。今天，我们来结识下一个后起之秀 -- <a href="https://tauri.studio/">Tauri</a>。</p>
+<!-- more -->
+<p>截止目前，<a href="https://github.com/tauri-apps/tauri">Tauri</a> 的 star 数已经达到了 <code>31.4k+</code> 之多，既然它如此受欢迎，那我们就一起来体验一把，看看它到底有何过人之处。</p>
+<p>话不多说，撸起袖子，开始</p>
+<figure data-type="image" tabindex="1"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/68de4bc54a06486890513fe3255d3c77~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<h1 id="什么是-tauri">什么是 Tauri</h1>
+<h2 id="介绍">介绍</h2>
+<p>Tauri 是一个用来帮助开发者们开发主流桌面平台应用的工具包 - 几乎可以使用任何一个现在已有的前端框架。它的核心是使用 <code>Rust</code> 进行构建，并且脚手架借助 <code>Node.js</code> 使 Tauri 成为一个真正意义上可以使用多语言开发与维护app的工具。</p>
+<h2 id="优势">优势</h2>
+<p>那 Tauri 与其他框架相比，有什么优势呢？在 Tauri 的 github 仓库中，官方给出了一个表格，将 Tauri 与 Electron 做了个对比，具体如下：</p>
+<table>
+<thead>
+<tr>
+<th>Detail</th>
+<th>Tauri</th>
+<th>Electron</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Installer Size Linux</td>
+<td>3.1 MB</td>
+<td>52.1 MB</td>
+</tr>
+<tr>
+<td>Memory Consumption Linux</td>
+<td>180 MB</td>
+<td>462 MB</td>
+</tr>
+<tr>
+<td>Launch Time Linux</td>
+<td>0.39s</td>
+<td>0.80s</td>
+</tr>
+<tr>
+<td>Interface Service Provider</td>
+<td>WRY</td>
+<td>Chromium</td>
+</tr>
+<tr>
+<td>Backend Binding</td>
+<td>Rust</td>
+<td>Node.js (ECMAScript)</td>
+</tr>
+<tr>
+<td>Underlying Engine</td>
+<td>Rust</td>
+<td>V8 (C/C++)</td>
+</tr>
+<tr>
+<td>FLOSS</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Multithreading</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Bytecode Delivery</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Multiple Windows</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Auto Updater</td>
+<td>Yes</td>
+<td>Yes1</td>
+</tr>
+<tr>
+<td>Custom App Icon</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Windows Binary</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>MacOS Binary</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Linux Binary</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>iOS Binary</td>
+<td>Soon</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Android Binary</td>
+<td>Soon</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Desktop Tray</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Sidecar Binaries</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<p>总结一下：</p>
+<blockquote>
+<ol>
+<li>相比于 Electron 的安装包大小，仅仅只有 3.1MB 的 Tauri 显然更小更轻便。因为 Tauri 放弃了庞大的 Chromium 内核，改用 <a href="https://github.com/tauri-apps/wry">WRY(Webview Rendering library)</a> (一种跨平台的 Webview 渲染器，支持主流的操作系统，例如 <strong>Windows, macOS, 以及 Linux。</strong>)，而且也放弃了 <code>Nodejs</code>，改用 <code>Rust</code>;</li>
+<li>在内存占用以及启动速度上，Tauri 也更胜一筹；</li>
+<li>除却 <strong>Windows, macOS, 以及 Linux</strong> 以外，Tauri 官方后续有计划支持 <code>Android</code> 以及 <code>iOS</code> 平台，这也是 Electron 所不具备的；</li>
+<li>内部集成了多种模板（如下图所示），对于开发者也更加友好。使用 <code>vue-cli</code> 的小伙伴也可以直接安装官方提供的插件： <a href="https://github.com/tauri-apps/vue-cli-plugin-tauri">vue-cli-plugin-tauri</a>。</li>
+</ol>
+</blockquote>
+<h1 id="tauri-初体验">Tauri 初体验</h1>
+<blockquote>
+<p><strong>注意：</strong> 笔者的环境搭建基于 <code>MacOS</code>, 想要了解在 <code>Windows</code> 或者 <code>Linux</code> 平台环境搭建的小伙伴们可以移步至<a href="https://tauri.studio/docs/getting-started/prerequisites">这里</a>。</p>
+</blockquote>
+<h2 id="tauri-环境配置">Tauri 环境配置</h2>
+<h3 id="第一步安装-xcode">第一步：安装 Xcode</h3>
+<p>你可以选择从 App Store 中下载，也可以选择运行如下命令：</p>
+<pre><code>$ xcode-select --install
+</code></pre>
+<h3 id="第二步安装-node">第二步：安装 Node</h3>
+<p>相信前端的小伙伴们都已经安装了。如果正在看这篇文章的你尚未安装 Nodejs，请移步至 <a href="http://nodejs.cn/">Nodejs官网</a> 下载。</p>
+<h3 id="第三步安装-rust-编译器-rustup">第三步：安装 Rust 编译器 <a href="https://rustup.rs/">rustup</a></h3>
+<pre><code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+</code></pre>
+<blockquote>
+<p><strong>注意：</strong> 如果有小伙伴在这一步骤卡壳，遇到了安装失败或者安装过于缓慢的问题，可以尝试科学上网（手动狗头）。</p>
+</blockquote>
+<p>安装完成后，可以通过如下命令验证是否安装成功：</p>
+<pre><code>$ rustc --version
+</code></pre>
+<p>至此，我们的环境就已经准备好了，接下来我们就一起来开发一个简单的文档应用。</p>
+<h2 id="tauri-vuepress-开发一个文档应用">Tauri + Vuepress 开发一个文档应用</h2>
+<h3 id="背景">背景</h3>
+<p>我们日常在查找文档的时候，一般会优先想到去对应的官网查看 Docs 文档。比如我们想去查看 Webpack 对应的文档时，操作流程一般就是：</p>
+<blockquote>
+<ol>
+<li>打开浏览器</li>
+<li>打开 Webpack 官方网站</li>
+<li>点开文档地址</li>
+<li>查看对应的文档</li>
+</ol>
+</blockquote>
+<p>Webpack 官方也提供了一个本地的应用，方便小伙伴们直接在本地就可以查看相应的文档，节省一些繁琐的操作</p>
+<figure data-type="image" tabindex="2"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fc980ab20f3c49ccafcabdcc04051bf6~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>而我们要实现这个应用的功能就与之类似。</p>
+<p>之前我一直在刷 Leetcode 的算法题，并把 <a href="https://github.com/luhaifeng666/arithmetic-practice">算法练习</a> 输出到了 Github 上，与此同时使用 <code>Vuepress</code> 创建了对应算法题的文档（如果可以的话，希望看到这里的大佬给个⭐️（捂脸奔逃~））。本文就使用 Tauri 将次该档打包成一个本地应用。</p>
+<h3 id="开始开发">开始开发</h3>
+<h4 id="步骤一创建-tauri-应用">步骤一：创建 Tauri 应用</h4>
+<p><strong>第一步：</strong> 打开文档所在目录，并安装 Tauri 脚手架（本文是在已经存在的路径下创建 Tauri 应用，如果直接创建，可以通过 <code>yarn create tauri-app</code> 命令创建。详情可查阅 <a href="https://tauri.studio/docs/getting-started/beginning-tutorial">此文档</a>）：</p>
+<pre><code>yarn add -D @tauri-apps/cli
+</code></pre>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li>该脚手架可以本地安装，也可以全局安装，官方推荐本地安装；</li>
+<li>如果使用 npm 命令(而不是使用yarn命令)在本地安装了该脚手架，需要在 <code>package.json</code> 文件的 <code>scripts</code> 配置中添加 <code>&quot;tauri&quot;: &quot;tauri&quot;</code> 脚本。</li>
+</ol>
+</blockquote>
+<p><strong>第二步：</strong> 执行完成后，将 tauri-cli 添加到 <a href="https://cargo.budshome.com/getting-started/installation.html">cargo</a>(<code>Rust</code> 的构建系统和包管理器) 子命令中：</p>
+<pre><code>cargo install tauri-cli --locked --version ^1.0.0-rc
+</code></pre>
+<p><strong>第三步：</strong> 安装 <strong>@tauri-apps/api</strong>:</p>
+<pre><code>yarn add @tauri-apps/api
+</code></pre>
+<p>这个包的作用是什么呢？假如我们的项目中使用了 ES modules，或者是使用了现在比较流行的一些打包构建工具，比如 <code>Webpack</code>、<code>Vite</code> 等等，使用这个包就可以比较安全的访问 Tauri 的接口（关于安全性，官方有专门撰写相应的文档，想了解具体内容小伙伴们可以参考 <a href="https://tauri.studio/docs/development/security">这篇文章</a>）。</p>
+<p><strong>第四步：</strong> 初始化 Tauri 应用：</p>
+<pre><code>yarn tauri init
+</code></pre>
+<p>项目名称以及窗口标题我们选择默认为项目名称，之后会让你设置静态资源的地址，默认设置为 <code>../dist</code>。这里我们设置成 Vuepress 打包后的 dist 目录： <code>../docs/.vuepress/dist</code>。最后的 <code>devServer</code> 我们也默认即可：</p>
+<figure data-type="image" tabindex="3"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e6c436c17b9b4a5bb1a461d50ad50688~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>至此，我们的 Tauri 项目就已经初始化完成。接下来，我们可以通过以下命令查看该项目的相关信息：</p>
+<pre><code>yarn tauri info
+</code></pre>
+<p>执行完成后，会列出项目所对应的一些基本信息，包括 Tauri 脚手架的版本，Nodejs 的版本，项目的目录结构等等：</p>
+<pre><code>Operating System - Mac OS, version 12.0.1 X64
+
+Node.js environment
+  Node.js - 14.15.0
+  @tauri-apps/cli - 1.0.0-rc.4
+  @tauri-apps/api - 1.0.0-rc.1
+
+Global packages
+  npm - 6.14.15
+  pnpm - 6.19.0
+  yarn - 1.22.17
+
+Rust environment
+  rustup - 1.24.3
+  rustc - 1.58.1
+  cargo - 1.58.0
+  toolchain - stable-x86_64-apple-darwin 
+
+App directory structure
+/constants
+/node_modules
+/utils
+/docs
+/.github
+/src-tauri
+/Arithmetic
+/preview
+/.git
+/coverage
+/.idea
+/src
+
+App
+  tauri - 1.0.0-rc.2 (no lockfile)
+  tauri-build - no manifest (no lockfile)
+  tao - no manifest (no lockfile)
+  wry - no manifest (no lockfile)
+  build-type - bundle
+  CSP - unset
+  distDir - ../docs/.vuepress/dist
+  devPath - http://localhost:8080/
+  framework - Vue.js
+</code></pre>
+<h4 id="步骤二修改配置">步骤二：修改配置</h4>
+<p>在初始化完成后，我们的项目根目录下会多出一个目录：<code>src-tauri</code>，目录结构如下：</p>
+<pre><code>└── src-tauri
+    ├── .gitignore
+    ├── Cargo.toml
+    ├── rustfmt.toml
+    ├── tauri.conf.json // tauri 配置文件
+    ├── icons // 应用图表文件
+    └── src // 打包相关
+        ├── build.rs
+        ├── cmd.rs
+        └── main.rs
+</code></pre>
+<p>打开 <code>tauri.conf.json</code> 文件，修改 <code>build</code> 配置（配置中还可以修改应用的 icon，尺寸等其他信息，有兴趣的小伙伴可以自行探究）：</p>
+<pre><code class="language-js">&quot;build&quot;: {
+  &quot;distDir&quot;: &quot;../docs/.vuepress/dist&quot;,
+  &quot;devPath&quot;: &quot;http://localhost:8080&quot;,
+  &quot;beforeDevCommand&quot;: &quot;yarn docs:dev&quot;, // 在运行 yarn tauri dev 命令前执行的命令
+  &quot;beforeBuildCommand&quot;: &quot;yarn docs:build&quot; // 在运行 yarn tauri build 命令前执行的命令
+},
+</code></pre>
+<p>修改完成后，在执行命令之前，我们先看看 tauri 有哪些命令。执行 <code>yarn tauri help</code>：</p>
+<pre><code class="language-js">USAGE:
+    yarn run tauri &lt;SUBCOMMAND&gt; // 使用
+
+OPTIONS:
+    -h, --help       Print help information // 打印帮助信息
+    -V, --version    Print version information // 打印版本信息
+
+SUBCOMMANDS:
+    build     Tauri build // 构建 tauri 包
+    dev       Tauri dev // 本地开发命令
+    help      Print this message or the help of the given subcommand(s) // 打印帮助信息
+    info      Shows information about Tauri dependencies and project configuration // 打印项目信息
+    init      Initializes a Tauri project // 初始化 tauri 项目
+    plugin    Manage Tauri plugins // tauri 插件管理
+    signer    Tauri updater signer // tauri 更新
+
+</code></pre>
+<p>了解完相关执行命令，我们执行 <code>yarn tauri dev</code> 命令。之后，会先执行我们先前配置的 <code>beforeDevCommand</code> 命令，在本地启动项目，然后会构建一个本地应用。</p>
+<blockquote>
+<p><strong>注意：</strong> 这里需要注意，本地 Vuepress 项目的端口号要与 <code>devPath</code> 中配置的一致！</p>
+</blockquote>
+<p>在等待一段时间后，便会启动本地的应用：</p>
+<figure data-type="image" tabindex="4"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/23ee939a31854ea3af2f0c7aa920f4b5~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>截止目前，我们的本地项目就已经可以成功运行啦~</p>
+<h4 id="步骤三打包应用">步骤三：打包应用</h4>
+<p>打包应用只需要运行 <code>build</code> 命令即可：</p>
+<pre><code>yarn tauri build
+</code></pre>
+<p>打包完成后，会在 <code>src-tauri/target/release/bundle</code> 目录下生成相应的应用安装执行文件</p>
+<figure data-type="image" tabindex="5"><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/599f452f49724a45b2e4817918e15890~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
+<p>直接双击安装，之后便可以在本地使用这个应用来查看文档啦~ 大功告成，完结撒花~</p>
+<h1 id="写在最后">写在最后</h1>
+<p>看到这里，相信小伙伴们心中多少对 <code>Tauri</code> 这个后起之秀有了一些了解，有兴趣或者有需求的小伙伴们不妨来尝试一下~</p>
+<p>本文是关于 Tauri 的一次浅尝，更多玩法大家可以参考<a href="https://tauri.studio/">官方文档</a>。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/grwpKLl9t/" class="tag">
+                    学习
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            <span id="comment-count"></span>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/pinia-chu-ti-yan/">
+                  <h3 class="post-title">
+                    Pinia初体验
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+  <script type="text/javascript">
+    // 设置valine
+    new Valine({
+      av: AV,
+      el: '#vcomments',
+      count_el: '#comment-count',
+      appId: 'HlwrEhBsDstpVpKVMUMqyfBV-9Nh9j0Va',
+      appKey: 'Cs2jEIpcC6nXJFH8LsEak9Kh',
+      placeholder: '你说，我在听',
+      visitor: true,
+      // 设置Bilibili表情包地址
+      emojiCDN: '//i0.hdslb.com/bfs/emote/',
+      // 表情title和图片映射
+      emojiMaps: {
+        "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+        "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+        "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+        "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+        "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+        "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+        "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+        "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+        "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+        "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+        "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+        "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+        "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+        "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+        "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+        "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+        "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+        "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+        "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+        "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+        "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png"
+      }
+    })
+  </script>
+</html>
