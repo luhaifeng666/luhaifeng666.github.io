@@ -325,7 +325,7 @@ a {
   background-color: #7c8280;
   background-size: cover;
   background-position: 53% 0;
-  background-image: url('../media/images/sidebar-bg-custom.jpeg');
+  background-image: url('../media/images/sidebar-bg.jpg');
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
