@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Obsidian 链接收藏插件开发 | 酱豆腐精的小站</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://luhaifeng666.github.io/favicon.ico?v=1649737254070">
+<link rel="stylesheet" href="https://luhaifeng666.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="最近在使用一款 Markdown 笔记应用: Obsidian，加之先前做了一个可以快捷收藏/跳转地址的工具: efficient-tools，于是这次打算撸个 Obsidian 的插件，借用 Obsidian 给这个小功能提供可视化界面操..." />
+    <meta name="keywords" content="开发工具" />
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://luhaifeng666.github.io">
+        <img src="https://luhaifeng666.github.io/images/avatar.png?v=1649737254070" class="site-logo">
+        <h1 class="site-title">酱豆腐精的小站</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      我吹，你听
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/luhaifeng666" target="_blank">酱豆腐精</a> | <a class="rss" href="https://luhaifeng666.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Obsidian 链接收藏插件开发</h2>
+            <div class="post-date">2022-04-12</div>
+            
+              <div class="feature-container" style="background-image: url('https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f88417d7ff144e989069c28c4c7e7125~tplv-k3u1fbpfcp-watermark.image?')">
+              </div>
+            
+            <div class="post-content" v-pre>
+              <p>最近在使用一款 Markdown 笔记应用: <a href="https://obsidian.md/">Obsidian</a>，加之先前做了一个可以快捷收藏/跳转地址的工具: <a href="https://www.npmjs.com/package/efficient-tools">efficient-tools</a>，于是这次打算撸个 Obsidian 的插件，借用 Obsidian 给这个小功能提供可视化界面操作的能力（赋。。。。能？）。</p>
+<!-- more -->
+<h1 id="开始">开始</h1>
+<p>在 <strong>efficient-tools</strong> 中，我们可以通过命令行的方式添加、删除以及查看并跳转链接，既然如此，那在这个插件中也需要实现这三种功能。</p>
+<h2 id="准备工作">准备工作</h2>
+<p>在开始开发之前，先要做如下准备工作：</p>
+<blockquote>
+<ol>
+<li>去 <a href="https://obsidian.md/">Obsidian 官网</a> 下载 Obsidian 应用；</li>
+<li>参照 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/getting-started/create-your-first-plugin.html#%E5%BC%80%E5%8F%91%E5%89%8D%E5%87%86%E5%A4%87">创建你的第一个插件</a> 这篇文档准备好开发环境，并将插件名称改为 <strong>obsidian-link-keeper</strong> ；</li>
+<li>由于 Obsidian 的插件在开发过程中只能通过停用/启用插件的方式让最新的代码生效，为了避开这个繁琐的过程，我们可以使用 <a href="https://github.com/pjeby/hot-reload">Hot-Relod</a> 这个工具来让我们的插件可以热重载。</li>
+</ol>
+</blockquote>
+<p>在做完上述准备工作后，我们可以得到如下目录结构:</p>
+<pre><code>├── README.md
+├── esbuild.config.mjs
+├── main.ts // 入口文件
+├── manifest.json // 插件的基本信息
+├── modals.ts // 用于创建模态框
+├── node_modules
+├── package.json
+├── pnpm-lock.yaml
+├── styles.css // 样式文件
+├── tsconfig.json
+├── version-bump.mjs
+└── versions.json
+</code></pre>
+<h2 id="设置filepath">设置filepath</h2>
+<p>在 <strong>efficient-tools</strong> 中，新增的地址会默认保存到 <strong><code>${process.env.HOME}/etl.json</code></strong> 文件中，在 Obsidian 中，我们可以通过给插件添加配置的方式来设置保存地址的文件路径。</p>
+<p>Obsidian 中提供了 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Setting.html#setting">Setting</a> 类以创建诸如文本框，下拉框，滑动条，按钮等表单控件，以及 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/PluginSettingTab.html#pluginsettingtab">PluginSettingTab</a> 类可以创建插件的配置 tab。</p>
+<p>接下来，我们先在项目的根目录下创建 <code>settings.ts</code> 文件，用于自定义插件的设置：</p>
+<pre><code class="language-ts">// settings.ts
+
+// 导入插件
+import LinkKeeper from './main'
+
+import { App, PluginSettingTab, Setting } from 'obsidian'
+
+// 创建插件的自定义配置
+export class LinkKeeperSettingTab extends PluginSettingTab {
+  plugin: LinkKeeper
+  
+  /**
+  * 构造函数中接受两个参数
+  * app: Obsidian 中的App对象
+  * plugin: 需要自定义设置的插件对象
+  */
+  constructor (app: App, plugin: LinkKeeper) {
+    super (app, plugin)
+    this.plugin = plugin
+  }
+
+  display(): void {
+    // containerEl 是插件设置面板的容器
+    const { containerEl } = this
+    // 清空面板
+    containerEl.empty()
+    // 添加控件到面板容器中
+    new Setting(containerEl)
+      .setName(&quot;Link Filepath&quot;) // 设置控件名称
+      .setDesc(&quot;The file where saves the links.&quot;) // 设置控件描述文案
+      .addText((text) =&gt; // addText 方法用于创建 input 文本框, 回调函数中的参数为文本框dom对象
+        text
+          .setPlaceholder(&quot;Enter the full filepath&quot;) // 设置文本框 placeholder
+          .setValue(this.plugin.settings.filepath) // 设置文本框内容
+          .onChange(async (value) =&gt; { // 监听文本框的 change 事件
+            this.plugin.settings.filepath = value
+            await this.plugin.saveSettings() // 保存设置
+          })
+      )
+  }
+}
+</code></pre>
+<p>在自定义设置时需要引入自定义插件，以便将设置绑定到对应插件上。打开插件的入口文件 <code>main.ts</code> ，由于拉取的插件模板中存在其他示例内容，我们先“清理”一下 <code>main.ts</code> 文件，只保留我们需要的内容：</p>
+<pre><code class="language-ts">// main.ts
+
+// 引入 Plugin 类
+import { Plugin } from &quot;obsidian&quot;
+
+// 创建自定义插件
+export default class InsertLinkPlugin extends Plugin {
+  async onload() {
+     // onload 方法在插件被启用时调用
+  }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>注：</strong></p>
+<p>在 Obsidian 中，自定义插件的类继承自插件基类 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Plugin_2.html#plugin-2">Plugin</a>。插件存在两个生命周期函数：<strong>onload</strong> 以及 <strong>onunload</strong>，分别在组件启用时以及禁用时调用，具体可以参考<a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/concepts/plugin-anatomy.html#%E6%8F%92%E4%BB%B6%E5%89%96%E6%9E%90">插件剖析</a>。</p>
+</blockquote>
+<p>&quot;清理&quot;完成后，我们需要在 <code>main.ts</code> 中引入插件设置，并在 <strong>onload</strong> 阶段将自定义设置注册到插件上：</p>
+<pre><code class="language-ts">// main.ts
+
+import { Plugin } from &quot;obsidian&quot;
+// 引入自定义设置
+import { LinkKeeperSettingTab } from './settings'
+
+// 定义自定义设置的类型
+interface LinkKeeperSettings {
+  filepath: string
+}
+// 定义自定义设置的默认值
+const DEFAULT_SETTINGS: Partial&lt;LinkKeeperSettings&gt; = {
+  filepath: `${process.env.HOME}/etl.json`
+}
+
+export default class LinkKeeperPlugin extends Plugin {
+  settings: LinkKeeperSettings
+  
+  async onload() {
+    // 加载自定义设置
+    await this.loadSettings()
+    // 将插件的配置 tab 添加到设置菜单中
+    this.addSettingTab(new LinkKeeperSettingTab(this.app, this))
+  }
+  
+  async loadSettings () {
+    // 如果修改了配置项，可以覆盖默认配置
+    this.settings = {
+      ...DEFAULT_SETTINGS,
+      ...await this.loadData()
+    }
+  }
+  
+  // 用于保存设置，暴露给自定义设置类中使用
+  async saveSettings () {
+    await this.saveData(this.settings)
+  }
+}
+</code></pre>
+<p>做完上述步骤后，执行 <strong>pnpm run dev</strong>，之后打开设置界面，启用自定义插件，即可在设置中看到插件的自定义配置了：</p>
+<p align="center">
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0eba8575a67d4c1f9eea944ea70e49e4~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<p>到这里，我们已经完成了第一步，接下来我们就可以开始着手实现我们的功能了~</p>
+<h2 id="添加链接">添加链接</h2>
+<p>要想添加链接，我们需要一个添加链接的界面。我们来设想下这个界面里需要实现哪些功能：</p>
+<blockquote>
+<ol>
+<li>首先我们需要添加两个输入框用于设置链接的名称以及地址；</li>
+<li>之后再添加一个按钮，点击后对输入的内容进行校验并保存；</li>
+<li>如果遇到异常场景，比如文件不存在，输入内容为空等情况，我们需要给出友好的弹窗提示。</li>
+</ol>
+</blockquote>
+<p>好，功能已经明确了，那我们就来逐步实现它们，冲冲冲！</p>
+<h3 id="第一步添加链接的界面">第一步：添加链接的界面</h3>
+<p>上文中提到的 <strong>界面</strong>，我们可以使用 Obsidian 提供的 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Modal.html#modal">Modal</a> 来实现。<strong>Modal</strong> 用于创建一个模态框，在模态框中，我们可以通过 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Setting.html#setting">Setting</a> 以及 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/guides/html-elements.html#html-elements">createEl</a> 的方式来自定义所需要显示的表单控件或者自定义元素内容。</p>
+<p>首先，我们在项目根目录下新建 <code>modals.ts</code> 文件，用于创建模态框：</p>
+<pre><code class="language-ts">// modal.ts
+
+import { App, Modal } from &quot;obsidian&quot;
+
+// 创建添加地址的模态框
+export class AddLink extends Modal {
+  linkName: string // 用于保存链接名称
+  linkUrl: string // 用于保存链接地址
+
+  constructor(
+    app: App
+  ) {
+    super(app)
+  }
+  // 在模态框打开时调用
+  onOpen (): void {
+  }
+  // 在模态框关闭时调用
+  onClose(): void {
+    // 需要清空模态框的内容
+    this.contentEl.empty()
+  }
+}
+</code></pre>
+<h3 id="第二步添加名称-地址输入框">第二步：添加名称 &amp;&amp; 地址输入框</h3>
+<p>通过 Obsidian 提供的 <strong>Setting</strong> 类，我们可以很方便的创建两个用于输入的文本框。创建文本框需要用到 <strong>Setting</strong> 中的 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Setting.html#addtext">addText</a> 方法。</p>
+<p>在 <code>onOpen</code> 方法中，我们插入以下代码</p>
+<pre><code class="language-ts">// modal.ts
+
+onOpen (): void {
+  // contentEl 是模态框的 Element 对象
+  const { contentEl } = this
+  // 设置模态框标题
+  contentEl.createEl(&quot;h1&quot;, { text: &quot;Add Link&quot;, cls: &quot;title&quot; })
+  // 创建用于设置地址名称的 input 框
+  new Setting(contentEl).setName(&quot;Link name&quot;).addText(text =&gt; 
+    text.setValue(this.linkName).setPlaceholder('name').onChange((value) =&gt; {
+      this.linkName = value
+    })
+  )
+  // 创建用于设置地址 url 的 input 框
+  new Setting(contentEl).setName(&quot;Link url&quot;).addText(text =&gt;
+    text.setValue(this.linkUrl).setPlaceholder('url').onChange((value) =&gt; {
+      this.linkUrl = value
+    })
+  )
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>注：</strong></p>
+<p><strong>createEl</strong> 方法用于自定义 Html 标签，其中 <code>cls</code> 用于设置标签的 <code>class</code> 属性，可以用于设置标签样式。样式统一设置在项目根目录的 <code>style.css</code> 文件中。</p>
+</blockquote>
+<h3 id="第三步添加保存按钮">第三步：添加保存按钮</h3>
+<p>添加按钮需要用到 <strong>Setting</strong> 中的 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Setting.html#addbutton">addButton</a> 方法。</p>
+<p>在 <code>onOpen</code> 方法中继续添加以下内容：</p>
+<pre><code class="language-ts">// modal.ts
+
+onOpen (): void {
+  // 省略上述代码
+  
+  // 创建一个按钮
+  new Setting(contentEl).addButton((btn) =&gt;
+    btn
+      .setButtonText('Add') // 设置按钮文案
+      .setCta()
+      .onClick(() =&gt; {
+        // 按钮的点击事件
+      })
+  )
+}
+</code></pre>
+<h3 id="第四步实现校验-保存功能">第四步：实现校验 &amp;&amp; 保存功能</h3>
+<p>接下来，在点击按钮时，我们需要对文本框中的内容进行校验，并给出提示。在这里我们仅校验文本框中是否输入内容，如果文本框中的内容为空，则给出 popup 提示，否则就保存输入的内容。</p>
+<p>Obsidian 中提供了 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Notice.html#notice">Notice</a> 类用于生成提示。由于提示的 popup 可能会在多出使用到，这里我们将其抽取到单独的 <code>utils.ts</code> 文件中：</p>
+<pre><code class="language-ts">// utils.ts
+
+import { Notice } from 'obsidian'
+
+export const noticeHandler = (msg: string) =&gt; new Notice(msg) 
+</code></pre>
+<p>之后，我们在 <code>modals.ts</code> 文件中引入，并添加到检验判断中去：</p>
+<pre><code class="language-ts">// modal.ts
+
+import { noticeHandler } from './utils'
+
+// 省略一大波代码
+
+onOpen (): void {
+  
+  // 省略一小波代码
+  
+  new Setting(contentEl).addButton((btn) =&gt;
+    btn
+      .setButtonText('Add') // 设置按钮文案
+      .setCta()
+      .onClick(() =&gt; {
+        // 在上述 input 的 onChange 事件中已经保存了 linkName 以及 linkUrl
+        // 在这里我们可以直接获取进行校验
+        const { linkName, linkUrl } = this
+        if (!(linkName.trim())) {
+          noticeHandler('Link name is required!')
+        } else if (!(linkUrl.trim())) {
+          noticeHandler('Link url is required!')
+        }
+      })
+  )
+}
+</code></pre>
+<p>通过校验后，我们需要对填入的值进行保存，所谓的保存其实就是将值写入文件中。为了保证模态框模块的纯净，我们将保存的逻辑放在 <code>main.ts</code> 中完成。所以，在 <code>main.ts</code> 中调用这个 <strong>Modal</strong> 的时候，需要传入一个回调函数，用于保存链接设置。同时，在 <code>main.ts</code> 中需要通过 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Plugin_2.html#addcommand">addCommand</a> 方法创建自定义指令，用于呼起模态框。</p>
+<p>打开 <code>main.ts</code>，添加保存地址配置的方法，并且在 <code>onload</code> 方法中创建自定义指令的逻辑：</p>
+<pre><code class="language-ts">// main.ts
+
+import { Plugin, Editor } from &quot;obsidian&quot;
+import { AddLink } from &quot;./modals&quot;
+import { LinkKeeperSettingTab } from './settings'
+import { readFile, writeFile } from 'fs/promises'
+import { noticeHandler } from './utils'
+interface LinkKeeperSettings {
+  filepath: string
+}
+
+interface Options {
+  [key: string]: string
+}
+
+const DEFAULT_SETTINGS: Partial&lt;LinkKeeperSettings&gt; = {
+  filepath: `${process.env.HOME}/etl.json`
+}
+
+export default class LinkKeeperPlugin extends Plugin {
+  settings: LinkKeeperSettings
+
+  /**
+   * get all links
+   * @param cb 
+   */
+  async getLinks (cb: (data: Options) =&gt; void) {
+    try {
+      const data = await readFile(this.settings.filepath, { encoding: 'utf-8'})
+      cb(JSON.parse(data || '{}'))
+    } catch (err) {
+      noticeHandler(err.message)
+    }
+  }
+  
+  /**
+   * save link
+   * @param data 
+   * @param message 
+   */
+  async saveLink (data: Options, message: string) {
+    try {
+      await writeFile(this.settings.filepath, JSON.stringify(data))
+      noticeHandler(message)
+    } catch (err) {
+      noticeHandler(err.message)
+    }
+  }
+
+  /**
+   * add link submission
+   * @param name 
+   * @param url 
+   */
+  onSubmit (name: string, url: string) {
+    this.getLinks(async (data: Options) =&gt; {
+      if (Object.prototype.toString.call(data) === '[object Object]') {
+        this.saveLink({...data, [name]: url}, 'Add Link successfully!')
+      } else {
+        noticeHandler('Data format error! It must be a json object.')
+      }
+    })
+  }
+
+  /**
+   * init modal
+   * @param type 
+   * @param options 
+   * @returns 
+   */
+  initModal (type: string) {
+    switch (type) {
+      case 'addLink':
+        return new AddLink(this.app, this.onSubmit.bind(this))
+
+      default: break
+    }
+  }
+
+  async onload() {
+    // 添加呼起模态框的逻辑
+    this.addCommand({
+      id: &quot;add-link&quot;, // 用于设置模态框 id
+      name: &quot;Add link&quot;, // 用于设置模态框名称
+      callback: () =&gt; { // 执行命令的回调函数
+        // 打开模态框
+        this.initModal('addLink').open()
+      }
+    })
+  }
+}
+</code></pre>
+<p>这里我们添加了 <code>onSubmit</code> 方法，提供给模态框使用，用于保存地址设置。回到 <code>modal.ts</code> 文件中，我们需要在按钮的回调事件中加入保存地址的方法：</p>
+<pre><code class="language-ts">// modal.ts
+
+export class AddLink extends Modal {
+  linkName: string
+  linkUrl: string
+
+  onSubmit: (linkName: string, linkUrl: string) =&gt; void
+
+  constructor(
+    app: App,
+    onSubmit: (linkName: string, linkUrl: string) =&gt; void
+  ) {
+    // 省略一小波代码
+    
+    // 绑定传过来的 onSubmit 方法
+    this.onSubmit = onSubmit
+  }
+
+  onOpen (): void {
+    // 省略一小波代码
+    new Setting(contentEl).addButton((btn) =&gt;
+      btn
+        .setButtonText('Add')
+        .setCta()
+        .onClick(() =&gt; {
+          const { linkName, linkUrl } = this
+          if (!(linkName.trim())) {
+            noticeHandler('Link name is required!')
+          } else if (!(linkUrl.trim())) {
+            noticeHandler('Link url is required!')
+          } else {
+            this.close() // 添加完成后，需要关闭模态框
+            this.onSubmit(this.linkName, this.linkUrl) // 调用传过来的 onSubmit 方法
+          }
+        })
+    )
+  }
+  
+  // 省略一小波代码
+}
+</code></pre>
+<p>至此，我们的模态框功能已经完成了。还记得我们在 <code>modal.ts</code> 中添加的用于呼起模态框的自定义指令么？现在我们就来用它呼起添加地址的模态框。</p>
+<p>点击 Obsidian 界面左侧的命令行图标，在弹出的界面中搜索 <code>Add link</code>（之前在 <code>addCommand</code> 中设置的自定义指令名称）:</p>
+<p align="center">
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/37b2b6e620c04e848558b48d37345d52~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<p>选择蓝框中的命令后，就会弹出添加地址的模态框了：</p>
+<p align="center">
+<img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e3eb8f27f79c4410abae5afcac274eb3~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<p>直接点击添加按钮，也会在右上角看到提示信息。</p>
+<h2 id="删除链接">删除链接</h2>
+<p>老规矩，我们还是先来设想下用于删除的模态框需要实现哪些功能：</p>
+<blockquote>
+<ol>
+<li>首先我们需要添加一个下拉框，用于选择需要删除的地址；</li>
+<li>之后再添加一个按钮，点击后删除所选的地址；</li>
+<li>如果遇到异常场景我们需要给出友好的弹窗提示。</li>
+</ol>
+</blockquote>
+<p>有了添加链接的经验，创建删除链接的模态框就容易多了。在删除链接的模态框中，我们通过 <strong>Setting</strong> 中提供的 <a href="">addDropdown</a> 方法添加一个下拉框，用于选择需要删除的地址。此处直接上代码：</p>
+<pre><code class="language-ts">export class DeleteLink extends Modal {
+  linkName: string
+  options: Options
+
+  onDelete: (linkName: string) =&gt; void
+
+  constructor (
+    app: App,
+    options: Options, // 用来接收下拉项
+    onDelete: (linkName: string) =&gt; void // 删除事件
+  ) {
+    super(app)
+    this.onDelete = onDelete
+    this.options = options
+    this.linkName = Object.keys(options)[0] || '' // 默认删除第一个
+  }
+
+  onOpen (): void {
+    const { contentEl } = this
+
+    contentEl.createEl(&quot;h1&quot;, { text: &quot;Delete Link&quot;, cls: &quot;title&quot; })
+    
+    // 创建下拉框
+    new Setting(contentEl).setName(&quot;Link name&quot;).addDropdown(dp =&gt; 
+      dp.addOptions(this.options).onChange(value =&gt; {
+        this.linkName = value
+      })
+    )
+    // 创建删除按钮
+    new Setting(contentEl).addButton((btn) =&gt;
+      btn
+        .setButtonText('Delete')
+        .setCta()
+        .onClick(() =&gt; {
+          const { linkName } = this
+          if (!linkName) {
+            noticeHandler('Link name is required!')
+          } else {
+            this.close()
+            this.onDelete(this.linkName)
+          }
+        })
+    )
+  }
+
+  onClose(): void {
+    this.contentEl.empty()
+  }
+}
+</code></pre>
+<p>之后回到 <code>main.ts</code> 文件，我们需要加入 <strong>删除模态框的调出指令、获取删除下拉选项的 options 以及添加删除方法</strong>：</p>
+<pre><code class="language-ts">// main.ts
+
+import { Plugin, Editor } from &quot;obsidian&quot;
+import { AddLink, DeleteLink } from &quot;./modals&quot;
+import { LinkKeeperSettingTab } from './settings'
+import { readFile, writeFile } from 'fs/promises'
+import { noticeHandler } from './utils'
+interface LinkKeeperSettings {
+  filepath: string
+}
+
+interface Options {
+  [key: string]: string
+}
+
+const DEFAULT_SETTINGS: Partial&lt;LinkKeeperSettings&gt; = {
+  filepath: `${process.env.HOME}/etl.json`
+}
+
+export default class LinkKeeperPlugin extends Plugin {
+  settings: LinkKeeperSettings
+
+  /**
+   * get all links
+   * @param cb 
+   */
+  async getLinks (cb: (data: Options) =&gt; void) {
+    try {
+      const data = await readFile(this.settings.filepath, { encoding: 'utf-8'})
+      cb(JSON.parse(data || '{}'))
+    } catch (err) {
+      noticeHandler(err.message)
+    }
+  }
+  
+  /**
+   * delete link by name
+   * @param name 
+   */
+  async onDelete (name: string) {
+    await this.getLinks(async (data: Options) =&gt; {
+      delete data[name]
+      this.saveLink(data, `Link named ${name} has been deleted!`)
+    })
+  }
+
+  /**
+   * init modal
+   * @param type 
+   * @param options 
+   * @returns 
+   */
+  initModal (type: string, options?: Options) {
+    switch (type) {
+      // 省略一小波代码
+      
+      // 创建删除地址的模态框
+      case 'deleteLink':
+        return new DeleteLink(this.app, options, this.onDelete.bind(this))
+
+      default: break
+    }
+  }
+
+  async onload() {
+    // 省略一小波代码
+    
+    // 新增呼出删除模态框的自定义指令
+    this.addCommand({
+      id: &quot;delete-link&quot;,
+      name: 'Delete link',
+      callback: () =&gt; {
+        this.getLinks(async (data: Options) =&gt; {
+          // 创建删除的模态框，并传入 options
+          this.initModal('deleteLink', Object.keys(data).reduce((obj, key) =&gt; ({
+            ...obj,
+            [key]: key
+          }), {})).open()
+        })
+      }
+    })
+  }
+
+  // 省略一小波代码
+}
+</code></pre>
+<p>之后，点击 Obsidian 界面左侧的命令行图标，在弹出的界面中搜索 <code>Delete link</code> 并点击，就可以看到删除地址的模态弹框啦：</p>
+<p align="center">
+<img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/92cb761ff8d143848c0d345c6437ef29~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<h2 id="查看-跳转链接">查看 &amp;&amp; 跳转链接</h2>
+<p>在这个模态框中，我们需要提供以下几种功能：</p>
+<blockquote>
+<ol>
+<li>提供一个可以按照地址名称进行筛选的搜索框；</li>
+<li>列出已经保存的地址，显示对应的名称以及跳转地址，并且给地址加上链接，以便直接点击跳转</li>
+</ol>
+</blockquote>
+<p>回到 <code>modals.ts</code> ，我们先创建用于罗列地址的模态框：</p>
+<pre><code class="language-ts">// modal.ts
+
+export class ListAllLinks extends Modal {
+  options: Options
+
+  constructor (
+    app: App,
+    options: Options // 用于接收地址配置
+  ) {
+    super(app)
+    this.options = options
+  }
+
+  onOpen(): void {
+    const { contentEl } = this
+    // 创建标题
+    contentEl.createEl(&quot;h1&quot;, { text: &quot;All Links&quot;, cls: &quot;title&quot; })
+  }
+
+  onClose(): void {
+    this.contentEl.empty()
+  }
+}
+</code></pre>
+<h3 id="添加搜索框">添加搜索框</h3>
+<p>这里要用到 <strong>Setting</strong> 中提供的 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/classes/Setting.html#addsearch">addSearch</a> 方法来创建一个搜索框：</p>
+<pre><code class="language-ts">// modal.ts
+
+// 省略一小波代码
+
+onOpen(): void {
+    const { contentEl } = this
+
+    contentEl.createEl(&quot;h1&quot;, { text: &quot;All Links&quot;, cls: &quot;title&quot; })
+    // 创建搜索框
+    new Setting(contentEl).setName('Search').addSearch(el =&gt; {
+      el.setPlaceholder('Input the link name...').onChange(val =&gt; {
+        // 监听搜索框的 change 事件，在搜索框内容发生变化时重新渲染列表
+      })
+    })
+}
+</code></pre>
+<h3 id="添加地址列表">添加地址列表</h3>
+<p>在上述过程中一直有使用的 <strong>Setting</strong> 类主要是用来创建表单控件的，而列表内容主要由自定义标签构成，此时我们可以使用 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/guides/html-elements.html#create-html-elements-using-createel">createEl</a> 方法。由于在模态框初始化阶段以及搜索框内容变化阶段都需要渲染列表，因此我们需要将列表渲染的逻辑抽取出来。</p>
+<pre><code class="language-ts">// modal.ts
+
+export class ListAllLinks extends Modal {
+  options: Options
+
+  constructor (
+    app: App,
+    options: Options
+  ) {
+    super(app)
+    this.options = options
+  }
+  
+  /**
+   * create list item
+   * @param container list container
+   * @param key link name
+   * @param value link url
+   * @param isLink determine whether it is a link
+   */
+  createListItem (container: Element, key: string, value: string, isLink = true) {
+    // 向 list 容器中添加地址项
+    const box = container.createEl(&quot;div&quot;, { cls: `list-item ${!isLink ? 'list-item-header' : ''}`})
+    // 添加显示地址名称的容器
+    box.createEl(&quot;div&quot;, { text: key })
+    // 添加显示 url 的容器
+    const linkBox = box.createEl(&quot;div&quot;)
+    // 判断是否是链接
+    if (isLink) {
+      // 是链接的话添加 a 标签用于跳转
+      linkBox.createEl('a', { text: value, href: value})
+    } else {
+      // 否则直接显示内容
+      linkBox.createSpan({ text: value })
+    }
+  }
+  
+  // 渲染列表
+  renderList (key = ''): Element {
+    // 获取所有地址信息
+    let options = this.options
+    // 根据传过来的 key 筛选需要显示的地址内容
+    if (key) {
+      options = Object.keys(options).reduce((obj: Options, item) =&gt; {
+        if (item.includes(key)) obj = { ...obj, [item]: options[item] }
+        return obj
+      }, {})
+    }
+    // 创建显示列表的内容容器
+    const container = this.contentEl.createEl(&quot;div&quot;)
+    // 添加表头信息
+    this.createListItem(container, 'Name', 'Url', false)
+    // 创建 list 容器
+    const listContainer = container.createEl('div', { cls: 'list-container'})
+    const keys = Object.keys(options)
+    // 遍历显示列表
+    if (keys.length) {
+      keys.forEach(key =&gt; {
+        this.createListItem(listContainer, key, options[key])
+      })
+    } else {
+      // 当没有搜索到相应结果时，显示提示信息
+      listContainer.createEl('div', { text: 'No results!', cls: 'list-empty' })
+    }
+
+    return container
+  }
+
+  onOpen(): void {
+    const { contentEl } = this
+
+    contentEl.createEl(&quot;h1&quot;, { text: &quot;All Links&quot;, cls: &quot;title&quot; })
+
+    let contentBox: Element = null
+
+    new Setting(contentEl).setName('Search').addSearch(el =&gt; {
+      el.setPlaceholder('Input the link name...').onChange(val =&gt; {
+        // 当搜索内容变化时，清空列表
+        contentBox.empty()
+        // 重新渲染列表
+        contentBox = this.renderList(val)
+      })
+    })
+    // 首次加载时渲染列表
+    contentBox = this.renderList()
+  }
+
+  onClose(): void {
+    this.contentEl.empty()
+  }
+}
+</code></pre>
+<p>之后，我们要将列表的样式写入 <code>style.css</code> 文件中：</p>
+<pre><code class="language-css">// style.css
+/* Sets all the text color to red! */
+.title {
+  text-align: center;
+  font-size: 20px;
+}
+
+.list-container {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.list-item-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-item div {
+  flex: 1;
+}
+
+.list-item:not(.list-item-header) div:first-child {
+  color: #222;
+  font-weight: bold;
+}
+
+.list-item div:last-child {
+  text-align: right;
+}
+
+.list-item:not(.list-item-header) {
+  background-color: #c0c0c0;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.list-empty {
+  text-align: center;
+  font-size: 16px;
+}
+
+</code></pre>
+<p>最后，我们需要在 <code>main.ts</code> 文件中添加呼起显示列表的自定义指令，并将地址信息传给模态框：</p>
+<pre><code class="language-ts">// main.ts
+
+import { Plugin, Editor } from &quot;obsidian&quot;
+import { AddLink, DeleteLink, ListAllLinks } from &quot;./modals&quot;
+import { LinkKeeperSettingTab } from './settings'
+import { readFile, writeFile } from 'fs/promises'
+import { noticeHandler } from './utils'
+interface LinkKeeperSettings {
+  filepath: string
+}
+
+interface Options {
+  [key: string]: string
+}
+
+const DEFAULT_SETTINGS: Partial&lt;LinkKeeperSettings&gt; = {
+  filepath: `${process.env.HOME}/etl.json`
+}
+
+export default class LinkKeeperPlugin extends Plugin {
+  settings: LinkKeeperSettings
+
+  /**
+   * get all links
+   * @param cb 
+   */
+  async getLinks (cb: (data: Options) =&gt; void) {
+    try {
+      const data = await readFile(this.settings.filepath, { encoding: 'utf-8'})
+      cb(JSON.parse(data || '{}'))
+    } catch (err) {
+      noticeHandler(err.message)
+    }
+  }
+  
+  // 省略一小波代码
+  
+  /**
+   * init modal
+   * @param type 
+   * @param options 
+   * @returns 
+   */
+  initModal (type: string, options?: Options) {
+    switch (type) {
+      // 省略一小波代码
+      
+      case 'listLink':
+        return new ListAllLinks(this.app, options)
+
+      default: break
+    }
+  }
+
+  async onload() {
+    // 省略一小波代码
+    
+    // 添加呼起显示地址列表模态框的指令
+    this.addCommand({
+      id: 'list-links',
+      name: 'List links',
+      icon: 'link',
+      callback: () =&gt; {
+        this.getLinks(async (data: Options) =&gt; {
+          this.initModal('listLink', data).open()
+        })
+      }
+    })
+  }
+  
+  // 省略一小波代码
+}
+</code></pre>
+<p>之后，点击 Obsidian 界面左侧的命令行图标，在弹出的界面中搜索 <code>List link</code> 并点击，就可以看到地址列表的模态弹框啦~在搜索框中输入内容，可以看到相应的搜索结果，如果没有符合搜索内容的地址信息，则会显示提示信息：</p>
+<p align="center">
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3b112c98bf394ec1b3f6134f16af0f78~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<p>到这里，我们的插件就基本开发完成啦~~</p>
+<h1 id="插件优化">插件优化</h1>
+<h2 id="hotkeys">Hotkeys</h2>
+<p>在上述过程中，我们都是通过自定义指令的方式来呼起模态框，虽然过程并不复杂，但多少还是有些繁琐。Obsidian 给插件的自定义指令提供了设置热键的功能，我们可以通过设置自定义指令的热键来简化这个过程：</p>
+<p align="center">
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/67c6ab5528714e5790c21de10d93e417~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<h2 id="添加选中的地址">添加选中的地址</h2>
+<p>如果在使用 Obsidian 的过程中，遇到想要保存文档中某个地址的情况，如果要先复制地址，然后再粘贴到模态框中去保存，感觉多少有些麻烦。那么我们是否可以选中想要添加的地址直接进行添加呢？</p>
+<p>答案是肯定的！！</p>
+<p>此时，我们可以在 <strong>addCommand</strong> 方法中的 <a href="https://luhaifeng666.github.io/obsidian-plugin-docs-zh/zh/api/interfaces/Command.html#editorcallback">editorCallback</a> 事件中获取到当前编辑器的 <code>editor</code> 对象，并借此获取到选中的地址，之后自动填入模态框中。美滋滋~</p>
+<p>接下来，我们需要对先前添加的 <code>Add link</code> 自定义指令以及添加地址的模态框逻辑做些修改。</p>
+<p>首先，我们需要将 <code>callback</code> 方法改为 <code>editorCallback</code> 方法，并将选中的内容传给模态框：</p>
+<pre><code class="language-ts">// main.ts
+
+// 省略一大波代码
+
+initModal (type: string, options?: Options) {
+  switch (type) {
+    case 'addLink':
+      return new AddLink(this.app, options.link, this.onSubmit.bind(this))
+    // 省略一小波代码  
+    default: break
+  }
+}
+
+async onload() {
+  // 省略一小波代码
+  this.addCommand({
+    id: &quot;add-link&quot;,
+    name: &quot;Add link&quot;,
+    editorCallback: (editor: Editor) =&gt; {
+      // 获取选中的地址
+      const selection = editor.getSelection()
+      this.initModal('addLink', { link: selection }).open()
+    }
+  })
+}
+</code></pre>
+<p>之后，我们需要修改添加地址的模态框代码，接受传入的地址，并将其作为默认值设置到链接地址的文本框中：</p>
+<pre><code class="language-ts">// modals.ts
+
+export class AddLink extends Modal {
+  linkName: string
+  linkUrl: string
+
+  onSubmit: (linkName: string, linkUrl: string) =&gt; void
+
+  constructor(
+    app: App,
+    linkUrl: string, // 接受传入的地址信息
+    onSubmit: (linkName: string, linkUrl: string) =&gt; void
+  ) {
+    super(app)
+    this.linkName = ''
+    this.linkUrl = linkUrl // 将传入的地址信息设置为默认值
+    this.onSubmit = onSubmit
+  }
+  
+  // 省略一大波代码
+}
+</code></pre>
+<p>改造完成后，此时我们选中想要添加的链接地址，然后通过 <strong>热键</strong> 的方式呼起模态框，即可看到地址已经被填入其中：</p>
+<p align="center">
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4891cd74fd64787887104770ddd315a~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+<h1 id="写在最后">写在最后</h1>
+<p>行文至此，link-keeper 插件就已经完成啦~有兴趣的小伙伴可以<a href="https://github.com/luhaifeng666/obsidian-link-keeper">下载</a>使用。如果觉得插件还可的小伙伴们欢迎  star ~</p>
+<p>另外，笔者最近在翻译 Obsidian 的<a href="https://github.com/luhaifeng666/obsidian-plugin-docs-zh">插件开发文档</a>，有兴趣的小伙伴可以加入我~ 由于本人水平有限，如果有翻译不到位之处也欢迎大佬们提 issue，以便我及时更正。</p>
+<p align="center">
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1b8c4600b4ca4e35bcebd0dd8bba4505~tplv-k3u1fbpfcp-watermark.image?" />
+</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://luhaifeng666.github.io/tag/4epuVB5QI/" class="tag">
+                    开发工具
+                  </a>
+                
+              </div>
+            
+            <div id="vcomments"></div>
+            <span id="comment-count"></span>
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://luhaifeng666.github.io/post/tauri-chu-ti-yan/">
+                  <h3 class="post-title">
+                    Tauri 初体验 
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+  <script type="text/javascript">
+    // 设置valine
+    new Valine({
+      av: AV,
+      el: '#vcomments',
+      count_el: '#comment-count',
+      appId: 'HlwrEhBsDstpVpKVMUMqyfBV-9Nh9j0Va',
+      appKey: 'Cs2jEIpcC6nXJFH8LsEak9Kh',
+      placeholder: '你说，我在听',
+      visitor: true,
+      // 设置Bilibili表情包地址
+      emojiCDN: '//i0.hdslb.com/bfs/emote/',
+      // 表情title和图片映射
+      emojiMaps: {
+        "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+        "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+        "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+        "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+        "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+        "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+        "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+        "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+        "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+        "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+        "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+        "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+        "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+        "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+        "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+        "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+        "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+        "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+        "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+        "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+        "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png"
+      }
+    })
+  </script>
+</html>
