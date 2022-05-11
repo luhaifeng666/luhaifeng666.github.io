@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://luhaifeng666.github.io</id>
     <title>酱豆腐精的小站</title>
-    <updated>2022-04-13T08:24:25.519Z</updated>
+    <updated>2022-05-11T09:05:20.679Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://luhaifeng666.github.io"/>
     <link rel="self" href="https://luhaifeng666.github.io/atom.xml"/>
@@ -10,6 +10,64 @@
     <logo>https://luhaifeng666.github.io/images/avatar.png</logo>
     <icon>https://luhaifeng666.github.io/favicon.ico</icon>
     <rights>All rights reserved 2022, 酱豆腐精的小站</rights>
+    <entry>
+        <title type="html"><![CDATA[React 18 升级后的问题：useEffect执行了两次]]></title>
+        <id>https://luhaifeng666.github.io/post/react-18-sheng-ji-hou-de-wen-ti-useeffect-zhi-xing-liao-liang-ci/</id>
+        <link href="https://luhaifeng666.github.io/post/react-18-sheng-ji-hou-de-wen-ti-useeffect-zhi-xing-liao-liang-ci/">
+        </link>
+        <updated>2022-05-11T08:53:21.000Z</updated>
+        <content type="html"><![CDATA[<blockquote>
+<p>🛎️ 本文非原创，翻译自 <a href="https://flaviocopes.com/react-useeffect-two-times/">这篇文章</a>。</p>
+</blockquote>
+<h1 id="为啥执行两次">为啥执行两次</h1>
+<p>在 2022年三月，React 18 版本发布，在这个版本中，<code>useEffect</code> 的行为发生了改变。如果你的应用在升级 React 18 之后出现异常，那么有可能是 <code>useEffect</code> 执行了两次引起的。</p>
+<h1 id="什么情况下会执行两次">什么情况下会执行两次</h1>
+<p><code>useEffect</code> 在以下两种情况下会执行两次。</p>
+<blockquote>
+<p><strong>仅在开发模式下</strong>：这是每个人本地开发时构建应用的模式。</p>
+<p><strong>在严格模式下</strong>：这个是在使用 <code>create-react-app</code> 或者 <code>Next.js</code> 构建应用时的默认模式。</p>
+</blockquote>
+<h1 id="如何解决这个问题">如何解决这个问题</h1>
+<p>阻止 <code>useEffect</code> 执行两次的方法只有一个，那就是 <strong>关闭严格模式</strong>（脑子里出现了奇怪的声音。。。）。</p>
+<div align="center">
+<img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7a7d85fdc993422aad3eb25390d97f54~tplv-k3u1fbpfcp-watermark.image?" alt="新机子哇椅子摩西多字" />
+</div>
+<p>严格模式很重要，关闭严格模式只是一个临时的解决方案。如果你找到了能更好解决此问题的方法，记得改回来。</p>
+<h2 id="在-nextjs-中">在 Next.js 中</h2>
+<p>你可以在 <code>next.config.js</code> 配置文件中关闭严格模式：</p>
+<pre><code class="language-js">reactStrictMode:  false
+</code></pre>
+<h2 id="在-create-react-app-中">在 create-react-app 中</h2>
+<p>你可以移除 <code>index.js</code> 中严格模式的高阶组件，即从：</p>
+<pre><code class="language-js">import React, { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+
+import App from './App';
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+root.render(
+  &lt;StrictMode&gt;
+    &lt;App /&gt;
+  &lt;/StrictMode&gt;
+);
+</code></pre>
+<p>修改为</p>
+<pre><code class="language-js">import React from 'react';
+import { createRoot } from 'react-dom/client';
+
+import App from './App';
+
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
+
+root.render(
+  &lt;App /&gt;
+);
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Obsidian 链接收藏插件开发]]></title>
         <id>https://luhaifeng666.github.io/post/obsidian-lian-jie-shou-cang-cha-jian-kai-fa/</id>
@@ -2276,63 +2334,6 @@ export function createSetter () {
 <figure data-type="image" tabindex="2"><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c23ce7a3145b4e3f8580958b8a82297a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png" loading="lazy"></figure>
 <h1 id="写在最后">写在最后</h1>
 <p>行文至此，我们已经完成了基本的响应式操作，也捋清了其中的基本原理。如果有描述不当之处，还请各位大佬帮忙指正~</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用Gridea + Valine搭建属于自己的博客]]></title>
-        <id>https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/</id>
-        <link href="https://luhaifeng666.github.io/post/shi-yong-gridea-vline-da-jian-shu-yu-zi-ji-de-bo-ke/">
-        </link>
-        <updated>2021-12-24T17:15:10.000Z</updated>
-        <summary type="html"><![CDATA[<p>之前搭建博客都是通过 <code>vuepress</code> + <code>Github Pages</code> 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>之前搭建博客都是通过 <code>vuepress</code> + <code>Github Pages</code> 的方式，虽然也很方便，但是如果有个可视化可编辑的博客界面，可以做许多个性化的定制，岂不不是美滋滋~（手动🌺🐔）</p>
-<!-- more -->
-<h1 id="通过gridea快速搭建博客">通过Gridea快速搭建博客</h1>
-<pre><code>Gridea 是一个静态博客写作客户端，帮助你更容易地构建并管理博客或任何静态站点。
-</code></pre>
-<p>以上是 <a href="https://gridea.dev/">Gridea</a> 官方对这款博客客户端的描述。它到底有多容易呢？那我们就自己动手来试下吧~</p>
-<h2 id="简单两步完成博客搭建">简单两步，完成博客搭建</h2>
-<h3 id="第一步下载gridea客户端">第一步：下载Gridea客户端</h3>
-<p><code>Gridea</code> 客户端是使用 <code>Electron</code> 开发的，使用它之前，需要先去 <a href="https://gridea.dev/#started">官网下载</a>。官方提供了 <code>MacOS</code>, <code>Windows</code> 以及 <code>Linux</code> 三端的安装包，小伙伴们可以根据自己的需求自行下载~<br>
-<img src="https://luhaifeng666.github.io/post-images/1640367698849.jpg" alt="" loading="lazy"></p>
-<h3 id="第二步发布">第二步：发布</h3>
-<p>是的！你没有听错！下载完成后直接就可以进入发布流程了，是不是很快！<br>
-<code>Gridea</code> 提供了将博客部署到 <code>GitHub Pages</code>、<code>Coding Pages</code> 和通过 <code>SFTP</code> 的方式上传到自己的服务器的功能。官方提供了非常详细的Github Pages发布流程，这里不做赘述，<a href="https://gridea.dev/gridea-start/">请戳进来看吧~</a></p>
-<h2 id="一些可能需要注意的点">一些可能需要注意的点</h2>
-<p>经过上面两步的操作，相信各个小伙伴已经拥有了属于自己的博客~可喜可贺！在这里，我列举几个我遇到的问题，希望可以提供给遇到相同问题的小伙伴一些帮助：</p>
-<h4 id="问题1关于同步">问题1：关于同步</h4>
-<ul>
-<li>由于同步是将你的改动同步到 <code>GitHub Pages</code> 上的，由于现阶段国内访问Github会有长时间打不开页面，需要翻墙的情况，建议小伙伴们在长时间无法同步的情况下，尝试下翻墙同步，可能会稍好一些；</li>
-<li>我当前使用的 <code>Gridea</code> 的版本是 <code>0.9.2</code>，存在这样一个问题，在检测远程连接时，提示我连接成功，但是同步却一直都失败，无论是否开启翻墙，均是如此。官方在 <a href="https://github.com/getgridea/gridea/issues/890">#890</a> 这个issue中提供了一个解决方案，并给出了修复后的包的下载地址，我下载后使用并不理想（不排除是我本地网络环境的原因），但依旧可以作为一个解决方案提供给小伙伴们尝试下~</li>
-</ul>
-<h4 id="问题2关于主题">问题2：关于主题</h4>
-<p>目前我使用的是 <code>Simple</code> 主题，各方面使用情况都还不错，推荐大家使用这款。<br>
-当然，官方也提供了其他的 <a href="https://gridea.dev/themes">多款主题</a> 供小伙伴们食用，大家可以根据自己的喜好自行选择。<br>
-如果有精力有兴趣的小伙伴儿们也可以尝试自己 <a href="https://gridea.dev/theme/">开发一个主题</a> ，毕竟自己动手，丰衣足食嘛~<br>
-至于我遇到的问题，是在我使用 <code>Notes</code> 这个主题的时候，发现在编辑完文章后，markdown中的代码区块内容在预览时表现正常，但是在同步到 <code>GitHub Pages</code> 之后，打开页面发现markdown中的代码区块没有正常渲染出来，大家在食用的时候需要留意下~</p>
-<h1 id="添加vline评论">添加Vline评论</h1>
-<p>现在已经有了自己的博客了，也有个地方可以记录自己的工作，学习，生活了，自然也不能少了让 <code>看官们</code> 留下自己足迹的地方~<br>
-我使用的 <code>Simple</code> 主题默认提供了两种发布评论的平台：<br>
-<img src="https://luhaifeng666.github.io/post-images/1640368636573.jpg" alt="" loading="lazy"><br>
-这里我推荐使用 <a href="https://valine.js.org/">Valine</a>，想对于上述的两个而言，它更加友好。至于接入方式，官方也给出了相应的 <a href="https://kveln.cn/post/qE678A4ce/">参考文档</a>。这里我针对官方的文档做一些补充说明以及踩坑的经验分享。</p>
-<h2 id="关于文档中的说明">关于文档中的说明</h2>
-<p>在官方提供的文档中有这么一处说明：<br>
-<img src="https://luhaifeng666.github.io/post-images/1640369031378.png" alt="" loading="lazy"><br>
-其中，<code>Valine.min.js</code> 的引入需要放在对应主题的 <code>post.ejs</code> 模板下。</p>
-<h2 id="关于leancloud的配置">关于LeanCloud的配置</h2>
-<h3 id="创建class">创建Class</h3>
-<p>评论会调用 <code>LeanCloud</code> 提供的数据接口，其中有个接口是获取评论总数的：<code>https://xxxx/1.1/classes/Comment</code>。调用这个接口的前提，是需要在 <code>数据存储 &gt; 结构化数据</code> 下手动创建一个名为 <code>Comment</code> 的class，否则接口会报404，这个需要注意下：<br>
-<img src="https://luhaifeng666.github.io/post-images/1640369813288.png" alt="" loading="lazy"></p>
-<h3 id="创建应用">创建应用</h3>
-<p>创建应用时，可以选择创建区域:<br>
-<img src="https://luhaifeng666.github.io/post-images/1640369444506.png" alt="" loading="lazy"><br>
-我这里选择的是 <code>华东</code>。之所以选择华东，是因为在华北创建完应用后，在调用接口时调不通，这可能跟我所处的区域有关。所以小伙伴们在创建完成之后，可以去 <code>设置 &gt; 应用凭证</code> 中，访问下提供的 <code>REST API 服务器地址</code> ，看看是不是可以调通，可以的话就没有问题。如果不行的话，建议切换下区域重新创建一个应用：<br>
-<img src="https://luhaifeng666.github.io/post-images/1640369984692.png" alt="" loading="lazy"></p>
-<h1 id="写在最后">写在最后</h1>
-<p>以上是我在使用 <code>Gridea + Vline</code> 搭建自己博客的时候所遇到的问题，希望对看到这篇文章的小伙伴有所帮助。<br>
-当前博客已部署，以后会陆续分享自己的学习笔记以及心得琐碎等等。感兴趣的小伙伴欢迎<a href="https://luhaifeng666.github.io/">戳~</a>。<br>
-现在快动起手来，快速搭建一个属于自己的天地吧~</p>
 ]]></content>
     </entry>
 </feed>
